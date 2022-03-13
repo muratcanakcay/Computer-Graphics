@@ -109,7 +109,9 @@
                               IsChecked="False"
                               HorizontalAlignment="Center"
                               VerticalAlignment="Center"
-                              BorderBrush="Black"/>
+                              BorderBrush="Black"
+                              Checked="BrightnessCheckbox_OnChecked"
+                              Unchecked="BrightnessCheckbox_OnUnchecked"/>
                     
                     <TextBlock Grid.Row="1"
                                Grid.Column="1" 
@@ -138,9 +140,11 @@
                     
                     <Slider Grid.Row="2" 
                             Grid.Column="1" 
-                            Minimum="0" 
-                            Maximum="100"
-                            Name="BrightnessSlider"/>
+                            Value="0"
+                            Minimum="-256" 
+                            Maximum="256"
+                            Name="BrightnessSlider"
+                            ValueChanged="BrightnessSlider_OnValueChanged"/>
 
                     <TextBox Grid.Row="2" 
                              Grid.Column="2"
@@ -164,7 +168,9 @@
                               IsChecked="False"
                               HorizontalAlignment="Center"
                               VerticalAlignment="Center"
-                              BorderBrush="Black"/>
+                              BorderBrush="Black"
+                              Checked="ContrastCheckbox_OnChecked"
+                              Unchecked="ContrastCheckbox_OnUnchecked"/>
                     
                     <TextBlock Grid.Row="3"
                                Grid.Column="1" 
@@ -193,9 +199,11 @@
                     
                     <Slider Grid.Row="4" 
                             Grid.Column="1" 
-                            Minimum="0" 
-                            Maximum="100"
-                            Name="ContrastSlider"/>
+                            Value ="1"
+                            Minimum="0"
+                            Maximum="5"
+                            Name="ContrastSlider"
+                            ValueChanged="ContrastSlider_OnValueChanged"/>
 
                     <TextBox Grid.Row="4" 
                              Grid.Column="2"
@@ -207,7 +215,7 @@
                                 Mode=TwoWay, 
                                 ElementName=ContrastSlider,
                                 Path=Value,
-                                StringFormat={}{0:F0},
+                                StringFormat={}{0:F2},
                                 UpdateSourceTrigger=PropertyChanged}"
                              HorizontalContentAlignment="Center"/>
 
@@ -219,7 +227,9 @@
                               IsChecked="False"
                               HorizontalAlignment="Center"
                               VerticalAlignment="Center"
-                              BorderBrush="Black"/>
+                              BorderBrush="Black"
+                              Checked="GammaCheckbox_OnChecked"
+                              Unchecked="GammaCheckbox_OnUnchecked"/>
                     
                     <TextBlock Grid.Row="5"
                                Grid.Column="1" 
@@ -247,10 +257,12 @@
                     </Button>
                     
                     <Slider Grid.Row="6" 
-                            Grid.Column="1" 
+                            Grid.Column="1"
+                            Value="1"
                             Minimum="0" 
                             Maximum="100"
-                            Name="GammaSlider"/>
+                            Name="GammaSlider"
+                            ValueChanged="GammaSlider_OnValueChanged"/>
 
                     <TextBox Grid.Row="6" 
                              Grid.Column="2"
@@ -262,7 +274,7 @@
                                 Mode=TwoWay, 
                                 ElementName=GammaSlider,
                                 Path=Value,
-                                StringFormat={}{0:F0},
+                                StringFormat={}{0:F2},
                                 UpdateSourceTrigger=PropertyChanged}"
                              HorizontalContentAlignment="Center"/>
 

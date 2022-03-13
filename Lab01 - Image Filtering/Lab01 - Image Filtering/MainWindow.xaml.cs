@@ -60,14 +60,12 @@ namespace Lab01___Image_Filtering
         private void InvertCheckbox_OnChecked(object sender, RoutedEventArgs e)
         {
             AppliedFilters.Add(new Inversion());
-            Debug.WriteLine(AppliedFilters.Count);
             ApplyFilters();
         }
 
         private void InvertCheckbox_OnUnchecked(object sender, RoutedEventArgs e)
         {
             AppliedFilters.RemoveAll((filter) => filter is Inversion);
-            Debug.WriteLine(AppliedFilters.Count);
             ApplyFilters();
         }
 
@@ -87,6 +85,82 @@ namespace Lab01___Image_Filtering
             }
 
             FilteredImageCanvas.Source = filteredImage;
+        }
+
+        private void BrightnessCheckbox_OnChecked(object sender, RoutedEventArgs e)
+        {
+            AppliedFilters.Add(new Brightness((int)Math.Floor(BrightnessSlider.Value)));
+            ApplyFilters();
+        }
+
+        private void BrightnessCheckbox_OnUnchecked(object sender, RoutedEventArgs e)
+        {
+            AppliedFilters.RemoveAll((filter) => filter is Brightness);
+            ApplyFilters();
+        }
+
+        private void BrightnessSlider_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            if (BrightnessCheckbox.IsChecked == false) return;
+
+            var brightnessFilter = (Brightness?)AppliedFilters.Find((filter) => filter is Brightness);
+
+            if (brightnessFilter == null) throw new NullReferenceException();
+
+            brightnessFilter.Coefficient = (int)Math.Floor(BrightnessSlider.Value);
+            
+            ApplyFilters();
+        }
+
+        private void ContrastCheckbox_OnChecked(object sender, RoutedEventArgs e)
+        {
+            AppliedFilters.Add(new Contrast(ContrastSlider.Value));
+            ApplyFilters();
+        }
+
+        private void ContrastCheckbox_OnUnchecked(object sender, RoutedEventArgs e)
+        {
+            AppliedFilters.RemoveAll((filter) => filter is Contrast);
+            ApplyFilters();
+        }
+
+        private void ContrastSlider_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            if (ContrastCheckbox.IsChecked == false) return;
+
+            var contrastFilter = (Contrast?)AppliedFilters.Find((filter) => filter is Contrast);
+
+            if (contrastFilter == null) throw new NullReferenceException();
+
+            contrastFilter.Coefficient = ContrastSlider.Value;
+            
+            ApplyFilters();
+        }
+
+        private void GammaCheckbox_OnChecked(object sender, RoutedEventArgs e)
+        {
+            AppliedFilters.Add(new Gamma(GammaSlider.Value));
+            ApplyFilters();
+        }
+
+        private void GammaCheckbox_OnUnchecked(object sender, RoutedEventArgs e)
+        {
+            AppliedFilters.RemoveAll((filter) => filter is Gamma);
+            ApplyFilters();
+        }
+
+
+        private void GammaSlider_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            if (GammaCheckbox.IsChecked == false) return;
+
+            var gammaFilter = (Gamma?)AppliedFilters.Find((filter) => filter is Gamma);
+
+            if (gammaFilter == null) throw new NullReferenceException();
+
+            gammaFilter.Coefficient = GammaSlider.Value;
+            
+            ApplyFilters();
         }
     }
 }
