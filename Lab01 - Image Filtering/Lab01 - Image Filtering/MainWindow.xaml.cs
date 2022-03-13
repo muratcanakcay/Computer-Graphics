@@ -29,16 +29,17 @@ namespace Lab01___Image_Filtering
 
         private void LoadImage_Click(object sender, RoutedEventArgs e)
         {
-            OpenFileDialog dlg = new OpenFileDialog();
-            dlg.Filter = "Image files|*.jpg;*.png;*.bmp|All Files (*.*)|*.*";
-            dlg.RestoreDirectory = true;
-
-            if (dlg.ShowDialog() == true)
+            OpenFileDialog dlg = new()
             {
-                WriteableBitmap openedImage = new WriteableBitmap(new BitmapImage(new Uri(dlg.FileName)));
-                OriginalImageCanvas.Source = openedImage;
-                FilteredImageCanvas.Source = openedImage;
-            }
+                Filter = "Image files|*.jpg;*.png;*.bmp|All Files (*.*)|*.*",
+                RestoreDirectory = true
+            };
+
+            if (dlg.ShowDialog() != true) return;
+
+            var openedImage = new WriteableBitmap(new BitmapImage(new Uri(dlg.FileName)));
+            OriginalImageCanvas.Source = openedImage;
+            FilteredImageCanvas.Source = openedImage;
         }
 
         private void SaveImage_Click(object sender, RoutedEventArgs e)
