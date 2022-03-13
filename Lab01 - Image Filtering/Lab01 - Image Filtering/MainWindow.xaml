@@ -41,7 +41,7 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="260px"/>
+                <ColumnDefinition Width="280px"/>
             </Grid.ColumnDefinitions>
 
             <Grid Grid.Column="0">
@@ -64,18 +64,23 @@
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="20"/>
-                        <RowDefinition Height="20"/>
-                        <RowDefinition Height="20"/>
-                        <RowDefinition Height="20"/>
-                        <RowDefinition Height="20"/>
-                        <RowDefinition Height="20"/>
-                        <RowDefinition Height="20"/>
-                        <RowDefinition Height="20"/>
-                        <RowDefinition Height="20"/>
-                        <RowDefinition Height="20"/>
-                        <RowDefinition Height="20"/>
-                        <RowDefinition Height="20"/>
+                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="5"/>
+                        <RowDefinition Height="260"/>
+                        <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
 
                     <!--INVERSION-->
@@ -111,6 +116,8 @@
                     <Button Grid.Row="1" 
                             Grid.Column="2"
                             Margin="1,0"
+                            Height="20"
+                            Width="20"
                             ToolTip="Import filter"
                             Background="PowderBlue">
                         <Image Source="icons/icons8-import-50.png"/>
@@ -119,6 +126,8 @@
                     <Button Grid.Row="1" 
                             Grid.Column="3"
                             Margin="1,0"
+                            Height="20"
+                            Width="20"
                             ToolTip="Export filter"
                             Background="AntiqueWhite">
                         <Image Source="icons/icons8-export-50.png"/>
@@ -162,6 +171,8 @@
                     <Button Grid.Row="3" 
                             Grid.Column="2"
                             Margin="1,0"
+                            Height="20"
+                            Width="20"
                             ToolTip="Import filter"
                             Background="PowderBlue">
                         <Image Source="icons/icons8-import-50.png"/>
@@ -170,6 +181,8 @@
                     <Button Grid.Row="3" 
                             Grid.Column="3"
                             Margin="1,0"
+                            Height="20"
+                            Width="20"
                             ToolTip="Export filter"
                             Background="AntiqueWhite">
                         <Image Source="icons/icons8-export-50.png"/>
@@ -213,6 +226,8 @@
                     <Button Grid.Row="5" 
                             Grid.Column="2"
                             Margin="1,0"
+                            Height="20"
+                            Width="20"
                             ToolTip="Import filter"
                             Background="PowderBlue">
                         <Image Source="icons/icons8-import-50.png"/>
@@ -221,6 +236,8 @@
                     <Button Grid.Row="5" 
                             Grid.Column="3"
                             Margin="1,0"
+                            Height="20"
+                            Width="20"
                             ToolTip="Export filter"
                             Background="AntiqueWhite">
                         <Image Source="icons/icons8-export-50.png"/>
@@ -246,9 +263,135 @@
                                 UpdateSourceTrigger=PropertyChanged}"
                              HorizontalContentAlignment="Center"/>
 
+                    <!--BLUR-->
 
+                    <CheckBox Grid.Row="7"
+                              Grid.Column="0"
+                              Name="BlurCheckbox"
+                              IsChecked="False"
+                              HorizontalAlignment="Center"
+                              VerticalAlignment="Center"
+                              BorderBrush="Black"/>
+                    
+                    <TextBlock Grid.Row="7"
+                               Grid.Column="1" 
+                               Text="Blur"
+                               VerticalAlignment="Center"/>
 
+                    <!--GAUSSIAN BLUR-->
 
+                    <CheckBox Grid.Row="8"
+                              Grid.Column="0"
+                              Name="GaussianBlurCheckbox"
+                              IsChecked="False"
+                              HorizontalAlignment="Center"
+                              VerticalAlignment="Center"
+                              BorderBrush="Black"/>
+                    
+                    <TextBlock Grid.Row="8"
+                               Grid.Column="1" 
+                               Text="Gaussian Blur"
+                               VerticalAlignment="Center"/>
+
+                    <!--SHARPEN-->
+
+                    <CheckBox Grid.Row="9"
+                              Grid.Column="0"
+                              Name="SharpenCheckbox"
+                              IsChecked="False"
+                              HorizontalAlignment="Center"
+                              VerticalAlignment="Center"
+                              BorderBrush="Black"/>
+                    
+                    <TextBlock Grid.Row="9"
+                               Grid.Column="1" 
+                               Text="Sharpen"
+                               VerticalAlignment="Center"/>
+
+                    <!--EDGE DETECTION-->
+
+                    <CheckBox Grid.Row="10"
+                              Grid.Column="0"
+                              Name="EdgeDetectionCheckbox"
+                              IsChecked="False"
+                              HorizontalAlignment="Center"
+                              VerticalAlignment="Center"
+                              BorderBrush="Black"/>
+                    
+                    <TextBlock Grid.Row="10"
+                               Grid.Column="1" 
+                               Text="Edge Detection"
+                               VerticalAlignment="Center"/>
+
+                    <!--EMBOSS-->
+
+                    <CheckBox Grid.Row="11"
+                              Grid.Column="0"
+                              Name="EmbossCheckbox"
+                              IsChecked="False"
+                              HorizontalAlignment="Center"
+                              VerticalAlignment="Center"
+                              BorderBrush="Black"/>
+                    
+                    <TextBlock Grid.Row="11"
+                               Grid.Column="1" 
+                               Text="Emboss"
+                               VerticalAlignment="Center"/>
+
+                    <Separator Grid.Row="12" Grid.Column="0" Grid.ColumnSpan="4"/>
+
+                    <!--CUSTOM FUNCTION FILTER-->
+
+                    <CheckBox Grid.Row="13"
+                              Grid.Column="0"
+                              Name="CustomFunctionCheckbox"
+                              IsChecked="False"
+                              HorizontalAlignment="Center"
+                              VerticalAlignment="Center"
+                              BorderBrush="Black"/>
+                    
+                    <TextBlock Grid.Row="13"
+                               Grid.Column="1" 
+                               Text="Custom Function Filter"
+                               VerticalAlignment="Center"/>
+
+                    <Button Grid.Row="13" 
+                            Grid.Column="2"
+                            Margin="1,0"
+                            ToolTip="Import filter"
+                            Background="PowderBlue">
+                        <Image Source="icons/icons8-import-50.png"/>
+                    </Button>
+                    
+                    <Button Grid.Row="13" 
+                            Grid.Column="3"
+                            Margin="1,0"
+                            ToolTip="Export filter"
+                            Background="AntiqueWhite">
+                        <Image Source="icons/icons8-export-50.png"/>
+                    </Button>
+
+                    <Border Grid.Row="15" 
+                            Grid.Column="0"
+                            Grid.ColumnSpan="4"
+                            Height="258"
+                            Width="258"
+                            BorderThickness="1 "
+                            BorderBrush="Black">
+                    
+                        <Canvas Height="256"
+                                Width="256"
+                                VerticalAlignment="Top"
+                                Background="LightCyan"/>
+                    </Border>
+                    
+
+                    <TextBlock Grid.Row="16" 
+                               Grid.Column="0"
+                               Grid.ColumnSpan="4"
+                               Name="CustomFilterName"
+                               Margin="5 0 0 0"
+                               />
 
 
                 </Grid>
