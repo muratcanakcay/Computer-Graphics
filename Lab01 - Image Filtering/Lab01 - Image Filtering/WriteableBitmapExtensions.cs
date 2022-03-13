@@ -58,5 +58,10 @@ namespace Lab01___Image_Filtering
 
             return pixelColor;
         }
+
+        public static WriteableBitmap ApplyFilter(this WriteableBitmap wbm, IFilter filter)
+        {
+            return filter.Apply(wbm);
+        }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -22,6 +23,10 @@ namespace Lab01___Image_Filtering
     /// </summary>
     public partial class MainWindow : Window
     {
+        private WriteableBitmap? _originalImage;
+
+        public List<IFilter> AppliedFilters = new List<IFilter>(); 
+
         public MainWindow()
         {
             InitializeComponent();
@@ -37,9 +42,9 @@ namespace Lab01___Image_Filtering
 
             if (dlg.ShowDialog() != true) return;
 
-            var openedImage = new WriteableBitmap(new BitmapImage(new Uri(dlg.FileName)));
-            OriginalImageCanvas.Source = openedImage;
-            FilteredImageCanvas.Source = openedImage;
+            _originalImage = new WriteableBitmap(new BitmapImage(new Uri(dlg.FileName)));
+            OriginalImageCanvas.Source = _originalImage;
+            FilteredImageCanvas.Source = _originalImage;
         }
 
         private void SaveImage_Click(object sender, RoutedEventArgs e)
@@ -52,9 +57,36 @@ namespace Lab01___Image_Filtering
                 Close();
         }
 
-        private void invertButton_Click(object sender, RoutedEventArgs e)
+        private void InvertCheckbox_OnChecked(object sender, RoutedEventArgs e)
         {
-            throw new NotImplementedException();
+            AppliedFilters.Add(new Inversion());
+            Debug.WriteLine(AppliedFilters.Count);
+            ApplyFilters();
+        }
+
+        private void InvertCheckbox_OnUnchecked(object sender, RoutedEventArgs e)
+        {
+            AppliedFilters.RemoveAll((filter) => filter is Inversion);
+            Debug.WriteLine(AppliedFilters.Count);
+            ApplyFilters();
+        }
+
+        private void ApplyFilters()
+        {
+            if (AppliedFilters.Count == 0 || _originalImage == null)
+            {
+                FilteredImageCanvas.Source = _originalImage;
+                return;
+            }
+
+            var filteredImage = _originalImage;
+
+            foreach (var filter in AppliedFilters)
+            {
+                filteredImage = filteredImage.ApplyFilter(filter);
+            }
+
+            FilteredImageCanvas.Source = filteredImage;
         }
     }
 }

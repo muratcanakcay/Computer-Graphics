@@ -91,7 +91,10 @@
                               IsChecked="False"
                               HorizontalAlignment="Center"
                               VerticalAlignment="Center"
-                              BorderBrush="Black"/>
+                              BorderBrush="Black"
+                              Checked="InvertCheckbox_OnChecked"
+                              Unchecked="InvertCheckbox_OnUnchecked"/>
+                    
                     
                     <TextBlock Grid.Row="0"
                                Grid.Column="1" 
