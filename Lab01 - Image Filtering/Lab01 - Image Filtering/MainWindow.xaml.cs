@@ -50,5 +50,10 @@ namespace Lab01___Image_Filtering
             if (MessageBox.Show("Are you sure you want to leave?", "Exit", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
                 Close();
         }
+
+        private void invertButton_Click(object sender, RoutedEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

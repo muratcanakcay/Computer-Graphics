@@ -8,4 +8,14 @@
     <UseWPF>true</UseWPF>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Remove="icons\icons8-export-50.png" />
+    <None Remove="icons\icons8-import-50.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="icons\icons8-export-50.png" />
+    <Resource Include="icons\icons8-import-50.png" />
+  </ItemGroup>
+
 </Project>
