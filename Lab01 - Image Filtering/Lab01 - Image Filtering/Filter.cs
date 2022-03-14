@@ -33,9 +33,9 @@ namespace Lab01___Image_Filtering
                         var oldColor = clone.GetPixelColor(x, y);
 
                         var newColor = Color.FromArgb(oldColor.A,
-                            Math.Abs(oldColor.R - 255),
-                            Math.Abs(oldColor.G - 255),
-                            Math.Abs(oldColor.B - 255));
+                                                255 - oldColor.R,
+                                                255 - oldColor.G,
+                                                255 - oldColor.B);
 
                         clone.SetPixelColor(x, y, newColor);
                     }
