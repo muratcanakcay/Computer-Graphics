@@ -25,7 +25,6 @@ namespace Lab01___Image_Filtering
     /// </summary>
     public partial class MainWindow : Window
     {
-        private WriteableBitmap? _originalImage;
         private readonly List<WriteableBitmap> _history = new();
         private int _stackPosition = -1;
 
@@ -38,7 +37,28 @@ namespace Lab01___Image_Filtering
 
         //---------------------------
 
-        private void MenuItem_OnClick(object sender, RoutedEventArgs e)
+        private void Reset_OnClick(object sender, RoutedEventArgs e)
+        {
+            ClearAllFilters();
+
+            WriteableBitmap originalImage = null;
+            
+            if (_history.Count > 0)
+            {
+               originalImage = _history[0];
+            }
+
+            _history.Clear();
+            _stackPosition = 0;
+            if (originalImage != null) _history.Add(originalImage);
+            FilteredImageCanvas.Source = originalImage;
+            FilterChainTextBlock.Text = "In > Out";
+            BackButton.IsEnabled = false;
+            ForwardButton.IsEnabled = false;
+            FlattenButton.IsEnabled = false;
+        }
+
+        private void ClearAllFilters()
         {
             InvertCheckbox.IsChecked = false;
             BrightnessCheckbox.IsChecked = false;
@@ -49,15 +69,15 @@ namespace Lab01___Image_Filtering
             SharpenCheckbox.IsChecked = false;
             EdgeDetectionCheckbox.IsChecked = false;
             EmbossCheckbox.IsChecked = false;
-
+            MedianCheckbox.IsChecked = false;
+            CustomFunctionCheckbox.IsChecked = false;
+            
             BrightnessSlider.Value = 0;
             ContrastSlider.Value = 1;
             GammaSlider.Value = 1;
+            FunctionPolyline.Points = new PointCollection() { new(0, 255), new(255, 0) };
 
             AppliedFilters.Clear();
-
-            FilteredImageCanvas.Source = _originalImage;
-            FilterChainTextBlock.Text = "In > Out";
         }
 
         private void LoadImage_Click(object sender, RoutedEventArgs e)
@@ -70,9 +90,22 @@ namespace Lab01___Image_Filtering
 
             if (dlg.ShowDialog() != true) return;
 
-            _originalImage = new WriteableBitmap(new BitmapImage(new Uri(dlg.FileName)));
-            OriginalImageCanvas.Source = _originalImage;
-            _history.Add(_originalImage);
+            WriteableBitmap originalImage = null;
+
+            try
+            {
+                originalImage = new WriteableBitmap(new BitmapImage(new Uri(dlg.FileName)));
+            }
+            catch (Exception exception)
+            {
+                Console.WriteLine(exception.Message);
+                return;
+            }
+            
+            ClearAllFilters();
+            _history.Clear();
+            OriginalImageCanvas.Source = originalImage;
+            _history.Add(originalImage);
             _stackPosition = 0;
             FilteredImageCanvas.Source = _history[_stackPosition];
             FilterChainTextBlock.Text = "In > Out";
@@ -486,20 +519,24 @@ namespace Lab01___Image_Filtering
 
         private void ApplyFilters()
         {
-            if (AppliedFilters.Count == 0 || _originalImage == null)
+            if (AppliedFilters.Count == 0)
             {
-                FilteredImageCanvas.Source = _history.Count == 0 ? null : _originalImage;
-                FilterChainTextBlock.Text = _history.Count == 1 ? "In > Out" : "In > Flattened > Out";
+                FlattenButton.IsEnabled = false;
+
+                FilteredImageCanvas.Source = _history.Count == 0 ? null : _history[_stackPosition];
+                FilterChainTextBlock.Text = _history.Count == 1 ? "In > Out" : $"In > Flattened ({_stackPosition}/{_history.Count-1}) > Out";
                 return;
             }
 
-            var filteredImage = _history.Last();
+            FlattenButton.IsEnabled = true;
+
+            var filteredImage = _history[_stackPosition];
             var sb = new StringBuilder();
             
             sb.Append("In >");
             if (_history.Count > 1)
             {
-                sb.Append(" Flattened >");
+                sb.Append($" Flattened ({_stackPosition}/{_history.Count-1}) >");
             }
 
             foreach (var filter in AppliedFilters)
@@ -525,5 +562,54 @@ namespace Lab01___Image_Filtering
             AppliedFilters.RemoveAll((filter) => filter is Median);
             ApplyFilters();
         }
+
+        //------------------------
+
+        private void BackButton_Click(object sender, RoutedEventArgs e)
+        {
+            _stackPosition--;
+            ForwardButton.IsEnabled = true;
+            
+            if (_stackPosition == 0)
+            {
+                BackButton.IsEnabled = false;
+            }
+            
+            FilteredImageCanvas.Source = _history[_stackPosition];
+            ClearAllFilters();
+            ApplyFilters();
+        }
+
+        private void ForwardButton_Click(object sender, RoutedEventArgs e)
+        {
+            _stackPosition++;
+            BackButton.IsEnabled = true;
+            if (_stackPosition == _history.Count - 1)
+            {
+                ForwardButton.IsEnabled = false;
+            }
+
+            FilteredImageCanvas.Source = _history[_stackPosition];
+            ClearAllFilters();
+            ApplyFilters();
+        }
+
+        private void FlattenButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (_stackPosition < _history.Count - 1)
+            {
+                _history.RemoveRange(_stackPosition + 1, _history.Count - _stackPosition -1);
+                ForwardButton.IsEnabled = false;
+            }
+
+            _history.Add((WriteableBitmap)FilteredImageCanvas.Source.Clone());
+            _stackPosition++;
+            BackButton.IsEnabled = true;
+            FilteredImageCanvas.Source = _history[_stackPosition];
+            ClearAllFilters();
+            ApplyFilters();
+        }
+
+        
     }
 }

@@ -28,7 +28,7 @@
             </Menu.ItemsPanel>
 
             <MenuItem HorizontalAlignment="Left" Header="_File">
-                <MenuItem Header="_Reset" Click="MenuItem_OnClick" ></MenuItem>
+                <MenuItem Header="_Reset" Click="Reset_OnClick" ></MenuItem>
                 <MenuItem Header="_Open Image" Click="LoadImage_Click" InputGestureText="Alt+O"></MenuItem>
                 <MenuItem Header="_Save Image" Name="LoadImage" Click="SaveImage_Click" InputGestureText="Alt+S"></MenuItem>
             </MenuItem>
@@ -93,9 +93,11 @@
                             Margin="1,0, 6, 0"
                             Height="20"
                             Width="50"
+                            Name="BackButton"
+                            IsEnabled="false"
                             ToolTip="Back"
-                            Background="PaleGoldenrod"
-                            Click="Polyline_ResetClick">
+                            Background="LightCyan"
+                            Click="BackButton_Click">
                             <Image Source="icons/icons8-undo-64.png" Stretch="Uniform" />
                         </Button>
 
@@ -104,12 +106,14 @@
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center"
                             Margin="1,0, 6, 0"
-                            Height="20"
-                            Width="100"
+                            Height="25"
+                            Width="120"
                             ToolTip="Flatten image"
-                            Background="CornflowerBlue"
-                            Click="Polyline_ResetClick">
-                            <TextBlock Text="FLATTEN" FontWeight="DemiBold"/>
+                            Name="FlattenButton"
+                            IsEnabled="false"
+                            Background="LightCyan"
+                            Click="FlattenButton_Click">
+                            <TextBlock Text="FLATTEN IMAGE" FontWeight="DemiBold"/>
                         </Button>
 
                         <Button  
@@ -119,9 +123,11 @@
                             Margin="1,0, 6, 0"
                             Height="20"
                             Width="50"
+                            Name="ForwardButton"
+                            IsEnabled="false"
                             ToolTip="Forward"
-                            Background="PaleGoldenrod"
-                            Click="Polyline_ResetClick">
+                            Background="LightCyan"
+                            Click="ForwardButton_Click">
                             <Image Source="icons/icons8-redo-64.png"/>
                         </Button>
 
@@ -561,7 +567,7 @@
                                 Height="20"
                                 Width="60"
                                 ToolTip="Use contrast filter as template"
-                                Background="DarkGoldenrod"
+                                Background="LightGray"
                                 Click="PolylineTemplate_Contrast">
                                 Contrast
                             </Button>
@@ -574,7 +580,7 @@
                                 Height="20"
                                 Width="20"
                                 ToolTip="Reset graph"
-                                Background="PaleVioletRed"
+                                Background="Cyan"
                                 Click="Polyline_ResetClick">
                                 <Image Source="icons/icons8-reset-64.png"/>
                             </Button>

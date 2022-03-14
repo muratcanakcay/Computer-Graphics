@@ -91,9 +91,9 @@ namespace Lab01___Image_Filtering
         public static readonly Kernel Median = new(
             new[,]
             {
-                { 1, 1, 1 }, 
-                { 1, 1, 1 }, 
-                { 1, 1, 1 }
+                { 0, 0, 0 }, 
+                { 0, 0, 0 }, 
+                { 0, 0, 0 }
             }, 
             new Point(1, 1), 
             0);
