@@ -11,9 +11,6 @@ namespace Lab01___Image_Filtering
         {
             if (y < 0 || x < 0 || y > wbm.PixelHeight - 1 || x > wbm.PixelWidth - 1)
                 throw new Exception("SetPixelColor target out of bitmap bounds");
-
-            //TODO: do I need this lock? if so, then I should disable the ui while locked
-            //wbm.Lock();
             
             IntPtr pBackBuffer = wbm.BackBuffer;
             int stride = wbm.BackBufferStride;
@@ -27,14 +24,11 @@ namespace Lab01___Image_Filtering
                 pBuffer[index + 1] = color.G;
                 pBuffer[index + 2] = color.R;
                 pBuffer[index + 3] = color.A;
-
             }
 
             wbm.AddDirtyRect(new Int32Rect(x, y, 1, 1));
-
-            //TODO: unlock if locked!
-            //wbm.Unlock();
         }
+
         public static Color GetPixelColor(this WriteableBitmap wbm, int x, int y)
         {
             if (y < 0 || x < 0||y > wbm.PixelHeight - 1 || x > wbm.PixelWidth - 1)
@@ -61,7 +55,7 @@ namespace Lab01___Image_Filtering
 
         public static WriteableBitmap ApplyFilter(this WriteableBitmap wbm, IFilter filter)
         {
-            return filter.Apply(wbm);
+            return filter.ApplyTo(wbm);
         }
     }
 }

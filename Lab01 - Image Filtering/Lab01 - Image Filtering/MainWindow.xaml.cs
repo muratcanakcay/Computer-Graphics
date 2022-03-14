@@ -32,11 +32,33 @@ namespace Lab01___Image_Filtering
             InitializeComponent();
         }
 
+        private void MenuItem_OnClick(object sender, RoutedEventArgs e)
+        {
+            InvertCheckbox.IsChecked = false;
+            BrightnessCheckbox.IsChecked = false;
+            ContrastCheckbox.IsChecked = false;
+            GammaCheckbox.IsChecked = false;
+            BlurCheckbox.IsChecked = false;
+            GaussianBlurCheckbox.IsChecked = false;
+            SharpenCheckbox.IsChecked = false;
+            EdgeDetectionCheckbox.IsChecked = false;
+            EmbossCheckbox.IsChecked = false;
+
+            BrightnessSlider.Value = 0;
+            ContrastSlider.Value = 1;
+            GammaSlider.Value = 1;
+
+            AppliedFilters.Clear();
+
+            FilteredImageCanvas.Source = _originalImage;
+            FilterChainTextBlock.Text = "In > Out";
+        }
+
         private void LoadImage_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog dlg = new()
             {
-                Filter = "Image files|*.jpg;*.png;*.bmp|All Files (*.*)|*.*",
+                Filter = "Image files|*.jpg;*.png;*.bmp",
                 RestoreDirectory = true
             };
 
@@ -45,10 +67,42 @@ namespace Lab01___Image_Filtering
             _originalImage = new WriteableBitmap(new BitmapImage(new Uri(dlg.FileName)));
             OriginalImageCanvas.Source = _originalImage;
             FilteredImageCanvas.Source = _originalImage;
+            FilterChainTextBlock.Text = "In > Out";
         }
 
         private void SaveImage_Click(object sender, RoutedEventArgs e)
         {
+            if (FilteredImageCanvas.Source == null)
+            {
+                MessageBox.Show("No image to save!", "No image to save");
+                return;
+            }
+            
+            SaveFileDialog dlg = new()
+            {
+                Filter = "Image files|*.jpg;*.png;*.bmp",
+                RestoreDirectory = true
+            };
+
+            if (dlg.ShowDialog() != true || dlg.FileName == string.Empty) return;
+
+            BitmapEncoder encoder;
+            if (dlg.FileName.EndsWith("png"))
+            {
+                encoder = new PngBitmapEncoder();
+            }
+            else if (dlg.FileName.EndsWith("bmp"))
+            {
+                encoder = new BmpBitmapEncoder();
+            }
+            else
+            {
+                encoder = new JpegBitmapEncoder();
+            }
+
+            using var fs = new FileStream(dlg.FileName, FileMode.OpenOrCreate);
+            encoder.Frames.Add(BitmapFrame.Create((WriteableBitmap)FilteredImageCanvas.Source));
+            encoder.Save(fs);
         }
 
         private void ExitButton_Click(object sender, RoutedEventArgs e)
@@ -67,24 +121,6 @@ namespace Lab01___Image_Filtering
         {
             AppliedFilters.RemoveAll((filter) => filter is Inversion);
             ApplyFilters();
-        }
-
-        private void ApplyFilters()
-        {
-            if (AppliedFilters.Count == 0 || _originalImage == null)
-            {
-                FilteredImageCanvas.Source = _originalImage;
-                return;
-            }
-
-            var filteredImage = _originalImage;
-
-            foreach (var filter in AppliedFilters)
-            {
-                filteredImage = filteredImage.ApplyFilter(filter);
-            }
-
-            FilteredImageCanvas.Source = filteredImage;
         }
 
         private void BrightnessCheckbox_OnChecked(object sender, RoutedEventArgs e)
@@ -161,6 +197,93 @@ namespace Lab01___Image_Filtering
             gammaFilter.Coefficient = GammaSlider.Value;
             
             ApplyFilters();
+        }
+
+        private void BlurCheckbox_OnChecked(object sender, RoutedEventArgs e)
+        {
+            AppliedFilters.Add(new Blur());
+            ApplyFilters();
+        }
+
+        private void BlurCheckbox_OnUnchecked(object sender, RoutedEventArgs e)
+        {
+            AppliedFilters.RemoveAll((filter) => filter is Blur);
+            ApplyFilters();
+        }
+
+        private void GaussianBlurCheckbox_OnChecked(object sender, RoutedEventArgs e)
+        {
+            AppliedFilters.Add(new GaussianBlur());
+            ApplyFilters();
+        }
+
+
+        private void GaussianBlurCheckbox_OnUnchecked(object sender, RoutedEventArgs e)
+        {
+            AppliedFilters.RemoveAll((filter) => filter is GaussianBlur);
+            ApplyFilters();
+        }
+
+        private void SharpenCheckbox_OnChecked(object sender, RoutedEventArgs e)
+        {
+            AppliedFilters.Add(new Sharpen());
+            ApplyFilters();
+        }
+
+        private void SharpenCheckbox_OnUnchecked(object sender, RoutedEventArgs e)
+        {
+            AppliedFilters.RemoveAll((filter) => filter is Sharpen);
+            ApplyFilters();
+        }
+
+        private void EdgeDetectionCheckbox_OnChecked(object sender, RoutedEventArgs e)
+        {
+            AppliedFilters.Add(new EdgeDetection());
+            ApplyFilters();
+        }
+
+        private void EdgeDetectionCheckbox_OnUnchecked(object sender, RoutedEventArgs e)
+        {
+            AppliedFilters.RemoveAll((filter) => filter is EdgeDetection);
+            ApplyFilters();
+        }
+
+        private void EmbossCheckbox_OnChecked(object sender, RoutedEventArgs e)
+        {
+            AppliedFilters.Add(new Emboss());
+            ApplyFilters();
+        }
+
+        private void EmbossCheckbox_OnUnchecked(object sender, RoutedEventArgs e)
+        {
+            AppliedFilters.RemoveAll((filter) => filter is Emboss);
+            ApplyFilters();
+        }
+
+        private void ApplyFilters()
+        {
+            if (AppliedFilters.Count == 0 || _originalImage == null)
+            {
+                FilteredImageCanvas.Source = _originalImage;
+                FilterChainTextBlock.Text = "In > Out";
+                return;
+            }
+
+            var filteredImage = _originalImage;
+            var sb = new StringBuilder();
+            
+            sb.Append("In >");
+
+            foreach (var filter in AppliedFilters)
+            {
+                filteredImage = filteredImage.ApplyFilter(filter);
+                sb.Append(" " + filter + " >");
+            }
+
+            sb.Append(" Out");
+
+            FilteredImageCanvas.Source = filteredImage;
+            FilterChainTextBlock.Text = sb.ToString();
         }
     }
 }

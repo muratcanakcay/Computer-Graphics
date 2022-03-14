@@ -6,16 +6,12 @@ namespace Lab01___Image_Filtering
 {
     public interface IFilter
     {
-        WriteableBitmap Apply(WriteableBitmap wbm);
+        WriteableBitmap ApplyTo(WriteableBitmap wbm);
     }
 
-    public interface IFunctionFilter : IFilter
+    public class Inversion : IFilter
     {
-    }
-
-    public class Inversion : IFunctionFilter
-    {
-        public WriteableBitmap Apply(WriteableBitmap wbm)
+        public WriteableBitmap ApplyTo(WriteableBitmap wbm)
         {
             var clone = wbm.Clone();
             var width = clone.PixelWidth;
@@ -51,9 +47,14 @@ namespace Lab01___Image_Filtering
 
             return clone;
         }
+
+        public override string ToString()
+        {
+            return "Inversion";
+        }
     }
 
-    public class Brightness : IFunctionFilter
+    public class Brightness : IFilter
     {
         public int Coefficient { get; set; }
 
@@ -62,7 +63,7 @@ namespace Lab01___Image_Filtering
             this.Coefficient = coefficient;
         }
 
-        public WriteableBitmap Apply(WriteableBitmap wbm)
+        public WriteableBitmap ApplyTo(WriteableBitmap wbm)
         {
             var clone = wbm.Clone();
             var width = clone.PixelWidth;
@@ -96,9 +97,14 @@ namespace Lab01___Image_Filtering
 
             return clone;
         }
+
+        public override string ToString()
+        {
+            return "Brightness";
+        }
     }
 
-    public class Contrast : IFunctionFilter
+    public class Contrast : IFilter
     {
         public double Coefficient { get; set; }
 
@@ -107,7 +113,7 @@ namespace Lab01___Image_Filtering
             this.Coefficient = coefficient;
         }
 
-        public WriteableBitmap Apply(WriteableBitmap wbm)
+        public WriteableBitmap ApplyTo(WriteableBitmap wbm)
         {
             var clone = wbm.Clone();
             var width = wbm.PixelWidth;
@@ -142,9 +148,14 @@ namespace Lab01___Image_Filtering
 
             return clone;
         }
+
+        public override string ToString()
+        {
+            return "Contrast";
+        }
     }
 
-    public class Gamma : IFunctionFilter
+    public class Gamma : IFilter
     {
         public double Coefficient { get; set; }
 
@@ -153,7 +164,7 @@ namespace Lab01___Image_Filtering
             this.Coefficient = coefficient;
         }
 
-        public WriteableBitmap Apply(WriteableBitmap wbm)
+        public WriteableBitmap ApplyTo(WriteableBitmap wbm)
         {
             var clone = wbm.Clone();
             var width = wbm.PixelWidth;
@@ -190,6 +201,148 @@ namespace Lab01___Image_Filtering
             }
 
             return clone;
+        }
+
+        public override string ToString()
+        {
+            return "Gamma";
+        }
+    }
+
+    public class Convolution : IFilter
+    {
+        public Kernel Kernel { get; set; }
+
+        public Convolution(Kernel kernel)
+        {
+            this.Kernel= kernel;
+        }
+
+        public WriteableBitmap ApplyTo(WriteableBitmap wbm)
+        {
+            var clone = wbm.Clone();
+            var width = wbm.PixelWidth;
+            var height = wbm.PixelHeight;
+
+            try
+            {
+                wbm.Lock();
+                clone.Lock();
+
+                for (var x = 0; x < width; x++)
+                {
+                    for (var y = 0; y < height; y++)
+                    {
+                        var newColor = CalculateColorFromKernel(wbm, Kernel, x, y);
+                        clone.SetPixelColor(x, y, newColor);
+                    }
+                }
+            }
+            finally
+            {
+                wbm.Unlock();
+                clone.Unlock();
+            }
+
+            return clone;
+        }
+
+        private Color CalculateColorFromKernel(WriteableBitmap wbm, Kernel kernel, int x, int y)
+        {
+            var redChannel = 0;
+            var blueChannel = 0;
+            var greenChannel = 0;
+            var readPixel = new Point();
+            var pixelColor = Color.Empty;
+            
+            for (var c = 0; c < kernel.Width; c++)
+            {
+                for (var r = 0; r < kernel.Height; r++)
+                {
+                    readPixel.X = x + c - kernel.Anchor.X;
+                    readPixel.Y = y + r - kernel.Anchor.Y;
+
+                    // mirror edges
+                    if (readPixel.X < 0)
+                        readPixel.X = -readPixel.X;
+
+                    if (readPixel.X > wbm.PixelWidth - 1)
+                        readPixel.X = 2 * wbm.PixelWidth - readPixel.X;
+
+                    if (readPixel.Y < 0)
+                        readPixel.Y = -readPixel.Y;
+
+                    if (readPixel.Y >= wbm.PixelHeight)
+                        readPixel.Y = 2 * wbm.PixelHeight - readPixel.Y;
+
+                    pixelColor = wbm.GetPixelColor(readPixel.X, readPixel.Y);
+                    var kernelIntensity = kernel.KernelMatrix[r, c];
+
+                    redChannel += pixelColor.R * kernelIntensity;
+                    greenChannel += pixelColor.G * kernelIntensity;
+                    blueChannel += pixelColor.B * kernelIntensity;
+                }
+            }
+
+            return Color.FromArgb(pixelColor.A, 
+                Math.Clamp(redChannel / kernel.D + kernel.IntensityOffset, 0, 255), 
+                Math.Clamp(greenChannel / kernel.D + kernel.IntensityOffset, 0, 255), 
+                Math.Clamp(blueChannel / kernel.D + kernel.IntensityOffset, 0, 255));
+        }
+    }
+
+    public class Blur : Convolution
+    {
+        public Blur() : base(Kernels.Blur)
+        { }
+
+        public override string ToString()
+        {
+            return "Blur";
+        }
+    }
+
+    public class GaussianBlur : Convolution
+    {
+        public GaussianBlur() : base(Kernels.GaussianBlur)
+        { }
+
+        public override string ToString()
+        {
+            return "Gaussian Blur";
+        }
+    }
+
+    public class Sharpen : Convolution
+    {
+        public Sharpen() : base(Kernels.Sharpen)
+        { }
+
+        public override string ToString()
+        {
+            return "Sharpen";
+        }
+    }
+
+    public class EdgeDetection: Convolution
+    {
+        public EdgeDetection() : base(Kernels.EdgeDetection)
+        { }
+
+        public override string ToString()
+        {
+            return "Edge Detection";
+        }
+    }
+
+    public class Emboss : Convolution
+    {
+        public Emboss() : base(Kernels.Emboss)
+        { }
+
+        public override string ToString()
+        {
+            return "Emboss";
         }
     }
 }

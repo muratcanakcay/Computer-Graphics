@@ -27,7 +27,7 @@
                 </Menu.ItemsPanel>
 
                 <MenuItem HorizontalAlignment="Left" Header="_File">
-                    <MenuItem Header="_New" ></MenuItem>
+                    <MenuItem Header="_Reset" Click="MenuItem_OnClick" ></MenuItem>
                     <MenuItem Header="_Open Image" Click="LoadImage_Click" InputGestureText="Alt+O"></MenuItem>
                     <MenuItem Header="_Save Image" Name="LoadImage" Click="SaveImage_Click" InputGestureText="Alt+S"></MenuItem>
                 </MenuItem>
@@ -40,26 +40,43 @@
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="280px"/>
             </Grid.ColumnDefinitions>
 
-            <Grid Grid.Column="0">
-                <Image Name="OriginalImageCanvas"></Image>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="20"/>
+            </Grid.RowDefinitions>
+
+            <Grid Grid.Column="0"
+                  Grid.Row="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <Grid Grid.Column="0">
+                    <Image Name="OriginalImageCanvas"></Image>
+                </Grid>
+
+                <Grid Grid.Column="1">
+                    <Image Name="FilteredImageCanvas"></Image>
+                </Grid>
             </Grid>
 
-            <Grid Grid.Column="1">
-                <Image Name="FilteredImageCanvas"></Image>
-            </Grid>
+            <TextBlock Grid.Column="0"
+                       Grid.Row="1"
+                       Name="FilterChainTextBlock"
+                       TextAlignment="Center"/>
 
-            <GroupBox Grid.Column="2" 
-                       Header="Filters">
+            <GroupBox Grid.Column="1"
+                      Grid.Row="0"
+                      Header="Filters">
                 
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="8*"/>
-                        
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
@@ -286,7 +303,9 @@
                               IsChecked="False"
                               HorizontalAlignment="Center"
                               VerticalAlignment="Center"
-                              BorderBrush="Black"/>
+                              BorderBrush="Black"
+                              Checked="BlurCheckbox_OnChecked"
+                              Unchecked="BlurCheckbox_OnUnchecked"/>
                     
                     <TextBlock Grid.Row="7"
                                Grid.Column="1" 
@@ -301,7 +320,9 @@
                               IsChecked="False"
                               HorizontalAlignment="Center"
                               VerticalAlignment="Center"
-                              BorderBrush="Black"/>
+                              BorderBrush="Black"
+                              Checked="GaussianBlurCheckbox_OnChecked"
+                              Unchecked="GaussianBlurCheckbox_OnUnchecked"/>
                     
                     <TextBlock Grid.Row="8"
                                Grid.Column="1" 
@@ -316,7 +337,9 @@
                               IsChecked="False"
                               HorizontalAlignment="Center"
                               VerticalAlignment="Center"
-                              BorderBrush="Black"/>
+                              BorderBrush="Black"
+                              Checked="SharpenCheckbox_OnChecked"
+                              Unchecked="SharpenCheckbox_OnUnchecked"/>
                     
                     <TextBlock Grid.Row="9"
                                Grid.Column="1" 
@@ -331,7 +354,9 @@
                               IsChecked="False"
                               HorizontalAlignment="Center"
                               VerticalAlignment="Center"
-                              BorderBrush="Black"/>
+                              BorderBrush="Black"
+                              Checked="EdgeDetectionCheckbox_OnChecked"
+                              Unchecked="EdgeDetectionCheckbox_OnUnchecked"/>
                     
                     <TextBlock Grid.Row="10"
                                Grid.Column="1" 
@@ -346,7 +371,9 @@
                               IsChecked="False"
                               HorizontalAlignment="Center"
                               VerticalAlignment="Center"
-                              BorderBrush="Black"/>
+                              BorderBrush="Black"
+                              Checked="EmbossCheckbox_OnChecked"
+                              Unchecked="EmbossCheckbox_OnUnchecked"/>
                     
                     <TextBlock Grid.Row="11"
                                Grid.Column="1" 
