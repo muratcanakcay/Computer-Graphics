@@ -70,9 +70,21 @@
                        Name="FilterChainTextBlock"
                        TextAlignment="Center"/>
 
-            <GroupBox Grid.Column="1"
-                      Grid.Row="0"
-                      Header="Filters">
+            <Grid Grid.Column="1"
+                  Grid.Row="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="50"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <GroupBox Grid.Row="0"
+                          Header="Navigation">
+
+
+                </GroupBox>
+                
+                <GroupBox Grid.Row="1"
+                          Header="Filters">
                 
                 <Grid>
                     <Grid.ColumnDefinitions>
@@ -94,13 +106,12 @@
                         <RowDefinition Height="20"/>
                         <RowDefinition Height="20"/>
                         <RowDefinition Height="20"/>
-                        <RowDefinition Height="20"/>
+                        <RowDefinition Height="0"/>
                         <RowDefinition Height="20"/>
                         <RowDefinition Height="20"/>
                         <RowDefinition Height="5"/>
                         <RowDefinition Height="260"/>
                         <RowDefinition Height="25"/>
-                        <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
 
                     <!--INVERSION-->
@@ -238,107 +249,128 @@
                                 UpdateSourceTrigger=PropertyChanged}"
                              HorizontalContentAlignment="Center"/>
 
-                    <!--BLUR-->
-
-                    <CheckBox Grid.Row="7"
-                              Grid.Column="0"
-                              Name="BlurCheckbox"
-                              IsChecked="False"
-                              HorizontalAlignment="Center"
-                              VerticalAlignment="Center"
-                              BorderBrush="Black"
-                              Checked="BlurCheckbox_OnChecked"
-                              Unchecked="BlurCheckbox_OnUnchecked"/>
                     
-                    <TextBlock Grid.Row="7"
-                               Grid.Column="1" 
-                               Text="Blur"
-                               VerticalAlignment="Center"/>
 
-                    <!--GAUSSIAN BLUR-->
+                    <Grid Grid.Row="7"
+                          Grid.ColumnSpan="4"
+                          Grid.RowSpan="3">
 
-                    <CheckBox Grid.Row="8"
-                              Grid.Column="0"
-                              Name="GaussianBlurCheckbox"
-                              IsChecked="False"
-                              HorizontalAlignment="Center"
-                              VerticalAlignment="Center"
-                              BorderBrush="Black"
-                              Checked="GaussianBlurCheckbox_OnChecked"
-                              Unchecked="GaussianBlurCheckbox_OnUnchecked"/>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="4*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="4*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="20"/>
+                            <RowDefinition Height="20"/>
+                            <RowDefinition Height="20"/>
+                        </Grid.RowDefinitions>
+                        
+                        <!--BLUR-->
+
+                        <CheckBox Grid.Row="0"
+                                  Grid.Column="0"
+                                  Name="BlurCheckbox"
+                                  IsChecked="False"
+                                  HorizontalAlignment="Center"
+                                  VerticalAlignment="Center"
+                                  BorderBrush="Black"
+                                  Checked="BlurCheckbox_OnChecked"
+                                  Unchecked="BlurCheckbox_OnUnchecked"/>
                     
-                    <TextBlock Grid.Row="8"
-                               Grid.Column="1" 
-                               Text="Gaussian Blur"
-                               VerticalAlignment="Center"/>
+                        <TextBlock Grid.Row="0"
+                                   Grid.Column="1" 
+                                   Text="Blur"
+                                   VerticalAlignment="Center"/>
 
-                    <!--SHARPEN-->
+                        <!--GAUSSIAN BLUR-->
 
-                    <CheckBox Grid.Row="9"
-                              Grid.Column="0"
-                              Name="SharpenCheckbox"
-                              IsChecked="False"
-                              HorizontalAlignment="Center"
-                              VerticalAlignment="Center"
-                              BorderBrush="Black"
-                              Checked="SharpenCheckbox_OnChecked"
-                              Unchecked="SharpenCheckbox_OnUnchecked"/>
+                        <CheckBox Grid.Row="1"
+                                  Grid.Column="0"
+                                  Name="GaussianBlurCheckbox"
+                                  IsChecked="False"
+                                  HorizontalAlignment="Center"
+                                  VerticalAlignment="Center"
+                                  BorderBrush="Black"
+                                  Checked="GaussianBlurCheckbox_OnChecked"
+                                  Unchecked="GaussianBlurCheckbox_OnUnchecked"/>
+                        
+                        <TextBlock Grid.Row="1"
+                                   Grid.Column="1" 
+                                   Text="Gaussian Blur"
+                                   VerticalAlignment="Center"/>
+
+                        <!--SHARPEN-->
+
+                        <CheckBox Grid.Row="2"
+                                  Grid.Column="0"
+                                  Name="SharpenCheckbox"
+                                  IsChecked="False"
+                                  HorizontalAlignment="Center"
+                                  VerticalAlignment="Center"
+                                  BorderBrush="Black"
+                                  Checked="SharpenCheckbox_OnChecked"
+                                  Unchecked="SharpenCheckbox_OnUnchecked"/>
+                        
+                        <TextBlock Grid.Row="2"
+                                   Grid.Column="1" 
+                                   Text="Sharpen"
+                                   VerticalAlignment="Center"/>
                     
-                    <TextBlock Grid.Row="9"
-                               Grid.Column="1" 
-                               Text="Sharpen"
-                               VerticalAlignment="Center"/>
 
-                    <!--EDGE DETECTION-->
+                        <!--EDGE DETECTION-->
 
-                    <CheckBox Grid.Row="10"
-                              Grid.Column="0"
-                              Name="EdgeDetectionCheckbox"
-                              IsChecked="False"
-                              HorizontalAlignment="Center"
-                              VerticalAlignment="Center"
-                              BorderBrush="Black"
-                              Checked="EdgeDetectionCheckbox_OnChecked"
-                              Unchecked="EdgeDetectionCheckbox_OnUnchecked"/>
-                    
-                    <TextBlock Grid.Row="10"
-                               Grid.Column="1" 
-                               Text="Edge Detection"
-                               VerticalAlignment="Center"/>
+                        <CheckBox Grid.Row="0"
+                                  Grid.Column="3"
+                                  Name="EdgeDetectionCheckbox"
+                                  IsChecked="False"
+                                  HorizontalAlignment="Center"
+                                  VerticalAlignment="Center"
+                                  BorderBrush="Black"
+                                  Checked="EdgeDetectionCheckbox_OnChecked"
+                                  Unchecked="EdgeDetectionCheckbox_OnUnchecked"/>
+                        
+                        <TextBlock Grid.Row="0"
+                                   Grid.Column="4" 
+                                   Text="Edge Detection"
+                                   VerticalAlignment="Center"/>
 
-                    <!--EMBOSS-->
+                        <!--EMBOSS-->
 
-                    <CheckBox Grid.Row="11"
-                              Grid.Column="0"
-                              Name="EmbossCheckbox"
-                              IsChecked="False"
-                              HorizontalAlignment="Center"
-                              VerticalAlignment="Center"
-                              BorderBrush="Black"
-                              Checked="EmbossCheckbox_OnChecked"
-                              Unchecked="EmbossCheckbox_OnUnchecked"/>
-                    
-                    <TextBlock Grid.Row="11"
-                               Grid.Column="1" 
-                               Text="Emboss"
-                               VerticalAlignment="Center"/>
+                        <CheckBox Grid.Row="1"
+                                  Grid.Column="3"
+                                  Name="EmbossCheckbox"
+                                  IsChecked="False"
+                                  HorizontalAlignment="Center"
+                                  VerticalAlignment="Center"
+                                  BorderBrush="Black"
+                                  Checked="EmbossCheckbox_OnChecked"
+                                  Unchecked="EmbossCheckbox_OnUnchecked"/>
+                        
+                        <TextBlock Grid.Row="1"
+                                   Grid.Column="4" 
+                                   Text="Emboss"
+                                   VerticalAlignment="Center"/>
 
-                    <!--MEDIAN-->
+                        <!--MEDIAN-->
 
-                    <CheckBox Grid.Row="12"
-                              Grid.Column="0"
-                              Name="MedianCheckbox"
-                              IsChecked="False"
-                              HorizontalAlignment="Center"
-                              VerticalAlignment="Center"
-                              BorderBrush="Black"
-                              Checked="MedianCheckbox_OnChecked"
-                              Unchecked="MedianCheckbox_OnUnchecked"/>
-                    
-                    <TextBlock Grid.Row="12"
-                               Grid.Column="1" 
-                               Text="Median"
-                               VerticalAlignment="Center"/>
+                        <CheckBox Grid.Row="2"
+                                  Grid.Column="3"
+                                  Name="MedianCheckbox"
+                                  IsChecked="False"
+                                  HorizontalAlignment="Center"
+                                  VerticalAlignment="Center"
+                                  BorderBrush="Black"
+                                  Checked="MedianCheckbox_OnChecked"
+                                  Unchecked="MedianCheckbox_OnUnchecked"/>
+                        
+                        <TextBlock Grid.Row="22"
+                                   Grid.Column="4" 
+                                   Text="Median"
+                                   VerticalAlignment="Center"/>
+                    </Grid>
 
                     <Separator Grid.Row="13" Grid.Column="0" Grid.ColumnSpan="4"/>
 
@@ -510,6 +542,7 @@
 
                 </Grid>
             </GroupBox>
+            </Grid>
 
         </Grid>
     </Grid>
