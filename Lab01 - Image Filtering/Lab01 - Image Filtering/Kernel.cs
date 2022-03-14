@@ -76,7 +76,7 @@ namespace Lab01___Image_Filtering
                 { 0, 0, 0 }
             }, 
             new Point(1, 1), 
-            0);
+            128);
 
         public static readonly Kernel Emboss = new(
             new[,]
@@ -84,6 +84,16 @@ namespace Lab01___Image_Filtering
                 { -1, 0, 1 }, 
                 { -1, 1, 1 }, 
                 { -1, 0, 1 }
+            }, 
+            new Point(1, 1), 
+            0);
+
+        public static readonly Kernel Median = new(
+            new[,]
+            {
+                { 1, 1, 1 }, 
+                { 1, 1, 1 }, 
+                { 1, 1, 1 }
             }, 
             new Point(1, 1), 
             0);

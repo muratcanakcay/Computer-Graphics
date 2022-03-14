@@ -27,7 +27,7 @@ namespace Lab01___Image_Filtering
     {
         private WriteableBitmap? _originalImage;
 
-        public List<IFilter> AppliedFilters = new List<IFilter>(); 
+        public List<IFilter> AppliedFilters = new(); 
 
         public MainWindow()
         {
@@ -320,7 +320,7 @@ namespace Lab01___Image_Filtering
                 var p1 = FunctionPolyline.Points[i];
                 var p2 = FunctionPolyline.Points[i+1];
                 
-                if (calculateDistance(clickPosition, p1) < 20 ) return;
+                if (calculateDistance(clickPosition, p1) < 20 || calculateDistance(clickPosition, p2) < 20 ) return;
 
                 if (calculateDistance(p1, clickPosition) + calculateDistance(clickPosition, p2) ==
                     calculateDistance(p1, p2))
@@ -382,31 +382,34 @@ namespace Lab01___Image_Filtering
         private void PolylineTemplate_Inverse(object sender, RoutedEventArgs e)
         {
             FunctionPolyline.Points = new PointCollection() { new(0, 0), new(255, 255) };
+            FunctionPolyline_OnPolyLineChanged();
         }
 
         private void PolylineTemplate_Brightness(object sender, RoutedEventArgs e)
         {
             FunctionPolyline.Points = new PointCollection() { new(0, 150), new(150, 0), new(255, 0) };
+            FunctionPolyline_OnPolyLineChanged();
         }
 
         private void PolylineTemplate_Contrast(object sender, RoutedEventArgs e)
         {
             FunctionPolyline.Points = new PointCollection() { new(0, 255), new(75, 255), new(180, 0), new(255, 0) };
+            FunctionPolyline_OnPolyLineChanged();
         }
 
         private void Polyline_ResetClick(object sender, RoutedEventArgs e)
         {
             FunctionPolyline.Points = new PointCollection() { new(0, 255), new(255, 0) };
+            FunctionPolyline_OnPolyLineChanged();
         }
         private void RearrangeNodes()
         {
             var polylineNodes = new List<Point>(FunctionPolyline.Points);
             polylineNodes.Sort((p1, p2) => p1.X.CompareTo(p2.X));
-
-            FunctionPolyline.Points = new(polylineNodes);
-            FunctionPolyline.Points.Changed += FunctionPolyline_OnPolyLineChanged;
+            
+            FunctionPolyline.Points = new(polylineNodes);            
+            FunctionPolyline_OnPolyLineChanged();
         }
-
         private int calculateDistance(Point p1, Point p2)
         {
             return (int)Math.Round(Math.Sqrt(Math.Pow((p2.X - p1.X), 2) + Math.Pow((p2.Y - p1.Y), 2)));
@@ -426,7 +429,7 @@ namespace Lab01___Image_Filtering
             ApplyFilters();
         }
 
-        private void FunctionPolyline_OnPolyLineChanged(object? sender, EventArgs e)
+        private void FunctionPolyline_OnPolyLineChanged()
         {
             if (CustomFunctionCheckbox.IsChecked == false) return;
 
@@ -501,6 +504,18 @@ namespace Lab01___Image_Filtering
 
             FilteredImageCanvas.Source = filteredImage;
             FilterChainTextBlock.Text = sb.ToString();
+        }
+
+        private void MedianCheckbox_OnChecked(object sender, RoutedEventArgs e)
+        {
+            AppliedFilters.Add(new Median());
+            ApplyFilters();
+        }
+
+        private void MedianCheckbox_OnUnchecked(object sender, RoutedEventArgs e)
+        {
+            AppliedFilters.RemoveAll((filter) => filter is Median);
+            ApplyFilters();
         }
     }
 }

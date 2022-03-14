@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Security.Cryptography;
+using System.Windows.Documents;
 using System.Windows.Media.Imaging;
 
 namespace Lab01___Image_Filtering
@@ -415,6 +418,92 @@ namespace Lab01___Image_Filtering
         public override string ToString()
         {
             return "Custom Function";
+        }
+    }
+
+    public class Median : IFilter
+    {
+        public Kernel Kernel { get; set; } = Kernels.Median;
+        
+        public WriteableBitmap ApplyTo(WriteableBitmap wbm)
+        {
+            var clone = wbm.Clone();
+            var width = wbm.PixelWidth;
+            var height = wbm.PixelHeight;
+
+            try
+            {
+                wbm.Lock();
+                clone.Lock();
+
+                for (var x = 0; x < width; x++)
+                {
+                    for (var y = 0; y < height; y++)
+                    {
+                        var newColor = CalculateMedianFromKernel(wbm, Kernel, x, y);
+                        clone.SetPixelColor(x, y, newColor);
+                    }
+                }
+            }
+            finally
+            {
+                wbm.Unlock();
+                clone.Unlock();
+            }
+
+            return clone;
+        }
+
+        private Color CalculateMedianFromKernel(WriteableBitmap wbm, Kernel kernel, int x, int y)
+        {
+            List<int> redChannel = new List<int>();
+            List<int> greenChannel = new List<int>();
+            List<int> blueChannel = new List<int>();
+
+            var readPixel = new Point();
+            var pixelColor = Color.Empty;
+            
+            for (var c = 0; c < kernel.Width; c++)
+            {
+                for (var r = 0; r < kernel.Height; r++)
+                {
+                    readPixel.X = x + c - kernel.Anchor.X;
+                    readPixel.Y = y + r - kernel.Anchor.Y;
+
+                    // mirror edges
+                    if (readPixel.X < 0)
+                        readPixel.X = -readPixel.X;
+
+                    if (readPixel.X > wbm.PixelWidth - 1)
+                        readPixel.X = 2 * wbm.PixelWidth - readPixel.X;
+
+                    if (readPixel.Y < 0)
+                        readPixel.Y = -readPixel.Y;
+
+                    if (readPixel.Y >= wbm.PixelHeight)
+                        readPixel.Y = 2 * wbm.PixelHeight - readPixel.Y;
+
+                    pixelColor = wbm.GetPixelColor(readPixel.X, readPixel.Y);
+
+                    redChannel.Add(pixelColor.R);
+                    greenChannel.Add(pixelColor.G);
+                    blueChannel.Add(pixelColor.B);
+                }
+            }
+
+            redChannel.Sort();
+            greenChannel.Sort();
+            blueChannel.Sort();
+
+            return Color.FromArgb(pixelColor.A,
+                redChannel[4],
+                greenChannel[4],
+                blueChannel[4]);
+        }
+
+        public override string ToString()
+        {
+            return "Median";
         }
     }
 }

@@ -6,8 +6,8 @@
         xmlns:local="clr-namespace:Lab01___Image_Filtering"
         mc:Ignorable="d"
         Title="Image Filtering" 
-        Height="700" 
-        MinHeight="700"
+        Height="720" 
+        MinHeight="720"
         Width="1200"
         MinWidth="800"
         WindowStartupLocation="CenterScreen"
@@ -57,11 +57,11 @@
                 </Grid.ColumnDefinitions>
 
                 <Grid Grid.Column="0">
-                    <Image Name="OriginalImageCanvas"></Image>
+                    <Image Name="OriginalImageCanvas" Stretch="None"></Image>
                 </Grid>
 
                 <Grid Grid.Column="1">
-                    <Image Name="FilteredImageCanvas"></Image>
+                    <Image Name="FilteredImageCanvas" Stretch="None"></Image>
                 </Grid>
             </Grid>
 
@@ -82,6 +82,7 @@
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
+                        <RowDefinition Height="20"/>
                         <RowDefinition Height="20"/>
                         <RowDefinition Height="20"/>
                         <RowDefinition Height="20"/>
@@ -322,11 +323,28 @@
                                Text="Emboss"
                                VerticalAlignment="Center"/>
 
-                    <Separator Grid.Row="12" Grid.Column="0" Grid.ColumnSpan="4"/>
+                    <!--MEDIAN-->
+
+                    <CheckBox Grid.Row="12"
+                              Grid.Column="0"
+                              Name="MedianCheckbox"
+                              IsChecked="False"
+                              HorizontalAlignment="Center"
+                              VerticalAlignment="Center"
+                              BorderBrush="Black"
+                              Checked="MedianCheckbox_OnChecked"
+                              Unchecked="MedianCheckbox_OnUnchecked"/>
+                    
+                    <TextBlock Grid.Row="12"
+                               Grid.Column="1" 
+                               Text="Median"
+                               VerticalAlignment="Center"/>
+
+                    <Separator Grid.Row="13" Grid.Column="0" Grid.ColumnSpan="4"/>
 
                     <!--CUSTOM FUNCTION FILTER-->
 
-                    <CheckBox Grid.Row="13"
+                    <CheckBox Grid.Row="14"
                               Grid.Column="0"
                               Name="CustomFunctionCheckbox"
                               IsChecked="False"
@@ -336,12 +354,12 @@
                               Checked="CustomFunctionCheckbox_OnChecked"
                               Unchecked="CustomFunctionCheckbox_OnUnchecked"/>
                     
-                    <TextBlock Grid.Row="13"
+                    <TextBlock Grid.Row="14"
                                Grid.Column="1" 
                                Text="Custom Function Filter"
                                VerticalAlignment="Center"/>
 
-                    <Button Grid.Row="13" 
+                    <Button Grid.Row="14" 
                             Grid.Column="2"
                             Margin="1,0"
                             Height="20"
@@ -353,7 +371,7 @@
                         <Image Source="icons/icons8-import-50.png"/>
                     </Button>
                     
-                    <Button Grid.Row="13" 
+                    <Button Grid.Row="14" 
                             Grid.Column="3"
                             Margin="1,0"
                             Height="20"
@@ -365,7 +383,7 @@
                         <Image Source="icons/icons8-export-50.png"/>
                     </Button>
 
-                    <Border Grid.Row="15" 
+                    <Border Grid.Row="16" 
                             Grid.Column="0"
                             Grid.ColumnSpan="4"
                             Height="258"
@@ -379,6 +397,7 @@
                                 VerticalAlignment="Top"
                                 Background="LightCyan"
                                 MouseLeftButtonDown="CustomFunctionFilterCanvas_LeftMouseDown"
+                                PreviewMouseLeftButtonUp="PolyLineNode_LeftMouseUp"
                                 MouseMove="CustomFunctionFilterCanvas_MouseMove"
                                 MouseLeave="CustomFunctionFilterCanvas_MouseLeave">
                             
@@ -418,7 +437,7 @@
                         </Canvas>
                     </Border>
                     
-                    <Grid Grid.Row="16"
+                    <Grid Grid.Row="17"
                           Grid.ColumnSpan="4">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
@@ -483,7 +502,7 @@
                     
                     
 
-                    <TextBlock Grid.Row="17" 
+                    <TextBlock Grid.Row="18" 
                                Grid.Column="0"
                                Grid.ColumnSpan="2"
                                Name="CustomFilterName"
