@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.Security.Cryptography;
 using System.Windows.Media.Imaging;
 
 namespace Lab01___Image_Filtering
@@ -343,6 +344,77 @@ namespace Lab01___Image_Filtering
         public override string ToString()
         {
             return "Emboss";
+        }
+    }
+
+    public class CustomFunction : IFilter
+    {
+        public System.Windows.Point[] NodeList { get; set; }
+
+        public CustomFunction(System.Windows.Point[] nodeList)
+        {
+            this.NodeList = nodeList;
+        }
+
+        public WriteableBitmap ApplyTo(WriteableBitmap wbm)
+        {
+            var clone = wbm.Clone();
+            var width = clone.PixelWidth;
+            var height = clone.PixelHeight;
+
+            try
+            {
+                wbm.Lock();
+                clone.Lock();
+
+                int FilterFunction(int channelValue)
+                {
+                    for (var i = 0; i < NodeList.Length - 1; i++)
+                    {
+                        var p1 = NodeList[i];
+                        p1.Y = 255 - p1.Y;
+                        var p2 = NodeList[i + 1];
+                        p2.Y = 255 - p2.Y;
+
+                        if (channelValue >= p1.X && channelValue <= p2.X)
+                        {
+                            double slope = (double)(p2.Y - p1.Y) / (p2.X - p1.X);
+                            double yIntercept = p1.Y - slope * p1.X;
+
+                            return (int)Math.Round(slope * channelValue + yIntercept);
+                        }
+                    }
+
+                    throw new Exception("Color channel value out of bounds in custom filter");
+                }
+
+                for (var x = 0; x < width; x++)
+                {
+                    for (var y = 0; y < height; y++)
+                    {
+                        var oldColor = wbm.GetPixelColor(x, y);
+
+                        var newColor = Color.FromArgb(oldColor.A, 
+                            Math.Clamp(FilterFunction(oldColor.R), 0, 255), 
+                            Math.Clamp(FilterFunction(oldColor.G), 0, 255), 
+                            Math.Clamp(FilterFunction(oldColor.B), 0, 255));
+
+                        clone.SetPixelColor(x, y, newColor);
+                    }
+                }
+            }
+            finally
+            {
+                wbm.Unlock();
+                clone.Unlock();
+            }
+
+            return clone;
+        }
+
+        public override string ToString()
+        {
+            return "Custom Function";
         }
     }
 }

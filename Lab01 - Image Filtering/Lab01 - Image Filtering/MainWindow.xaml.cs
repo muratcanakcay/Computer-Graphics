@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -14,6 +15,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Xml.Serialization;
 using Microsoft.Win32;
 
 namespace Lab01___Image_Filtering
@@ -31,6 +33,8 @@ namespace Lab01___Image_Filtering
         {
             InitializeComponent();
         }
+
+        //---------------------------
 
         private void MenuItem_OnClick(object sender, RoutedEventArgs e)
         {
@@ -111,6 +115,8 @@ namespace Lab01___Image_Filtering
                 Close();
         }
 
+        //---------------------------
+
         private void InvertCheckbox_OnChecked(object sender, RoutedEventArgs e)
         {
             AppliedFilters.Add(new Inversion());
@@ -185,7 +191,6 @@ namespace Lab01___Image_Filtering
             ApplyFilters();
         }
 
-
         private void GammaSlider_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             if (GammaCheckbox.IsChecked == false) return;
@@ -198,6 +203,8 @@ namespace Lab01___Image_Filtering
             
             ApplyFilters();
         }
+
+        //---------------------------
 
         private void BlurCheckbox_OnChecked(object sender, RoutedEventArgs e)
         {
@@ -216,7 +223,6 @@ namespace Lab01___Image_Filtering
             AppliedFilters.Add(new GaussianBlur());
             ApplyFilters();
         }
-
 
         private void GaussianBlurCheckbox_OnUnchecked(object sender, RoutedEventArgs e)
         {
@@ -260,31 +266,7 @@ namespace Lab01___Image_Filtering
             ApplyFilters();
         }
 
-        private void ApplyFilters()
-        {
-            if (AppliedFilters.Count == 0 || _originalImage == null)
-            {
-                FilteredImageCanvas.Source = _originalImage;
-                FilterChainTextBlock.Text = "In > Out";
-                return;
-            }
-
-            var filteredImage = _originalImage;
-            var sb = new StringBuilder();
-            
-            sb.Append("In >");
-
-            foreach (var filter in AppliedFilters)
-            {
-                filteredImage = filteredImage.ApplyFilter(filter);
-                sb.Append(" " + filter + " >");
-            }
-
-            sb.Append(" Out");
-
-            FilteredImageCanvas.Source = filteredImage;
-            FilterChainTextBlock.Text = sb.ToString();
-        }
+        //---------------------------
 
         private int? _capturedNodeIndex;
         private Point? CapturedNode => _capturedNodeIndex is int i ? FunctionPolyline.Points[i] : null;
@@ -297,7 +279,7 @@ namespace Lab01___Image_Filtering
             
             foreach (var p in FunctionPolyline.Points)
             {
-                if (calculateDistance(clickPosition, p) >= 10) continue;
+                if (calculateDistance(clickPosition, p) >= 20) continue;
                 
                 _capturedNodeIndex = FunctionPolyline.Points.IndexOf(p);
                 return;
@@ -366,7 +348,7 @@ namespace Lab01___Image_Filtering
                 }
                 else if (nodeIndex == FunctionPolyline.Points.Count - 1)
                 {
-                    newPosition.X = 256;
+                    newPosition.X = 255;
                 }
                 else if (newPosition.X <= FunctionPolyline.Points[nodeIndex - 1].X)
                 {
@@ -381,22 +363,14 @@ namespace Lab01___Image_Filtering
                 {
                     newPosition.Y = 0;
                 }
-                else if (newPosition.Y > 256)
+                else if (newPosition.Y > 255)
                 {
-                    newPosition.Y = 256;
+                    newPosition.Y = 255;
                 }
 
                 FunctionPolyline.Points[nodeIndex] = newPosition;
                 FunctionPolyline.Points = new(FunctionPolyline.Points);
             }
-        }
-
-        private void RearrangeNodes()
-        {
-            var polylineNodes = new List<Point>(FunctionPolyline.Points);
-            polylineNodes.Sort((p1, p2) => p1.X.CompareTo(p2.X));
-
-            FunctionPolyline.Points = new(polylineNodes);
         }
 
         private void CustomFunctionFilterCanvas_MouseLeave(object sender, MouseEventArgs e)
@@ -407,44 +381,126 @@ namespace Lab01___Image_Filtering
 
         private void PolylineTemplate_Inverse(object sender, RoutedEventArgs e)
         {
-            FunctionPolyline.Points = new PointCollection() { new(0, 0), new(256, 256) };
+            FunctionPolyline.Points = new PointCollection() { new(0, 0), new(255, 255) };
         }
 
         private void PolylineTemplate_Brightness(object sender, RoutedEventArgs e)
         {
-            FunctionPolyline.Points = new PointCollection() { new(0, 150), new(150, 0), new(256, 0) };
+            FunctionPolyline.Points = new PointCollection() { new(0, 150), new(150, 0), new(255, 0) };
         }
 
         private void PolylineTemplate_Contrast(object sender, RoutedEventArgs e)
         {
-            FunctionPolyline.Points = new PointCollection() { new(0, 256), new(76, 256), new(180, 0), new(256, 0) };
+            FunctionPolyline.Points = new PointCollection() { new(0, 255), new(75, 255), new(180, 0), new(255, 0) };
         }
 
         private void Polyline_ResetClick(object sender, RoutedEventArgs e)
         {
-            FunctionPolyline.Points = new PointCollection() { new(0, 256), new(256, 0) };
+            FunctionPolyline.Points = new PointCollection() { new(0, 255), new(255, 0) };
+        }
+        private void RearrangeNodes()
+        {
+            var polylineNodes = new List<Point>(FunctionPolyline.Points);
+            polylineNodes.Sort((p1, p2) => p1.X.CompareTo(p2.X));
+
+            FunctionPolyline.Points = new(polylineNodes);
+            FunctionPolyline.Points.Changed += FunctionPolyline_OnPolyLineChanged;
         }
 
         private int calculateDistance(Point p1, Point p2)
         {
             return (int)Math.Round(Math.Sqrt(Math.Pow((p2.X - p1.X), 2) + Math.Pow((p2.Y - p1.Y), 2)));
         }
+        
+        //---------------------------
 
-        //private void Button_Click_18(object sender, RoutedEventArgs e)
-        //{
-        //    var points = new List<Point>(FunctionPolyline.Points);
-        //    var item = new Button()
-        //    {
-        //        Content = string.Join(" ", points)
-        //    };
-        //    var filter = Filters.FromPolyline(points);
+        private void CustomFunctionCheckbox_OnChecked(object sender, RoutedEventArgs e)
+        {
+            AppliedFilters.Add(new CustomFunction(FunctionPolyline.Points.ToArray()));
+            ApplyFilters();
+        }
+
+        private void CustomFunctionCheckbox_OnUnchecked(object sender, RoutedEventArgs e)
+        {
+            AppliedFilters.RemoveAll((filter) => filter is CustomFunction);
+            ApplyFilters();
+        }
+
+        private void FunctionPolyline_OnPolyLineChanged(object? sender, EventArgs e)
+        {
+            if (CustomFunctionCheckbox.IsChecked == false) return;
+
+            var customFunctionFilter = (CustomFunction?)AppliedFilters.Find((filter) => filter is CustomFunction);
+
+            if (customFunctionFilter == null) throw new NullReferenceException();
+
+            customFunctionFilter.NodeList = FunctionPolyline.Points.ToArray();
             
-        //    item.Click += (sender, e) =>
-        //    {
-        //        Pixels = Pixels?.ApplyFilter(filter);
-        //    };
+            ApplyFilters();
+        }
 
-        //    SavedFilters.Items.Add(item);
-        //}
+        private void ExportButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            var saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Filter = "XML Save File|*.xml";
+
+            if (saveFileDialog.ShowDialog() != true || saveFileDialog.FileName.Equals("")) return;
+
+            using var fileStream = new FileStream($"{saveFileDialog.FileName}", FileMode.Create, FileAccess.Write, FileShare.ReadWrite);
+            XmlSerializer serializer = new XmlSerializer(typeof(PointCollection));
+            serializer.Serialize(fileStream, FunctionPolyline.Points);
+        }
+
+        private void ImportButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            var openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "XML Save File|*.xml";
+
+            if (openFileDialog.ShowDialog() != true || openFileDialog.FileName.Equals("")) return;
+            
+            using var fileStream = new FileStream($"{openFileDialog.FileName}", FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+            try
+            {
+                XmlSerializer deserializer = new XmlSerializer(typeof(PointCollection));
+                var loadedPointCollection = (PointCollection)deserializer.Deserialize(fileStream);
+                FunctionPolyline.Points = new(loadedPointCollection);
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("There's an error in the file!", "Error!");
+                return;
+            }
+
+            if (FunctionPolyline.Points.Count == 0)
+                MessageBox.Show("No data loaded. There might be an error in the file!", "Warning!");
+        }
+
+        //---------------------------
+
+        private void ApplyFilters()
+        {
+            if (AppliedFilters.Count == 0 || _originalImage == null)
+            {
+                FilteredImageCanvas.Source = _originalImage;
+                FilterChainTextBlock.Text = "In > Out";
+                return;
+            }
+
+            var filteredImage = _originalImage;
+            var sb = new StringBuilder();
+            
+            sb.Append("In >");
+
+            foreach (var filter in AppliedFilters)
+            {
+                filteredImage = filteredImage.ApplyFilter(filter);
+                sb.Append(" " + filter + " >");
+            }
+
+            sb.Append(" Out");
+
+            FilteredImageCanvas.Source = filteredImage;
+            FilterChainTextBlock.Text = sb.ToString();
+        }
     }
 }

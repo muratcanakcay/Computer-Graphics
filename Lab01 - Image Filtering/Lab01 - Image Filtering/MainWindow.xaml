@@ -332,7 +332,9 @@
                               IsChecked="False"
                               HorizontalAlignment="Center"
                               VerticalAlignment="Center"
-                              BorderBrush="Black"/>
+                              BorderBrush="Black"
+                              Checked="CustomFunctionCheckbox_OnChecked"
+                              Unchecked="CustomFunctionCheckbox_OnUnchecked"/>
                     
                     <TextBlock Grid.Row="13"
                                Grid.Column="1" 
@@ -344,8 +346,10 @@
                             Margin="1,0"
                             Height="20"
                             Width="20"
+                            Name="ImportButton"
                             ToolTip="Import filter"
-                            Background="PowderBlue">
+                            Background="PowderBlue"
+                            Click="ImportButton_OnClick">
                         <Image Source="icons/icons8-import-50.png"/>
                     </Button>
                     
@@ -354,8 +358,10 @@
                             Margin="1,0"
                             Height="20"
                             Width="20"
+                            Name="ExportButton"
                             ToolTip="Export filter"
-                            Background="AntiqueWhite">
+                            Background="AntiqueWhite"
+                            Click="ExportButton_OnClick">
                         <Image Source="icons/icons8-export-50.png"/>
                     </Button>
 
@@ -377,10 +383,10 @@
                                 MouseLeave="CustomFunctionFilterCanvas_MouseLeave">
                             
                             <Polyline Name="FunctionPolyline" 
-                                      Points="0,256 256,0" 
+                                      Points="0,255 255,0" 
                                       Stroke="Black"/>
                             
-                            <ItemsControl ItemsSource="{Binding Points, ElementName=FunctionPolyline, Mode=OneWay}">
+                            <ItemsControl ItemsSource="{Binding Points, ElementName=FunctionPolyline, Mode=TwoWay}">
                                 
                                 <ItemsControl.ItemsPanel>
                                     <ItemsPanelTemplate>

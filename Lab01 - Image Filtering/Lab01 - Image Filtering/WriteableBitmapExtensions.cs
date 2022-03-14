@@ -7,7 +7,6 @@ namespace Lab01___Image_Filtering
 {
     public static class WritableBitmapExtensions
     {
-        //source: https://www.i-programmer.info/programming/wpf-workings/527-writeablebitmap.html?start=2
         public static void SetPixelColor(this WriteableBitmap wbm, int x, int y, Color color)
         {
             if (y < 0 || x < 0 || y > wbm.PixelHeight - 1 || x > wbm.PixelWidth - 1)
