@@ -41,7 +41,7 @@ namespace Lab01___Image_Filtering
         {
             ClearAllFilters();
 
-            WriteableBitmap originalImage = null;
+            WriteableBitmap? originalImage = null;
             
             if (_history.Count > 0)
             {
@@ -90,7 +90,7 @@ namespace Lab01___Image_Filtering
 
             if (dlg.ShowDialog() != true) return;
 
-            WriteableBitmap originalImage = null;
+            WriteableBitmap? originalImage = null;
 
             try
             {
@@ -517,6 +517,20 @@ namespace Lab01___Image_Filtering
 
         //---------------------------
 
+        private void MedianCheckbox_OnChecked(object sender, RoutedEventArgs e)
+        {
+            AppliedFilters.Add(new Median());
+            ApplyFilters();
+        }
+
+        private void MedianCheckbox_OnUnchecked(object sender, RoutedEventArgs e)
+        {
+            AppliedFilters.RemoveAll((filter) => filter is Median);
+            ApplyFilters();
+        }
+
+        //---------------------------
+
         private void ApplyFilters()
         {
             if (AppliedFilters.Count == 0)
@@ -524,7 +538,7 @@ namespace Lab01___Image_Filtering
                 FlattenButton.IsEnabled = false;
 
                 FilteredImageCanvas.Source = _history.Count == 0 ? null : _history[_stackPosition];
-                FilterChainTextBlock.Text = _history.Count == 1 ? "In > Out" : $"In > Flattened ({_stackPosition}/{_history.Count-1}) > Out";
+                FilterChainTextBlock.Text = _history.Count == 1 ? "In > Out" : _stackPosition == 0 ? "In > Out" : $"In > Flattened ({_stackPosition}/{_history.Count-1}) > Out";
                 return;
             }
 
@@ -536,7 +550,7 @@ namespace Lab01___Image_Filtering
             sb.Append("In >");
             if (_history.Count > 1)
             {
-                sb.Append($" Flattened ({_stackPosition}/{_history.Count-1}) >");
+                sb.Append( _stackPosition == 0 ? "In > Out" : $" Flattened ({_stackPosition}/{_history.Count-1}) >");
             }
 
             foreach (var filter in AppliedFilters)
@@ -549,18 +563,6 @@ namespace Lab01___Image_Filtering
 
             FilteredImageCanvas.Source = filteredImage;
             FilterChainTextBlock.Text = sb.ToString();
-        }
-
-        private void MedianCheckbox_OnChecked(object sender, RoutedEventArgs e)
-        {
-            AppliedFilters.Add(new Median());
-            ApplyFilters();
-        }
-
-        private void MedianCheckbox_OnUnchecked(object sender, RoutedEventArgs e)
-        {
-            AppliedFilters.RemoveAll((filter) => filter is Median);
-            ApplyFilters();
         }
 
         //------------------------
@@ -610,6 +612,5 @@ namespace Lab01___Image_Filtering
             ApplyFilters();
         }
 
-        
     }
 }

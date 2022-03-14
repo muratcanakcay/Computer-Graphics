@@ -495,10 +495,12 @@ namespace Lab01___Image_Filtering
             greenChannel.Sort();
             blueChannel.Sort();
 
+            int median = redChannel.Count / 2;
+
             return Color.FromArgb(pixelColor.A,
-                redChannel[4],
-                greenChannel[4],
-                blueChannel[4]);
+                redChannel[median],
+                greenChannel[median],
+                blueChannel[median]);
         }
 
         public override string ToString()
