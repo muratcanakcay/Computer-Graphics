@@ -285,5 +285,166 @@ namespace Lab01___Image_Filtering
             FilteredImageCanvas.Source = filteredImage;
             FilterChainTextBlock.Text = sb.ToString();
         }
+
+        private int? _capturedNodeIndex;
+        private Point? CapturedNode => _capturedNodeIndex is int i ? FunctionPolyline.Points[i] : null;
+
+        private void PolyLineNode_LeftMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.Source is not Line polylineNode) return;
+
+            var clickPosition = e.GetPosition(CustomFunctionFilterCanvas);
+            
+            foreach (var p in FunctionPolyline.Points)
+            {
+                if (calculateDistance(clickPosition, p) >= 10) continue;
+                
+                _capturedNodeIndex = FunctionPolyline.Points.IndexOf(p);
+                return;
+            }
+        }
+
+        private void PolyLineNode_LeftMouseUp(object sender, MouseButtonEventArgs e)
+        {
+            _capturedNodeIndex = null;
+            RearrangeNodes();
+        }
+
+        private void PolyLineNode_RightMouseUp(object sender, MouseButtonEventArgs e)
+        {
+            var clickPosition = e.GetPosition(CustomFunctionFilterCanvas);
+
+            for (var i = 1; i < FunctionPolyline.Points.Count-1; i++)
+            {
+                var p1 = FunctionPolyline.Points[i];
+
+                if (calculateDistance(clickPosition, p1) < 10)
+                {
+                    FunctionPolyline.Points.Remove(p1);
+                    RearrangeNodes();
+                    return;
+                }
+            }
+        }
+
+        private void CustomFunctionFilterCanvas_LeftMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            var clickPosition = e.GetPosition(CustomFunctionFilterCanvas);
+
+            if (calculateDistance(clickPosition, FunctionPolyline.Points.Last()) < 10) return;
+
+            for (var i = 0; i < FunctionPolyline.Points.Count-1; i++)
+            {
+                var p1 = FunctionPolyline.Points[i];
+                var p2 = FunctionPolyline.Points[i+1];
+                
+                if (calculateDistance(clickPosition, p1) < 20 ) return;
+
+                if (calculateDistance(p1, clickPosition) + calculateDistance(clickPosition, p2) ==
+                    calculateDistance(p1, p2))
+                {
+                    FunctionPolyline.Points.Add(clickPosition);
+                    RearrangeNodes();
+                    return;
+                }
+            }
+        }
+
+        private void CustomFunctionFilterCanvas_MouseMove(object sender, MouseEventArgs e)
+        {
+            // if a node is captured move it
+            if (CapturedNode is Point initialPosition && _capturedNodeIndex is int nodeIndex)
+            {
+                var mousePosition = e.GetPosition(CustomFunctionFilterCanvas);
+                var displacement = mousePosition - initialPosition;
+                var newPosition = initialPosition + displacement;
+
+                // check for edges and neighbor nodes
+                if (nodeIndex == 0)
+                {
+                    newPosition.X = 0;
+                }
+                else if (nodeIndex == FunctionPolyline.Points.Count - 1)
+                {
+                    newPosition.X = 256;
+                }
+                else if (newPosition.X <= FunctionPolyline.Points[nodeIndex - 1].X)
+                {
+                    newPosition.X = FunctionPolyline.Points[nodeIndex-1].X + 1;
+                }
+                else if (newPosition.X >= FunctionPolyline.Points[nodeIndex + 1].X)
+                {
+                    newPosition.X = FunctionPolyline.Points[nodeIndex+1].X - 1;
+                }
+
+                if (newPosition.Y < 0)
+                {
+                    newPosition.Y = 0;
+                }
+                else if (newPosition.Y > 256)
+                {
+                    newPosition.Y = 256;
+                }
+
+                FunctionPolyline.Points[nodeIndex] = newPosition;
+                FunctionPolyline.Points = new(FunctionPolyline.Points);
+            }
+        }
+
+        private void RearrangeNodes()
+        {
+            var polylineNodes = new List<Point>(FunctionPolyline.Points);
+            polylineNodes.Sort((p1, p2) => p1.X.CompareTo(p2.X));
+
+            FunctionPolyline.Points = new(polylineNodes);
+        }
+
+        private void CustomFunctionFilterCanvas_MouseLeave(object sender, MouseEventArgs e)
+        {
+            _capturedNodeIndex = null;
+            RearrangeNodes();
+        }
+
+        private void PolylineTemplate_Inverse(object sender, RoutedEventArgs e)
+        {
+            FunctionPolyline.Points = new PointCollection() { new(0, 0), new(256, 256) };
+        }
+
+        private void PolylineTemplate_Brightness(object sender, RoutedEventArgs e)
+        {
+            FunctionPolyline.Points = new PointCollection() { new(0, 150), new(150, 0), new(256, 0) };
+        }
+
+        private void PolylineTemplate_Contrast(object sender, RoutedEventArgs e)
+        {
+            FunctionPolyline.Points = new PointCollection() { new(0, 256), new(76, 256), new(180, 0), new(256, 0) };
+        }
+
+        private void Polyline_ResetClick(object sender, RoutedEventArgs e)
+        {
+            FunctionPolyline.Points = new PointCollection() { new(0, 256), new(256, 0) };
+        }
+
+        private int calculateDistance(Point p1, Point p2)
+        {
+            return (int)Math.Round(Math.Sqrt(Math.Pow((p2.X - p1.X), 2) + Math.Pow((p2.Y - p1.Y), 2)));
+        }
+
+        //private void Button_Click_18(object sender, RoutedEventArgs e)
+        //{
+        //    var points = new List<Point>(FunctionPolyline.Points);
+        //    var item = new Button()
+        //    {
+        //        Content = string.Join(" ", points)
+        //    };
+        //    var filter = Filters.FromPolyline(points);
+            
+        //    item.Click += (sender, e) =>
+        //    {
+        //        Pixels = Pixels?.ApplyFilter(filter);
+        //    };
+
+        //    SavedFilters.Items.Add(item);
+        //}
     }
 }

@@ -6,7 +6,8 @@
         xmlns:local="clr-namespace:Lab01___Image_Filtering"
         mc:Ignorable="d"
         Title="Image Filtering" 
-        MinHeight="800"
+        Height="700" 
+        MinHeight="700"
         Width="1200"
         MinWidth="800"
         WindowStartupLocation="CenterScreen"
@@ -17,25 +18,25 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <Grid Grid.Row="0">
-            <Menu>
+        
+        <Menu Grid.Row="0">
 
-                <Menu.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <DockPanel  HorizontalAlignment="Stretch"/>
-                    </ItemsPanelTemplate>
-                </Menu.ItemsPanel>
+            <Menu.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <DockPanel  HorizontalAlignment="Stretch"/>
+                </ItemsPanelTemplate>
+            </Menu.ItemsPanel>
 
-                <MenuItem HorizontalAlignment="Left" Header="_File">
-                    <MenuItem Header="_Reset" Click="MenuItem_OnClick" ></MenuItem>
-                    <MenuItem Header="_Open Image" Click="LoadImage_Click" InputGestureText="Alt+O"></MenuItem>
-                    <MenuItem Header="_Save Image" Name="LoadImage" Click="SaveImage_Click" InputGestureText="Alt+S"></MenuItem>
-                </MenuItem>
+            <MenuItem HorizontalAlignment="Left" Header="_File">
+                <MenuItem Header="_Reset" Click="MenuItem_OnClick" ></MenuItem>
+                <MenuItem Header="_Open Image" Click="LoadImage_Click" InputGestureText="Alt+O"></MenuItem>
+                <MenuItem Header="_Save Image" Name="LoadImage" Click="SaveImage_Click" InputGestureText="Alt+S"></MenuItem>
+            </MenuItem>
 
-                <MenuItem HorizontalAlignment="Left" Header="E_xit" Click="ExitButton_Click" InputGestureText="Alt+X"></MenuItem>
+            <MenuItem HorizontalAlignment="Left" Header="E_xit" Click="ExitButton_Click" InputGestureText="Alt+X"></MenuItem>
 
-            </Menu>
-        </Grid>
+        </Menu>
+        
 
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
@@ -81,22 +82,23 @@
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="30"/>
-                        <RowDefinition Height="30"/>
-                        <RowDefinition Height="30"/>
-                        <RowDefinition Height="30"/>
-                        <RowDefinition Height="30"/>
-                        <RowDefinition Height="30"/>
-                        <RowDefinition Height="30"/>
-                        <RowDefinition Height="30"/>
-                        <RowDefinition Height="30"/>
-                        <RowDefinition Height="30"/>
-                        <RowDefinition Height="30"/>
-                        <RowDefinition Height="30"/>
-                        <RowDefinition Height="30"/>
-                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="20"/>
+                        <RowDefinition Height="20"/>
+                        <RowDefinition Height="20"/>
+                        <RowDefinition Height="20"/>
+                        <RowDefinition Height="20"/>
+                        <RowDefinition Height="20"/>
+                        <RowDefinition Height="20"/>
+                        <RowDefinition Height="20"/>
+                        <RowDefinition Height="20"/>
+                        <RowDefinition Height="20"/>
+                        <RowDefinition Height="20"/>
+                        <RowDefinition Height="20"/>
+                        <RowDefinition Height="20"/>
+                        <RowDefinition Height="20"/>
                         <RowDefinition Height="5"/>
                         <RowDefinition Height="260"/>
+                        <RowDefinition Height="25"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
 
@@ -134,26 +136,6 @@
                                Grid.Column="1" 
                                Text="Brightness"
                                VerticalAlignment="Center"/>
-
-                    <Button Grid.Row="1" 
-                            Grid.Column="2"
-                            Margin="1,0"
-                            Height="20"
-                            Width="20"
-                            ToolTip="Import filter"
-                            Background="PowderBlue">
-                        <Image Source="icons/icons8-import-50.png"/>
-                    </Button>
-                    
-                    <Button Grid.Row="1" 
-                            Grid.Column="3"
-                            Margin="1,0"
-                            Height="20"
-                            Width="20"
-                            ToolTip="Export filter"
-                            Background="AntiqueWhite">
-                        <Image Source="icons/icons8-export-50.png"/>
-                    </Button>
                     
                     <Slider Grid.Row="2" 
                             Grid.Column="1" 
@@ -193,26 +175,6 @@
                                Grid.Column="1" 
                                Text="Contrast"
                                VerticalAlignment="Center"/>
-
-                    <Button Grid.Row="3" 
-                            Grid.Column="2"
-                            Margin="1,0"
-                            Height="20"
-                            Width="20"
-                            ToolTip="Import filter"
-                            Background="PowderBlue">
-                        <Image Source="icons/icons8-import-50.png"/>
-                    </Button>
-                    
-                    <Button Grid.Row="3" 
-                            Grid.Column="3"
-                            Margin="1,0"
-                            Height="20"
-                            Width="20"
-                            ToolTip="Export filter"
-                            Background="AntiqueWhite">
-                        <Image Source="icons/icons8-export-50.png"/>
-                    </Button>
                     
                     <Slider Grid.Row="4" 
                             Grid.Column="1" 
@@ -253,26 +215,6 @@
                                Text="Gamma Correction"
                                VerticalAlignment="Center"/>
 
-                    <Button Grid.Row="5" 
-                            Grid.Column="2"
-                            Margin="1,0"
-                            Height="20"
-                            Width="20"
-                            ToolTip="Import filter"
-                            Background="PowderBlue">
-                        <Image Source="icons/icons8-import-50.png"/>
-                    </Button>
-                    
-                    <Button Grid.Row="5" 
-                            Grid.Column="3"
-                            Margin="1,0"
-                            Height="20"
-                            Width="20"
-                            ToolTip="Export filter"
-                            Background="AntiqueWhite">
-                        <Image Source="icons/icons8-export-50.png"/>
-                    </Button>
-                    
                     <Slider Grid.Row="6" 
                             Grid.Column="1"
                             Value="1"
@@ -400,6 +342,8 @@
                     <Button Grid.Row="13" 
                             Grid.Column="2"
                             Margin="1,0"
+                            Height="20"
+                            Width="20"
                             ToolTip="Import filter"
                             Background="PowderBlue">
                         <Image Source="icons/icons8-import-50.png"/>
@@ -408,6 +352,8 @@
                     <Button Grid.Row="13" 
                             Grid.Column="3"
                             Margin="1,0"
+                            Height="20"
+                            Width="20"
                             ToolTip="Export filter"
                             Background="AntiqueWhite">
                         <Image Source="icons/icons8-export-50.png"/>
@@ -421,30 +367,125 @@
                             BorderThickness="1 "
                             BorderBrush="Black">
                     
-                        <Canvas Height="256"
+                        <Canvas Name="CustomFunctionFilterCanvas" 
+                                Height="256"
                                 Width="256"
                                 VerticalAlignment="Top"
-                                Background="LightCyan"/>
+                                Background="LightCyan"
+                                MouseLeftButtonDown="CustomFunctionFilterCanvas_LeftMouseDown"
+                                MouseMove="CustomFunctionFilterCanvas_MouseMove"
+                                MouseLeave="CustomFunctionFilterCanvas_MouseLeave">
+                            
+                            <Polyline Name="FunctionPolyline" 
+                                      Points="0,256 256,0" 
+                                      Stroke="Black"/>
+                            
+                            <ItemsControl ItemsSource="{Binding Points, ElementName=FunctionPolyline, Mode=OneWay}">
+                                
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <Canvas/>
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                
+                                <ItemsControl.ItemContainerStyle>
+                                    <Style TargetType="ContentPresenter">
+                                        <Setter Property="Canvas.Left" Value="{Binding X}"/>
+                                        <Setter Property="Canvas.Top" Value="{Binding Y}"/>
+                                    </Style>
+                                </ItemsControl.ItemContainerStyle>
+                                
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Line Stroke="Black" 
+                                              StrokeThickness="6" 
+                                              StrokeStartLineCap="Round" 
+                                              StrokeEndLineCap="Round" 
+                                              MouseLeftButtonDown="PolyLineNode_LeftMouseDown" 
+                                              MouseLeftButtonUp="PolyLineNode_LeftMouseUp" 
+                                              MouseRightButtonUp="PolyLineNode_RightMouseUp"/>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+
+                            </ItemsControl>
+
+                        </Canvas>
                     </Border>
                     
+                    <Grid Grid.Row="16"
+                          Grid.ColumnSpan="4">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
 
-                    <TextBlock Grid.Row="16" 
+                        <Button  
+                            Grid.Column="0"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center"
+                            Margin="4,0, 1, 0"
+                            Height="20"
+                            Width="60"
+                            ToolTip="Use inversion filter as template"
+                            Background="LightSlateGray"
+                            Click="PolylineTemplate_Inverse">
+                            Inverse                            
+                        </Button>
+
+                        <Button  
+                            Grid.Column="1"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center"
+                            Margin="1,0, 1, 0"
+                            Height="20"
+                            Width="60"
+                            ToolTip="Use brightness filter as template"
+                            Background="Silver"
+                            Click="PolylineTemplate_Brightness">
+                            Brightness
+                        </Button>
+
+                        <Button  
+                            Grid.Column="2"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center"
+                            Margin="1,0, 1, 0"
+                            Height="20"
+                            Width="60"
+                            ToolTip="Use contrast filter as template"
+                            Background="DarkGoldenrod"
+                            Click="PolylineTemplate_Contrast">
+                            Contrast
+                        </Button>
+                        
+                        <Button  
+                            Grid.Column="3"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center"
+                            Margin="1,0, 6, 0"
+                            Height="20"
+                            Width="20"
+                            ToolTip="Reset graph"
+                            Background="PaleVioletRed"
+                            Click="Polyline_ResetClick">
+                            <Image Source="icons/icons8-reset-64.png"/>
+                        </Button>
+
+                    </Grid>
+                    
+                    
+
+                    <TextBlock Grid.Row="17" 
                                Grid.Column="0"
-                               Grid.ColumnSpan="4"
+                               Grid.ColumnSpan="2"
                                Name="CustomFilterName"
-                               Margin="5 0 0 0"
-                               />
-
+                               Margin="5 0 0 0"/>
 
                 </Grid>
-
-
             </GroupBox>
 
-
-
         </Grid>
-
-
     </Grid>
 </Window>
