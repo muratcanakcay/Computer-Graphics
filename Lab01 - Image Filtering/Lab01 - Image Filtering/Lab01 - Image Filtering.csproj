@@ -12,13 +12,17 @@
   <ItemGroup>
     <None Remove="icons\icons8-export-50.png" />
     <None Remove="icons\icons8-import-50.png" />
+    <None Remove="icons\icons8-redo-64.png" />
     <None Remove="icons\icons8-reset-64.png" />
+    <None Remove="icons\icons8-undo-64.png" />
   </ItemGroup>
 
   <ItemGroup>
     <Resource Include="icons\icons8-export-50.png" />
     <Resource Include="icons\icons8-import-50.png" />
+    <Resource Include="icons\icons8-redo-64.png" />
     <Resource Include="icons\icons8-reset-64.png" />
+    <Resource Include="icons\icons8-undo-64.png" />
   </ItemGroup>
 
 </Project>

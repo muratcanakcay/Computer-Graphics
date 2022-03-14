@@ -26,6 +26,8 @@ namespace Lab01___Image_Filtering
     public partial class MainWindow : Window
     {
         private WriteableBitmap? _originalImage;
+        private readonly List<WriteableBitmap> _history = new();
+        private int _stackPosition = -1;
 
         public List<IFilter> AppliedFilters = new(); 
 
@@ -70,7 +72,9 @@ namespace Lab01___Image_Filtering
 
             _originalImage = new WriteableBitmap(new BitmapImage(new Uri(dlg.FileName)));
             OriginalImageCanvas.Source = _originalImage;
-            FilteredImageCanvas.Source = _originalImage;
+            _history.Add(_originalImage);
+            _stackPosition = 0;
+            FilteredImageCanvas.Source = _history[_stackPosition];
             FilterChainTextBlock.Text = "In > Out";
         }
 
@@ -484,15 +488,19 @@ namespace Lab01___Image_Filtering
         {
             if (AppliedFilters.Count == 0 || _originalImage == null)
             {
-                FilteredImageCanvas.Source = _originalImage;
-                FilterChainTextBlock.Text = "In > Out";
+                FilteredImageCanvas.Source = _history.Count == 0 ? null : _originalImage;
+                FilterChainTextBlock.Text = _history.Count == 1 ? "In > Out" : "In > Flattened > Out";
                 return;
             }
 
-            var filteredImage = _originalImage;
+            var filteredImage = _history.Last();
             var sb = new StringBuilder();
             
             sb.Append("In >");
+            if (_history.Count > 1)
+            {
+                sb.Append(" Flattened >");
+            }
 
             foreach (var filter in AppliedFilters)
             {
