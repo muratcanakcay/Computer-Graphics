@@ -33,15 +33,13 @@ namespace Lab01___Image_Filtering
                         var oldColor = clone.GetPixelColor(x, y);
 
                         var newColor = Color.FromArgb(oldColor.A,
+                            Math.Abs(oldColor.R - 255),
                             Math.Abs(oldColor.G - 255),
-                            Math.Abs(oldColor.B - 255),
-                            Math.Abs(oldColor.R - 255));
+                            Math.Abs(oldColor.B - 255));
 
                         clone.SetPixelColor(x, y, newColor);
-
                     }
                 }
-
             }
             finally
             {
@@ -142,7 +140,6 @@ namespace Lab01___Image_Filtering
                         clone.SetPixelColor(x, y, newColor);
                     }
                 }
-
             }
             finally
             {
@@ -186,17 +183,14 @@ namespace Lab01___Image_Filtering
                         
                         var pixelColor = wbm.GetPixelColor(x, y);
 
-                        var red = (int)Math.Round(Math.Pow(pixelColor.R / 255D, Coefficient) * 255);
-                        var blue = (int)Math.Round(Math.Pow(pixelColor.B / 255D, Coefficient) * 255);
-                        var green = (int)Math.Round(Math.Pow(pixelColor.G / 255D, Coefficient) * 255);
-
-                        var newColor = Color.FromArgb(pixelColor.A, red, green, blue);
+                        var newColor = Color.FromArgb(pixelColor.A, 
+                            (int)Math.Round(Math.Pow(pixelColor.R / 255D, Coefficient) * 255), 
+                            (int)Math.Round(Math.Pow(pixelColor.G / 255D, Coefficient) * 255), 
+                            (int)Math.Round(Math.Pow(pixelColor.B / 255D, Coefficient) * 255));
 
                         clone.SetPixelColor(x, y, newColor);
-
                     }
                 }
-
             }
             finally
             {
