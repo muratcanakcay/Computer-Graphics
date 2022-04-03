@@ -135,460 +135,481 @@
 
 
                 </GroupBox>
+
+                <TabControl Grid.Row="1">
                 
-                <GroupBox Grid.Row="1"
-                          Header="Filters">
-                
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="8*"/>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="20"/>
-                            <RowDefinition Height="20"/>
-                            <RowDefinition Height="20"/>
-                            <RowDefinition Height="20"/>
-                            <RowDefinition Height="20"/>
-                            <RowDefinition Height="20"/>
-                            <RowDefinition Height="20"/>
-                            <RowDefinition Height="20"/>
-                            <RowDefinition Height="20"/>
-                            <RowDefinition Height="20"/>
-                            <RowDefinition Height="20"/>
-                            <RowDefinition Height="20"/>
-                            <RowDefinition Height="0"/>
-                            <RowDefinition Height="20"/>
-                            <RowDefinition Height="20"/>
-                            <RowDefinition Height="5"/>
-                            <RowDefinition Height="260"/>
-                            <RowDefinition Height="25"/>
-                        </Grid.RowDefinitions>
-
-                        <!--INVERSION-->
-
-                        <CheckBox Grid.Row="0"
-                                  Grid.Column="0" 
-                                  Name="InvertCheckbox"
-                                  IsChecked="False"
-                                  HorizontalAlignment="Center"
-                                  VerticalAlignment="Center"
-                                  BorderBrush="Black"
-                                  Checked="InvertCheckbox_OnChecked"
-                                  Unchecked="InvertCheckbox_OnUnchecked"/>
-                        
-                        
-                        <TextBlock Grid.Row="0"
-                                   Grid.Column="1" 
-                                   Text="Invert"
-                                   VerticalAlignment="Center"/>
-
-                        <!--BRIGHTNESS-->
-
-                        <CheckBox Grid.Row="1"
-                                  Grid.Column="0"
-                                  Name="BrightnessCheckbox"
-                                  IsChecked="False"
-                                  HorizontalAlignment="Center"
-                                  VerticalAlignment="Center"
-                                  BorderBrush="Black"
-                                  Checked="BrightnessCheckbox_OnChecked"
-                                  Unchecked="BrightnessCheckbox_OnUnchecked"/>
-                        
-                        <TextBlock Grid.Row="1"
-                                   Grid.Column="1" 
-                                   Text="Brightness"
-                                   VerticalAlignment="Center"/>
-                        
-                        <Slider Grid.Row="2" 
-                                Grid.Column="1" 
-                                Value="0"
-                                Minimum="-256" 
-                                Maximum="256"
-                                Name="BrightnessSlider"
-                                ValueChanged="BrightnessSlider_OnValueChanged"/>
-
-                        <TextBox Grid.Row="2" 
-                                 Grid.Column="2"
-                                 Grid.ColumnSpan="2"
-                                 Width="35"
-                                 Height="18"
-                                 Name="BrightnessCoefficient" 
-                                 Text="{Binding 
-                                    Mode=TwoWay, 
-                                    ElementName=BrightnessSlider,
-                                    Path=Value,
-                                    StringFormat={}{0:F0},
-                                    UpdateSourceTrigger=PropertyChanged}"
-                                 HorizontalContentAlignment="Center"/>
-
-                        <!--CONTRAST-->
-
-                        <CheckBox Grid.Row="3"
-                                  Grid.Column="0"
-                                  Name="ContrastCheckbox"
-                                  IsChecked="False"
-                                  HorizontalAlignment="Center"
-                                  VerticalAlignment="Center"
-                                  BorderBrush="Black"
-                                  Checked="ContrastCheckbox_OnChecked"
-                                  Unchecked="ContrastCheckbox_OnUnchecked"/>
-                        
-                        <TextBlock Grid.Row="3"
-                                   Grid.Column="1" 
-                                   Text="Contrast"
-                                   VerticalAlignment="Center"/>
-                        
-                        <Slider Grid.Row="4" 
-                                Grid.Column="1" 
-                                Value ="1"
-                                Minimum="0"
-                                Maximum="5"
-                                Name="ContrastSlider"
-                                ValueChanged="ContrastSlider_OnValueChanged"/>
-
-                        <TextBox Grid.Row="4" 
-                                 Grid.Column="2"
-                                 Grid.ColumnSpan="2"
-                                 Width="35"
-                                 Height="18"
-                                 Name="ContrastCoefficient" 
-                                 Text="{Binding 
-                                    Mode=TwoWay, 
-                                    ElementName=ContrastSlider,
-                                    Path=Value,
-                                    StringFormat={}{0:F2},
-                                    UpdateSourceTrigger=PropertyChanged}"
-                                 HorizontalContentAlignment="Center"/>
-
-                        <!--GAMMA-->
-
-                        <CheckBox Grid.Row="5"
-                                  Grid.Column="0"
-                                  Name="GammaCheckbox"
-                                  IsChecked="False"
-                                  HorizontalAlignment="Center"
-                                  VerticalAlignment="Center"
-                                  BorderBrush="Black"
-                                  Checked="GammaCheckbox_OnChecked"
-                                  Unchecked="GammaCheckbox_OnUnchecked"/>
-                        
-                        <TextBlock Grid.Row="5"
-                                   Grid.Column="1" 
-                                   Text="Gamma Correction"
-                                   VerticalAlignment="Center"/>
-
-                        <Slider Grid.Row="6" 
-                                Grid.Column="1"
-                                Value="1"
-                                Minimum="0" 
-                                Maximum="100"
-                                Name="GammaSlider"
-                                ValueChanged="GammaSlider_OnValueChanged"/>
-
-                        <TextBox Grid.Row="6" 
-                                 Grid.Column="2"
-                                 Grid.ColumnSpan="2"
-                                 Width="35"
-                                 Height="18"
-                                 Name="GammaCoefficient" 
-                                 Text="{Binding 
-                                    Mode=TwoWay, 
-                                    ElementName=GammaSlider,
-                                    Path=Value,
-                                    StringFormat={}{0:F2},
-                                    UpdateSourceTrigger=PropertyChanged}"
-                                 HorizontalContentAlignment="Center"/>
-
-                        
-
-                        <Grid Grid.Column="0"
-                              Grid.Row="7"
-                              Grid.ColumnSpan="4"
-                              Grid.RowSpan="3">
-
+                    <TabItem Header="Filters">
+                    
+                        <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="4*"/>
+                                <ColumnDefinition Width="8*"/>
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="4*"/>
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="20"/>
                                 <RowDefinition Height="20"/>
                                 <RowDefinition Height="20"/>
+                                <RowDefinition Height="20"/>
+                                <RowDefinition Height="20"/>
+                                <RowDefinition Height="20"/>
+                                <RowDefinition Height="20"/>
+                                <RowDefinition Height="20"/>
+                                <RowDefinition Height="20"/>
+                                <RowDefinition Height="20"/>
+                                <RowDefinition Height="20"/>
+                                <RowDefinition Height="20"/>
+                                <RowDefinition Height="0"/>
+                                <RowDefinition Height="20"/>
+                                <RowDefinition Height="20"/>
+                                <RowDefinition Height="5"/>
+                                <RowDefinition Height="260"/>
+                                <RowDefinition Height="25"/>
                             </Grid.RowDefinitions>
-                            
-                            <!--BLUR-->
+
+                            <!--INVERSION-->
 
                             <CheckBox Grid.Row="0"
-                                      Grid.Column="0"
-                                      Name="BlurCheckbox"
+                                      Grid.Column="0" 
+                                      Name="InvertCheckbox"
                                       IsChecked="False"
                                       HorizontalAlignment="Center"
                                       VerticalAlignment="Center"
                                       BorderBrush="Black"
-                                      Checked="BlurCheckbox_OnChecked"
-                                      Unchecked="BlurCheckbox_OnUnchecked"/>
-                        
+                                      Checked="InvertCheckbox_OnChecked"
+                                      Unchecked="InvertCheckbox_OnUnchecked"/>
+                            
+                            
                             <TextBlock Grid.Row="0"
                                        Grid.Column="1" 
-                                       Text="Blur"
+                                       Text="Invert"
                                        VerticalAlignment="Center"/>
 
-                            <!--GAUSSIAN BLUR-->
+                            <!--BRIGHTNESS-->
 
                             <CheckBox Grid.Row="1"
                                       Grid.Column="0"
-                                      Name="GaussianBlurCheckbox"
+                                      Name="BrightnessCheckbox"
                                       IsChecked="False"
                                       HorizontalAlignment="Center"
                                       VerticalAlignment="Center"
                                       BorderBrush="Black"
-                                      Checked="GaussianBlurCheckbox_OnChecked"
-                                      Unchecked="GaussianBlurCheckbox_OnUnchecked"/>
+                                      Checked="BrightnessCheckbox_OnChecked"
+                                      Unchecked="BrightnessCheckbox_OnUnchecked"/>
                             
                             <TextBlock Grid.Row="1"
                                        Grid.Column="1" 
-                                       Text="Gaussian Blur"
+                                       Text="Brightness"
                                        VerticalAlignment="Center"/>
+                            
+                            <Slider Grid.Row="2" 
+                                    Grid.Column="1" 
+                                    Value="0"
+                                    Minimum="-256" 
+                                    Maximum="256"
+                                    Name="BrightnessSlider"
+                                    ValueChanged="BrightnessSlider_OnValueChanged"/>
 
-                            <!--SHARPEN-->
+                            <TextBox Grid.Row="2" 
+                                     Grid.Column="2"
+                                     Grid.ColumnSpan="2"
+                                     Width="35"
+                                     Height="18"
+                                     Name="BrightnessCoefficient" 
+                                     Text="{Binding 
+                                        Mode=TwoWay, 
+                                        ElementName=BrightnessSlider,
+                                        Path=Value,
+                                        StringFormat={}{0:F0},
+                                        UpdateSourceTrigger=PropertyChanged}"
+                                     HorizontalContentAlignment="Center"/>
 
-                            <CheckBox Grid.Row="2"
+                            <!--CONTRAST-->
+
+                            <CheckBox Grid.Row="3"
                                       Grid.Column="0"
-                                      Name="SharpenCheckbox"
+                                      Name="ContrastCheckbox"
                                       IsChecked="False"
                                       HorizontalAlignment="Center"
                                       VerticalAlignment="Center"
                                       BorderBrush="Black"
-                                      Checked="SharpenCheckbox_OnChecked"
-                                      Unchecked="SharpenCheckbox_OnUnchecked"/>
+                                      Checked="ContrastCheckbox_OnChecked"
+                                      Unchecked="ContrastCheckbox_OnUnchecked"/>
                             
-                            <TextBlock Grid.Row="2"
+                            <TextBlock Grid.Row="3"
                                        Grid.Column="1" 
-                                       Text="Sharpen"
+                                       Text="Contrast"
                                        VerticalAlignment="Center"/>
-                        
+                            
+                            <Slider Grid.Row="4" 
+                                    Grid.Column="1" 
+                                    Value ="1"
+                                    Minimum="0"
+                                    Maximum="5"
+                                    Name="ContrastSlider"
+                                    ValueChanged="ContrastSlider_OnValueChanged"/>
 
-                            <!--EDGE DETECTION-->
+                            <TextBox Grid.Row="4" 
+                                     Grid.Column="2"
+                                     Grid.ColumnSpan="2"
+                                     Width="35"
+                                     Height="18"
+                                     Name="ContrastCoefficient" 
+                                     Text="{Binding 
+                                        Mode=TwoWay, 
+                                        ElementName=ContrastSlider,
+                                        Path=Value,
+                                        StringFormat={}{0:F2},
+                                        UpdateSourceTrigger=PropertyChanged}"
+                                     HorizontalContentAlignment="Center"/>
 
-                            <CheckBox Grid.Row="0"
-                                      Grid.Column="3"
-                                      Name="EdgeDetectionCheckbox"
+                            <!--GAMMA-->
+
+                            <CheckBox Grid.Row="5"
+                                      Grid.Column="0"
+                                      Name="GammaCheckbox"
                                       IsChecked="False"
                                       HorizontalAlignment="Center"
                                       VerticalAlignment="Center"
                                       BorderBrush="Black"
-                                      Checked="EdgeDetectionCheckbox_OnChecked"
-                                      Unchecked="EdgeDetectionCheckbox_OnUnchecked"/>
+                                      Checked="GammaCheckbox_OnChecked"
+                                      Unchecked="GammaCheckbox_OnUnchecked"/>
                             
-                            <TextBlock Grid.Row="0"
-                                       Grid.Column="4" 
-                                       Text="Edge Detection"
+                            <TextBlock Grid.Row="5"
+                                       Grid.Column="1" 
+                                       Text="Gamma Correction"
                                        VerticalAlignment="Center"/>
 
-                            <!--EMBOSS-->
+                            <Slider Grid.Row="6" 
+                                    Grid.Column="1"
+                                    Value="1"
+                                    Minimum="0" 
+                                    Maximum="100"
+                                    Name="GammaSlider"
+                                    ValueChanged="GammaSlider_OnValueChanged"/>
 
-                            <CheckBox Grid.Row="1"
-                                      Grid.Column="3"
-                                      Name="EmbossCheckbox"
-                                      IsChecked="False"
-                                      HorizontalAlignment="Center"
-                                      VerticalAlignment="Center"
-                                      BorderBrush="Black"
-                                      Checked="EmbossCheckbox_OnChecked"
-                                      Unchecked="EmbossCheckbox_OnUnchecked"/>
+                            <TextBox Grid.Row="6" 
+                                     Grid.Column="2"
+                                     Grid.ColumnSpan="2"
+                                     Width="35"
+                                     Height="18"
+                                     Name="GammaCoefficient" 
+                                     Text="{Binding 
+                                        Mode=TwoWay, 
+                                        ElementName=GammaSlider,
+                                        Path=Value,
+                                        StringFormat={}{0:F2},
+                                        UpdateSourceTrigger=PropertyChanged}"
+                                     HorizontalContentAlignment="Center"/>
+
                             
-                            <TextBlock Grid.Row="1"
-                                       Grid.Column="4" 
-                                       Text="Emboss"
-                                       VerticalAlignment="Center"/>
 
-                            <!--MEDIAN-->
+                            <Grid Grid.Column="0"
+                                  Grid.Row="7"
+                                  Grid.ColumnSpan="4"
+                                  Grid.RowSpan="3">
 
-                            <CheckBox Grid.Row="2"
-                                      Grid.Column="3"
-                                      Name="MedianCheckbox"
-                                      IsChecked="False"
-                                      HorizontalAlignment="Center"
-                                      VerticalAlignment="Center"
-                                      BorderBrush="Black"
-                                      Checked="MedianCheckbox_OnChecked"
-                                      Unchecked="MedianCheckbox_OnUnchecked"/>
-                            
-                            <TextBlock Grid.Row="22"
-                                       Grid.Column="4" 
-                                       Text="Median"
-                                       VerticalAlignment="Center"/>
-                        </Grid>
-
-                        <Separator Grid.Row="13" Grid.Column="0" Grid.ColumnSpan="4"/>
-
-                        <!--CUSTOM FUNCTION FILTER-->
-
-                        <CheckBox Grid.Row="14"
-                                  Grid.Column="0"
-                                  Name="CustomFunctionCheckbox"
-                                  IsChecked="False"
-                                  HorizontalAlignment="Center"
-                                  VerticalAlignment="Center"
-                                  BorderBrush="Black"
-                                  Checked="CustomFunctionCheckbox_OnChecked"
-                                  Unchecked="CustomFunctionCheckbox_OnUnchecked"/>
-                        
-                        <TextBlock Grid.Row="14"
-                                   Grid.Column="1" 
-                                   Text="Custom Function Filter"
-                                   VerticalAlignment="Center"/>
-
-                        <Button Grid.Row="14" 
-                                Grid.Column="2"
-                                Margin="1,0"
-                                Height="20"
-                                Width="20"
-                                Name="ImportButton"
-                                ToolTip="Import filter"
-                                Background="PowderBlue"
-                                Click="ImportButton_OnClick">
-                            <Image Source="icons/icons8-import-50.png"/>
-                        </Button>
-                        
-                        <Button Grid.Row="14" 
-                                Grid.Column="3"
-                                Margin="1,0"
-                                Height="20"
-                                Width="20"
-                                Name="ExportButton"
-                                ToolTip="Export filter"
-                                Background="AntiqueWhite"
-                                Click="ExportButton_OnClick">
-                            <Image Source="icons/icons8-export-50.png"/>
-                        </Button>
-
-                        <Border Grid.Row="16" 
-                                Grid.Column="0"
-                                Grid.ColumnSpan="4"
-                                Height="258"
-                                Width="258"
-                                BorderThickness="1 "
-                                BorderBrush="Black">
-                        
-                            <Canvas Name="CustomFunctionFilterCanvas" 
-                                    Height="256"
-                                    Width="256"
-                                    VerticalAlignment="Top"
-                                    Background="LightCyan"
-                                    MouseLeftButtonDown="CustomFunctionFilterCanvas_LeftMouseDown"
-                                    PreviewMouseLeftButtonUp="PolyLineNode_LeftMouseUp"
-                                    MouseMove="CustomFunctionFilterCanvas_MouseMove"
-                                    MouseLeave="CustomFunctionFilterCanvas_MouseLeave">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="4*"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="4*"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="20"/>
+                                    <RowDefinition Height="20"/>
+                                    <RowDefinition Height="20"/>
+                                </Grid.RowDefinitions>
                                 
-                                <Polyline Name="FunctionPolyline" 
-                                          Points="0,255 255,0" 
-                                          Stroke="Black"/>
+                                <!--BLUR-->
+
+                                <CheckBox Grid.Row="0"
+                                          Grid.Column="0"
+                                          Name="BlurCheckbox"
+                                          IsChecked="False"
+                                          HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"
+                                          BorderBrush="Black"
+                                          Checked="BlurCheckbox_OnChecked"
+                                          Unchecked="BlurCheckbox_OnUnchecked"/>
+                            
+                                <TextBlock Grid.Row="0"
+                                           Grid.Column="1" 
+                                           Text="Blur"
+                                           VerticalAlignment="Center"/>
+
+                                <!--GAUSSIAN BLUR-->
+
+                                <CheckBox Grid.Row="1"
+                                          Grid.Column="0"
+                                          Name="GaussianBlurCheckbox"
+                                          IsChecked="False"
+                                          HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"
+                                          BorderBrush="Black"
+                                          Checked="GaussianBlurCheckbox_OnChecked"
+                                          Unchecked="GaussianBlurCheckbox_OnUnchecked"/>
                                 
-                                <ItemsControl ItemsSource="{Binding Points, ElementName=FunctionPolyline, Mode=TwoWay}">
-                                    
-                                    <ItemsControl.ItemsPanel>
-                                        <ItemsPanelTemplate>
-                                            <Canvas/>
-                                        </ItemsPanelTemplate>
-                                    </ItemsControl.ItemsPanel>
-                                    
-                                    <ItemsControl.ItemContainerStyle>
-                                        <Style TargetType="ContentPresenter">
-                                            <Setter Property="Canvas.Left" Value="{Binding X}"/>
-                                            <Setter Property="Canvas.Top" Value="{Binding Y}"/>
-                                        </Style>
-                                    </ItemsControl.ItemContainerStyle>
-                                    
-                                    <ItemsControl.ItemTemplate>
-                                        <DataTemplate>
-                                            <Line Stroke="Black" 
-                                                  StrokeThickness="6" 
-                                                  StrokeStartLineCap="Round" 
-                                                  StrokeEndLineCap="Round" 
-                                                  MouseLeftButtonDown="PolyLineNode_LeftMouseDown" 
-                                                  MouseLeftButtonUp="PolyLineNode_LeftMouseUp" 
-                                                  MouseRightButtonUp="PolyLineNode_RightMouseUp"/>
-                                        </DataTemplate>
-                                    </ItemsControl.ItemTemplate>
+                                <TextBlock Grid.Row="1"
+                                           Grid.Column="1" 
+                                           Text="Gaussian Blur"
+                                           VerticalAlignment="Center"/>
 
-                                </ItemsControl>
+                                <!--SHARPEN-->
 
-                            </Canvas>
-                        </Border>
-                        
-                        <Grid Grid.Column="0"
-                                Grid.Row="17"
-                                Grid.ColumnSpan="4">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
+                                <CheckBox Grid.Row="2"
+                                          Grid.Column="0"
+                                          Name="SharpenCheckbox"
+                                          IsChecked="False"
+                                          HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"
+                                          BorderBrush="Black"
+                                          Checked="SharpenCheckbox_OnChecked"
+                                          Unchecked="SharpenCheckbox_OnUnchecked"/>
+                                
+                                <TextBlock Grid.Row="2"
+                                           Grid.Column="1" 
+                                           Text="Sharpen"
+                                           VerticalAlignment="Center"/>
+                            
 
-                            <Button  
-                                Grid.Column="0"
-                                HorizontalAlignment="Right"
-                                VerticalAlignment="Center"
-                                Margin="4,0, 1, 0"
-                                Height="20"
-                                Width="60"
-                                ToolTip="Use inversion filter as template"
-                                Background="LightSlateGray"
-                                Click="PolylineTemplate_Inverse">
-                                Inverse                            
-                            </Button>
+                                <!--EDGE DETECTION-->
 
-                            <Button  
-                                Grid.Column="1"
-                                HorizontalAlignment="Right"
-                                VerticalAlignment="Center"
-                                Margin="1,0, 1, 0"
-                                Height="20"
-                                Width="60"
-                                ToolTip="Use brightness filter as template"
-                                Background="Silver"
-                                Click="PolylineTemplate_Brightness">
-                                Brightness
-                            </Button>
+                                <CheckBox Grid.Row="0"
+                                          Grid.Column="3"
+                                          Name="EdgeDetectionCheckbox"
+                                          IsChecked="False"
+                                          HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"
+                                          BorderBrush="Black"
+                                          Checked="EdgeDetectionCheckbox_OnChecked"
+                                          Unchecked="EdgeDetectionCheckbox_OnUnchecked"/>
+                                
+                                <TextBlock Grid.Row="0"
+                                           Grid.Column="4" 
+                                           Text="Edge Detection"
+                                           VerticalAlignment="Center"/>
 
-                            <Button  
-                                Grid.Column="2"
-                                HorizontalAlignment="Right"
-                                VerticalAlignment="Center"
-                                Margin="1,0, 1, 0"
-                                Height="20"
-                                Width="60"
-                                ToolTip="Use contrast filter as template"
-                                Background="LightGray"
-                                Click="PolylineTemplate_Contrast">
-                                Contrast
+                                <!--EMBOSS-->
+
+                                <CheckBox Grid.Row="1"
+                                          Grid.Column="3"
+                                          Name="EmbossCheckbox"
+                                          IsChecked="False"
+                                          HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"
+                                          BorderBrush="Black"
+                                          Checked="EmbossCheckbox_OnChecked"
+                                          Unchecked="EmbossCheckbox_OnUnchecked"/>
+                                
+                                <TextBlock Grid.Row="1"
+                                           Grid.Column="4" 
+                                           Text="Emboss"
+                                           VerticalAlignment="Center"/>
+
+                                <!--MEDIAN-->
+
+                                <CheckBox Grid.Row="2"
+                                          Grid.Column="3"
+                                          Name="MedianCheckbox"
+                                          IsChecked="False"
+                                          HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"
+                                          BorderBrush="Black"
+                                          Checked="MedianCheckbox_OnChecked"
+                                          Unchecked="MedianCheckbox_OnUnchecked"/>
+                                
+                                <TextBlock Grid.Row="22"
+                                           Grid.Column="4" 
+                                           Text="Median"
+                                           VerticalAlignment="Center"/>
+                            </Grid>
+
+                            <Separator Grid.Row="13" Grid.Column="0" Grid.ColumnSpan="4"/>
+
+                            <!--CUSTOM FUNCTION FILTER-->
+
+                            <CheckBox Grid.Row="14"
+                                      Grid.Column="0"
+                                      Name="CustomFunctionCheckbox"
+                                      IsChecked="False"
+                                      HorizontalAlignment="Center"
+                                      VerticalAlignment="Center"
+                                      BorderBrush="Black"
+                                      Checked="CustomFunctionCheckbox_OnChecked"
+                                      Unchecked="CustomFunctionCheckbox_OnUnchecked"/>
+                            
+                            <TextBlock Grid.Row="14"
+                                       Grid.Column="1" 
+                                       Text="Custom Function Filter"
+                                       VerticalAlignment="Center"/>
+
+                            <Button Grid.Row="14" 
+                                    Grid.Column="2"
+                                    Margin="1,0"
+                                    Height="20"
+                                    Width="20"
+                                    Name="ImportButton"
+                                    ToolTip="Import filter"
+                                    Background="PowderBlue"
+                                    Click="ImportButton_OnClick">
+                                <Image Source="icons/icons8-import-50.png"/>
                             </Button>
                             
-                            <Button  
-                                Grid.Column="3"
-                                HorizontalAlignment="Right"
-                                VerticalAlignment="Center"
-                                Margin="1,0, 6, 0"
-                                Height="20"
-                                Width="20"
-                                ToolTip="Reset graph"
-                                Background="Cyan"
-                                Click="Polyline_ResetClick">
-                                <Image Source="icons/icons8-reset-64.png"/>
+                            <Button Grid.Row="14" 
+                                    Grid.Column="3"
+                                    Margin="1,0"
+                                    Height="20"
+                                    Width="20"
+                                    Name="ExportButton"
+                                    ToolTip="Export filter"
+                                    Background="AntiqueWhite"
+                                    Click="ExportButton_OnClick">
+                                <Image Source="icons/icons8-export-50.png"/>
                             </Button>
 
-                        </Grid>
+                            <Border Grid.Row="16" 
+                                    Grid.Column="0"
+                                    Grid.ColumnSpan="4"
+                                    Height="258"
+                                    Width="258"
+                                    BorderThickness="1 "
+                                    BorderBrush="Black">
+                            
+                                <Canvas Name="CustomFunctionFilterCanvas" 
+                                        Height="256"
+                                        Width="256"
+                                        VerticalAlignment="Top"
+                                        Background="LightCyan"
+                                        MouseLeftButtonDown="CustomFunctionFilterCanvas_LeftMouseDown"
+                                        PreviewMouseLeftButtonUp="PolyLineNode_LeftMouseUp"
+                                        MouseMove="CustomFunctionFilterCanvas_MouseMove"
+                                        MouseLeave="CustomFunctionFilterCanvas_MouseLeave">
+                                    
+                                    <Polyline Name="FunctionPolyline" 
+                                              Points="0,255 255,0" 
+                                              Stroke="Black"/>
+                                    
+                                    <ItemsControl ItemsSource="{Binding Points, ElementName=FunctionPolyline, Mode=TwoWay}">
+                                        
+                                        <ItemsControl.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <Canvas/>
+                                            </ItemsPanelTemplate>
+                                        </ItemsControl.ItemsPanel>
+                                        
+                                        <ItemsControl.ItemContainerStyle>
+                                            <Style TargetType="ContentPresenter">
+                                                <Setter Property="Canvas.Left" Value="{Binding X}"/>
+                                                <Setter Property="Canvas.Top" Value="{Binding Y}"/>
+                                            </Style>
+                                        </ItemsControl.ItemContainerStyle>
+                                        
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <Line Stroke="Black" 
+                                                      StrokeThickness="6" 
+                                                      StrokeStartLineCap="Round" 
+                                                      StrokeEndLineCap="Round" 
+                                                      MouseLeftButtonDown="PolyLineNode_LeftMouseDown" 
+                                                      MouseLeftButtonUp="PolyLineNode_LeftMouseUp" 
+                                                      MouseRightButtonUp="PolyLineNode_RightMouseUp"/>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
 
-                    </Grid>
-                </GroupBox>
+                                    </ItemsControl>
+
+                                </Canvas>
+                            </Border>
+                            
+                            <Grid Grid.Column="0"
+                                    Grid.Row="17"
+                                    Grid.ColumnSpan="4">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <Button  
+                                    Grid.Column="0"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Center"
+                                    Margin="4,0, 1, 0"
+                                    Height="20"
+                                    Width="60"
+                                    ToolTip="Use inversion filter as template"
+                                    Background="LightSlateGray"
+                                    Click="PolylineTemplate_Inverse">
+                                    Inverse                            
+                                </Button>
+
+                                <Button  
+                                    Grid.Column="1"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Center"
+                                    Margin="1,0, 1, 0"
+                                    Height="20"
+                                    Width="60"
+                                    ToolTip="Use brightness filter as template"
+                                    Background="Silver"
+                                    Click="PolylineTemplate_Brightness">
+                                    Brightness
+                                </Button>
+
+                                <Button  
+                                    Grid.Column="2"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Center"
+                                    Margin="1,0, 1, 0"
+                                    Height="20"
+                                    Width="60"
+                                    ToolTip="Use contrast filter as template"
+                                    Background="LightGray"
+                                    Click="PolylineTemplate_Contrast">
+                                    Contrast
+                                </Button>
+                                
+                                <Button  
+                                    Grid.Column="3"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Center"
+                                    Margin="1,0, 6, 0"
+                                    Height="20"
+                                    Width="20"
+                                    ToolTip="Reset graph"
+                                    Background="Cyan"
+                                    Click="Polyline_ResetClick">
+                                    <Image Source="icons/icons8-reset-64.png"/>
+                                </Button>
+
+                            </Grid>
+
+                        </Grid>
+                    </TabItem>
+
+                    <TabItem Header="Color">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                    </TabItem>
+
+                </TabControl>
+
             </Grid>
 
         </Grid>
