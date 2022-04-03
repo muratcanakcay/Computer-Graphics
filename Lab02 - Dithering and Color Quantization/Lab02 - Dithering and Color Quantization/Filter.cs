@@ -1,21 +1,66 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Windows.Documents;
 using System.Windows.Media.Imaging;
 
-namespace Lab01___Image_Filtering
+namespace Lab02___Dithering_and_Color_Quantization
 {
-    public interface IFilter
+    public abstract class Filter : IEffect
     {
-        WriteableBitmap ApplyTo(WriteableBitmap wbm);
+        public abstract WriteableBitmap ApplyTo(WriteableBitmap wbm);
     }
 
-    public class Inversion : IFilter
+    public class Greyscale : Filter
     {
-        public WriteableBitmap ApplyTo(WriteableBitmap wbm)
+        public override WriteableBitmap ApplyTo(WriteableBitmap wbm)
+        {
+            var clone = wbm.Clone();
+            var width = clone.PixelWidth;
+            var height = clone.PixelHeight;
+
+            try
+            {
+                wbm.Lock();
+                clone.Lock();
+
+                for (var x = 0; x < width; x++)
+                {
+                    for (var y = 0; y < height; y++)
+                    {
+                        var oldColor = clone.GetPixelColor(x, y);
+
+                        var greyIntensity =
+                            (int)Math.Round((0.299f * oldColor.R) + (0.587f * oldColor.G) + (0.114f * oldColor.B));
+
+                        var newColor = Color.FromArgb(oldColor.A,
+                            Math.Clamp(greyIntensity, 0, 255),
+                            Math.Clamp(greyIntensity, 0, 255),
+                            Math.Clamp(greyIntensity, 0, 255));
+
+                        clone.SetPixelColor(x, y, newColor);
+                    }
+                }
+            }
+            finally
+            {
+                wbm.Unlock();
+                clone.Unlock();
+            }
+
+            return clone;
+        }
+
+        public override string ToString()
+        {
+            return "Greyscale";
+        }
+    }
+
+
+
+    public class Inversion : Filter
+    {
+        public override WriteableBitmap ApplyTo(WriteableBitmap wbm)
         {
             var clone = wbm.Clone();
             var width = clone.PixelWidth;
@@ -56,7 +101,7 @@ namespace Lab01___Image_Filtering
         }
     }
 
-    public class Brightness : IFilter
+    public class Brightness : Filter
     {
         public int Coefficient { get; set; }
 
@@ -65,7 +110,7 @@ namespace Lab01___Image_Filtering
             this.Coefficient = coefficient;
         }
 
-        public WriteableBitmap ApplyTo(WriteableBitmap wbm)
+        public override WriteableBitmap ApplyTo(WriteableBitmap wbm)
         {
             var clone = wbm.Clone();
             var width = clone.PixelWidth;
@@ -106,7 +151,7 @@ namespace Lab01___Image_Filtering
         }
     }
 
-    public class Contrast : IFilter
+    public class Contrast : Filter
     {
         public double Coefficient { get; set; }
 
@@ -115,7 +160,7 @@ namespace Lab01___Image_Filtering
             this.Coefficient = coefficient;
         }
 
-        public WriteableBitmap ApplyTo(WriteableBitmap wbm)
+        public override WriteableBitmap ApplyTo(WriteableBitmap wbm)
         {
             var clone = wbm.Clone();
             var width = wbm.PixelWidth;
@@ -156,7 +201,7 @@ namespace Lab01___Image_Filtering
         }
     }
 
-    public class Gamma : IFilter
+    public class Gamma : Filter
     {
         public double Coefficient { get; set; }
 
@@ -165,7 +210,7 @@ namespace Lab01___Image_Filtering
             this.Coefficient = coefficient;
         }
 
-        public WriteableBitmap ApplyTo(WriteableBitmap wbm)
+        public override WriteableBitmap ApplyTo(WriteableBitmap wbm)
         {
             var clone = wbm.Clone();
             var width = wbm.PixelWidth;
@@ -207,7 +252,7 @@ namespace Lab01___Image_Filtering
         }
     }
 
-    public class Convolution : IFilter
+    public class Convolution : Filter
     {
         public Kernel Kernel { get; set; }
 
@@ -216,7 +261,7 @@ namespace Lab01___Image_Filtering
             this.Kernel= kernel;
         }
 
-        public WriteableBitmap ApplyTo(WriteableBitmap wbm)
+        public override WriteableBitmap ApplyTo(WriteableBitmap wbm)
         {
             var clone = wbm.Clone();
             var width = wbm.PixelWidth;
@@ -344,7 +389,7 @@ namespace Lab01___Image_Filtering
         }
     }
 
-    public class CustomFunction : IFilter
+    public class CustomFunction : Filter
     {
         public System.Windows.Point[] NodeList { get; set; }
 
@@ -353,7 +398,7 @@ namespace Lab01___Image_Filtering
             this.NodeList = nodeList;
         }
 
-        public WriteableBitmap ApplyTo(WriteableBitmap wbm)
+        public override WriteableBitmap ApplyTo(WriteableBitmap wbm)
         {
             var clone = wbm.Clone();
             var width = clone.PixelWidth;
@@ -415,11 +460,11 @@ namespace Lab01___Image_Filtering
         }
     }
 
-    public class Median : IFilter
+    public class Median : Filter
     {
         public Kernel Kernel { get; set; } = Kernels.Median;
         
-        public WriteableBitmap ApplyTo(WriteableBitmap wbm)
+        public override WriteableBitmap ApplyTo(WriteableBitmap wbm)
         {
             var clone = wbm.Clone();
             var width = wbm.PixelWidth;

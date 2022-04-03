@@ -3,7 +3,7 @@ using System.Drawing;
 using System.Windows;
 using System.Windows.Media.Imaging;
 
-namespace Lab01___Image_Filtering
+namespace Lab02___Dithering_and_Color_Quantization
 {
     public static class WritableBitmapExtensions
     {
@@ -53,9 +53,9 @@ namespace Lab01___Image_Filtering
             return pixelColor;
         }
 
-        public static WriteableBitmap ApplyFilter(this WriteableBitmap wbm, IFilter filter)
+        public static WriteableBitmap ApplyFilter(this WriteableBitmap wbm, IEffect effect)
         {
-            return filter.ApplyTo(wbm);
+            return effect.ApplyTo(wbm);
         }
     }
 }

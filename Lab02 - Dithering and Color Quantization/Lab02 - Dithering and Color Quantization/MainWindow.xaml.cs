@@ -14,7 +14,6 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Xml.Serialization;
-using Lab01___Image_Filtering;
 using Microsoft.Win32;
 
 namespace Lab02___Dithering_and_Color_Quantization
@@ -27,7 +26,7 @@ namespace Lab02___Dithering_and_Color_Quantization
         private readonly List<WriteableBitmap> _history = new();
         private int _stackPosition = -1;
 
-        public List<IFilter> AppliedFilters = new(); 
+        public List<IEffect> AppliedEffects = new(); 
 
         public MainWindow()
         {
@@ -70,13 +69,14 @@ namespace Lab02___Dithering_and_Color_Quantization
             EmbossCheckbox.IsChecked = false;
             MedianCheckbox.IsChecked = false;
             CustomFunctionCheckbox.IsChecked = false;
+            GreyScaleCheckbox.IsChecked = false;
             
             BrightnessSlider.Value = 0;
             ContrastSlider.Value = 1;
             GammaSlider.Value = 1;
             FunctionPolyline.Points = new PointCollection() { new(0, 255), new(255, 0) };
 
-            AppliedFilters.Clear();
+            AppliedEffects.Clear();
         }
 
         private void LoadImage_Click(object sender, RoutedEventArgs e)
@@ -155,25 +155,25 @@ namespace Lab02___Dithering_and_Color_Quantization
 
         private void InvertCheckbox_OnChecked(object sender, RoutedEventArgs e)
         {
-            AppliedFilters.Add(new Inversion());
+            AppliedEffects.Add(new Inversion());
             ApplyFilters();
         }
 
         private void InvertCheckbox_OnUnchecked(object sender, RoutedEventArgs e)
         {
-            AppliedFilters.RemoveAll((filter) => filter is Inversion);
+            AppliedEffects.RemoveAll((filter) => filter is Inversion);
             ApplyFilters();
         }
 
         private void BrightnessCheckbox_OnChecked(object sender, RoutedEventArgs e)
         {
-            AppliedFilters.Add(new Brightness((int)Math.Floor(BrightnessSlider.Value)));
+            AppliedEffects.Add(new Brightness((int)Math.Floor(BrightnessSlider.Value)));
             ApplyFilters();
         }
 
         private void BrightnessCheckbox_OnUnchecked(object sender, RoutedEventArgs e)
         {
-            AppliedFilters.RemoveAll((filter) => filter is Brightness);
+            AppliedEffects.RemoveAll((filter) => filter is Brightness);
             ApplyFilters();
         }
 
@@ -181,7 +181,7 @@ namespace Lab02___Dithering_and_Color_Quantization
         {
             if (BrightnessCheckbox.IsChecked == false) return;
 
-            var brightnessFilter = (Brightness?)AppliedFilters.Find((filter) => filter is Brightness);
+            var brightnessFilter = (Brightness?)AppliedEffects.Find((filter) => filter is Brightness);
 
             if (brightnessFilter == null) throw new NullReferenceException();
 
@@ -192,13 +192,13 @@ namespace Lab02___Dithering_and_Color_Quantization
 
         private void ContrastCheckbox_OnChecked(object sender, RoutedEventArgs e)
         {
-            AppliedFilters.Add(new Contrast(ContrastSlider.Value));
+            AppliedEffects.Add(new Contrast(ContrastSlider.Value));
             ApplyFilters();
         }
 
         private void ContrastCheckbox_OnUnchecked(object sender, RoutedEventArgs e)
         {
-            AppliedFilters.RemoveAll((filter) => filter is Contrast);
+            AppliedEffects.RemoveAll((filter) => filter is Contrast);
             ApplyFilters();
         }
 
@@ -206,7 +206,7 @@ namespace Lab02___Dithering_and_Color_Quantization
         {
             if (ContrastCheckbox.IsChecked == false) return;
 
-            var contrastFilter = (Contrast?)AppliedFilters.Find((filter) => filter is Contrast);
+            var contrastFilter = (Contrast?)AppliedEffects.Find((filter) => filter is Contrast);
 
             if (contrastFilter == null) throw new NullReferenceException();
 
@@ -217,13 +217,13 @@ namespace Lab02___Dithering_and_Color_Quantization
 
         private void GammaCheckbox_OnChecked(object sender, RoutedEventArgs e)
         {
-            AppliedFilters.Add(new Gamma(GammaSlider.Value));
+            AppliedEffects.Add(new Gamma(GammaSlider.Value));
             ApplyFilters();
         }
 
         private void GammaCheckbox_OnUnchecked(object sender, RoutedEventArgs e)
         {
-            AppliedFilters.RemoveAll((filter) => filter is Gamma);
+            AppliedEffects.RemoveAll((filter) => filter is Gamma);
             ApplyFilters();
         }
 
@@ -231,7 +231,7 @@ namespace Lab02___Dithering_and_Color_Quantization
         {
             if (GammaCheckbox.IsChecked == false) return;
 
-            var gammaFilter = (Gamma?)AppliedFilters.Find((filter) => filter is Gamma);
+            var gammaFilter = (Gamma?)AppliedEffects.Find((filter) => filter is Gamma);
 
             if (gammaFilter == null) throw new NullReferenceException();
 
@@ -244,61 +244,61 @@ namespace Lab02___Dithering_and_Color_Quantization
 
         private void BlurCheckbox_OnChecked(object sender, RoutedEventArgs e)
         {
-            AppliedFilters.Add(new Blur());
+            AppliedEffects.Add(new Blur());
             ApplyFilters();
         }
 
         private void BlurCheckbox_OnUnchecked(object sender, RoutedEventArgs e)
         {
-            AppliedFilters.RemoveAll((filter) => filter is Blur);
+            AppliedEffects.RemoveAll((filter) => filter is Blur);
             ApplyFilters();
         }
 
         private void GaussianBlurCheckbox_OnChecked(object sender, RoutedEventArgs e)
         {
-            AppliedFilters.Add(new GaussianBlur());
+            AppliedEffects.Add(new GaussianBlur());
             ApplyFilters();
         }
 
         private void GaussianBlurCheckbox_OnUnchecked(object sender, RoutedEventArgs e)
         {
-            AppliedFilters.RemoveAll((filter) => filter is GaussianBlur);
+            AppliedEffects.RemoveAll((filter) => filter is GaussianBlur);
             ApplyFilters();
         }
 
         private void SharpenCheckbox_OnChecked(object sender, RoutedEventArgs e)
         {
-            AppliedFilters.Add(new Sharpen());
+            AppliedEffects.Add(new Sharpen());
             ApplyFilters();
         }
 
         private void SharpenCheckbox_OnUnchecked(object sender, RoutedEventArgs e)
         {
-            AppliedFilters.RemoveAll((filter) => filter is Sharpen);
+            AppliedEffects.RemoveAll((filter) => filter is Sharpen);
             ApplyFilters();
         }
 
         private void EdgeDetectionCheckbox_OnChecked(object sender, RoutedEventArgs e)
         {
-            AppliedFilters.Add(new EdgeDetection());
+            AppliedEffects.Add(new EdgeDetection());
             ApplyFilters();
         }
 
         private void EdgeDetectionCheckbox_OnUnchecked(object sender, RoutedEventArgs e)
         {
-            AppliedFilters.RemoveAll((filter) => filter is EdgeDetection);
+            AppliedEffects.RemoveAll((filter) => filter is EdgeDetection);
             ApplyFilters();
         }
 
         private void EmbossCheckbox_OnChecked(object sender, RoutedEventArgs e)
         {
-            AppliedFilters.Add(new Emboss());
+            AppliedEffects.Add(new Emboss());
             ApplyFilters();
         }
 
         private void EmbossCheckbox_OnUnchecked(object sender, RoutedEventArgs e)
         {
-            AppliedFilters.RemoveAll((filter) => filter is Emboss);
+            AppliedEffects.RemoveAll((filter) => filter is Emboss);
             ApplyFilters();
         }
 
@@ -455,13 +455,13 @@ namespace Lab02___Dithering_and_Color_Quantization
 
         private void CustomFunctionCheckbox_OnChecked(object sender, RoutedEventArgs e)
         {
-            AppliedFilters.Add(new CustomFunction(FunctionPolyline.Points.ToArray()));
+            AppliedEffects.Add(new CustomFunction(FunctionPolyline.Points.ToArray()));
             ApplyFilters();
         }
 
         private void CustomFunctionCheckbox_OnUnchecked(object sender, RoutedEventArgs e)
         {
-            AppliedFilters.RemoveAll((filter) => filter is CustomFunction);
+            AppliedEffects.RemoveAll((filter) => filter is CustomFunction);
             ApplyFilters();
         }
 
@@ -469,7 +469,7 @@ namespace Lab02___Dithering_and_Color_Quantization
         {
             if (CustomFunctionCheckbox.IsChecked == false) return;
 
-            var customFunctionFilter = (CustomFunction?)AppliedFilters.Find((filter) => filter is CustomFunction);
+            var customFunctionFilter = (CustomFunction?)AppliedEffects.Find((filter) => filter is CustomFunction);
 
             if (customFunctionFilter == null) throw new NullReferenceException();
 
@@ -518,13 +518,27 @@ namespace Lab02___Dithering_and_Color_Quantization
 
         private void MedianCheckbox_OnChecked(object sender, RoutedEventArgs e)
         {
-            AppliedFilters.Add(new Median());
+            AppliedEffects.Add(new Median());
             ApplyFilters();
         }
 
         private void MedianCheckbox_OnUnchecked(object sender, RoutedEventArgs e)
         {
-            AppliedFilters.RemoveAll((filter) => filter is Median);
+            AppliedEffects.RemoveAll((filter) => filter is Median);
+            ApplyFilters();
+        }
+
+        //---------------------------
+        
+        private void GreyScale_OnChecked(object sender, RoutedEventArgs e)
+        {
+            AppliedEffects.Add(new Greyscale());
+            ApplyFilters();
+        }
+
+        private void GreyScale_OnUnchecked(object sender, RoutedEventArgs e)
+        {
+            AppliedEffects.RemoveAll((filter) => filter is Greyscale);
             ApplyFilters();
         }
 
@@ -532,7 +546,7 @@ namespace Lab02___Dithering_and_Color_Quantization
 
         private void ApplyFilters()
         {
-            if (AppliedFilters.Count == 0)
+            if (AppliedEffects.Count == 0)
             {
                 FlattenButton.IsEnabled = false;
 
@@ -552,7 +566,7 @@ namespace Lab02___Dithering_and_Color_Quantization
                 sb.Append( _stackPosition == 0 ? "In > Out" : $" Flattened ({_stackPosition}/{_history.Count-1}) >");
             }
 
-            foreach (var filter in AppliedFilters)
+            foreach (var filter in AppliedEffects)
             {
                 filteredImage = filteredImage.ApplyFilter(filter);
                 sb.Append(" " + filter + " >");
@@ -611,5 +625,6 @@ namespace Lab02___Dithering_and_Color_Quantization
             ApplyFilters();
         }
 
+        
     }
 }

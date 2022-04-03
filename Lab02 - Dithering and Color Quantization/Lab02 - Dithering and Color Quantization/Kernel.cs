@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Drawing;
-using System.Windows.Media.Imaging;
 
-namespace Lab01___Image_Filtering
+namespace Lab02___Dithering_and_Color_Quantization
 {
     public class Kernel
     {

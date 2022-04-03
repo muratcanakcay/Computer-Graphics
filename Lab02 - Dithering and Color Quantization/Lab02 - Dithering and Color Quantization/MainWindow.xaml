@@ -3,7 +3,6 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Lab01___Image_Filtering"
         mc:Ignorable="d"
         Title="Image Filtering" 
         Height="720" 
@@ -752,10 +751,7 @@
                                     </Grid>
                                 </Grid>
 
-
                             </TabItem>
-
-
 
                         </TabControl>
 
@@ -763,6 +759,79 @@
                     </TabItem>
 
                     <TabItem Header="Color">
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="8*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="20"/>
+                                <RowDefinition Height="20"/>
+                                <RowDefinition Height="20"/>
+                                <RowDefinition Height="20"/>
+                                <RowDefinition Height="20"/>
+                                <RowDefinition Height="20"/>
+                                <RowDefinition Height="20"/>
+                                <RowDefinition Height="20"/>
+                                <RowDefinition Height="20"/>
+                                <RowDefinition Height="20"/>
+                                <RowDefinition Height="20"/>
+                                <RowDefinition/>
+                            </Grid.RowDefinitions>
+                            
+                            <CheckBox Grid.Row="0"
+                                      Grid.Column="0"
+                                      Name="GreyScaleCheckbox"
+                                      IsChecked="False"
+                                      HorizontalAlignment="Center"
+                                      VerticalAlignment="Center"
+                                      BorderBrush="Black"
+                                      Checked="GreyScale_OnChecked"
+                                      Unchecked="GreyScale_OnUnchecked"/>
+                            
+                            <TextBlock Grid.Row="0"
+                                       Grid.Column="1" 
+                                       Text="GreyScale"
+                                       VerticalAlignment="Center"/>
+
+                            <CheckBox Grid.Row="1"
+                                      Grid.Column="0"
+                                      Name="RandomDitheringCheckbox"
+                                      IsChecked="False"
+                                      HorizontalAlignment="Center"
+                                      VerticalAlignment="Center"
+                                      BorderBrush="Black"
+                                      Checked="GammaCheckbox_OnChecked"
+                                      Unchecked="GammaCheckbox_OnUnchecked"/>
+                            
+                            <TextBlock Grid.Row="1"
+                                       Grid.Column="1" 
+                                       Text="Random Dithering"
+                                       VerticalAlignment="Center"/>
+
+                            <TextBlock Grid.Row="1"
+                                       Grid.Column="2" 
+                                       Text="K="
+                                       HorizontalAlignment="Right"
+                                       VerticalAlignment="Center"/>
+
+                            <TextBox Grid.Row="1" 
+                                     Grid.Column="3"
+                                     Grid.ColumnSpan="2"
+                                     Width="35"
+                                     Height="18"
+                                     Name="RandomDithering" 
+                                     Text="0 {Binding RandomDitheringK,
+                                        StringFormat={}{0:F2},
+                                        UpdateSourceTrigger=PropertyChanged}"
+                                     HorizontalContentAlignment="Center"/>
+
+
+                        </Grid>
 
 
 
