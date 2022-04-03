@@ -1,0 +1,28 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net5.0-windows</TargetFramework>
+    <RootNamespace>Lab02___Dithering_and_Color_Quantization</RootNamespace>
+	<Nullable>enable</Nullable>
+	<UseWPF>true</UseWPF>
+	<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+	<ItemGroup>
+		<None Remove="icons\icons8-export-50.png" />
+		<None Remove="icons\icons8-import-50.png" />
+		<None Remove="icons\icons8-redo-64.png" />
+		<None Remove="icons\icons8-reset-64.png" />
+		<None Remove="icons\icons8-undo-64.png" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Resource Include="icons\icons8-export-50.png" />
+		<Resource Include="icons\icons8-import-50.png" />
+		<Resource Include="icons\icons8-redo-64.png" />
+		<Resource Include="icons\icons8-reset-64.png" />
+		<Resource Include="icons\icons8-undo-64.png" />
+	</ItemGroup>
+
+</Project>
