@@ -161,7 +161,7 @@ namespace Lab02___Dithering_and_Color_Quantization
 
         private void InvertCheckbox_OnUnchecked(object sender, RoutedEventArgs e)
         {
-            AppliedEffects.RemoveAll((filter) => filter is Inversion);
+            AppliedEffects.RemoveAll((effect) => effect is Inversion);
             ApplyFilters();
         }
 
@@ -173,7 +173,7 @@ namespace Lab02___Dithering_and_Color_Quantization
 
         private void BrightnessCheckbox_OnUnchecked(object sender, RoutedEventArgs e)
         {
-            AppliedEffects.RemoveAll((filter) => filter is Brightness);
+            AppliedEffects.RemoveAll((effect) => effect is Brightness);
             ApplyFilters();
         }
 
@@ -181,7 +181,7 @@ namespace Lab02___Dithering_and_Color_Quantization
         {
             if (BrightnessCheckbox.IsChecked == false) return;
 
-            var brightnessFilter = (Brightness?)AppliedEffects.Find((filter) => filter is Brightness);
+            var brightnessFilter = (Brightness?)AppliedEffects.Find((effect) => effect is Brightness);
 
             if (brightnessFilter == null) throw new NullReferenceException();
 
@@ -198,7 +198,7 @@ namespace Lab02___Dithering_and_Color_Quantization
 
         private void ContrastCheckbox_OnUnchecked(object sender, RoutedEventArgs e)
         {
-            AppliedEffects.RemoveAll((filter) => filter is Contrast);
+            AppliedEffects.RemoveAll((effect) => effect is Contrast);
             ApplyFilters();
         }
 
@@ -206,7 +206,7 @@ namespace Lab02___Dithering_and_Color_Quantization
         {
             if (ContrastCheckbox.IsChecked == false) return;
 
-            var contrastFilter = (Contrast?)AppliedEffects.Find((filter) => filter is Contrast);
+            var contrastFilter = (Contrast?)AppliedEffects.Find((effect) => effect is Contrast);
 
             if (contrastFilter == null) throw new NullReferenceException();
 
@@ -223,7 +223,7 @@ namespace Lab02___Dithering_and_Color_Quantization
 
         private void GammaCheckbox_OnUnchecked(object sender, RoutedEventArgs e)
         {
-            AppliedEffects.RemoveAll((filter) => filter is Gamma);
+            AppliedEffects.RemoveAll((effect) => effect is Gamma);
             ApplyFilters();
         }
 
@@ -231,7 +231,7 @@ namespace Lab02___Dithering_and_Color_Quantization
         {
             if (GammaCheckbox.IsChecked == false) return;
 
-            var gammaFilter = (Gamma?)AppliedEffects.Find((filter) => filter is Gamma);
+            var gammaFilter = (Gamma?)AppliedEffects.Find((effect) => effect is Gamma);
 
             if (gammaFilter == null) throw new NullReferenceException();
 
@@ -250,7 +250,7 @@ namespace Lab02___Dithering_and_Color_Quantization
 
         private void BlurCheckbox_OnUnchecked(object sender, RoutedEventArgs e)
         {
-            AppliedEffects.RemoveAll((filter) => filter is Blur);
+            AppliedEffects.RemoveAll((effect) => effect is Blur);
             ApplyFilters();
         }
 
@@ -262,7 +262,7 @@ namespace Lab02___Dithering_and_Color_Quantization
 
         private void GaussianBlurCheckbox_OnUnchecked(object sender, RoutedEventArgs e)
         {
-            AppliedEffects.RemoveAll((filter) => filter is GaussianBlur);
+            AppliedEffects.RemoveAll((effect) => effect is GaussianBlur);
             ApplyFilters();
         }
 
@@ -274,7 +274,7 @@ namespace Lab02___Dithering_and_Color_Quantization
 
         private void SharpenCheckbox_OnUnchecked(object sender, RoutedEventArgs e)
         {
-            AppliedEffects.RemoveAll((filter) => filter is Sharpen);
+            AppliedEffects.RemoveAll((effect) => effect is Sharpen);
             ApplyFilters();
         }
 
@@ -286,7 +286,7 @@ namespace Lab02___Dithering_and_Color_Quantization
 
         private void EdgeDetectionCheckbox_OnUnchecked(object sender, RoutedEventArgs e)
         {
-            AppliedEffects.RemoveAll((filter) => filter is EdgeDetection);
+            AppliedEffects.RemoveAll((effect) => effect is EdgeDetection);
             ApplyFilters();
         }
 
@@ -298,7 +298,7 @@ namespace Lab02___Dithering_and_Color_Quantization
 
         private void EmbossCheckbox_OnUnchecked(object sender, RoutedEventArgs e)
         {
-            AppliedEffects.RemoveAll((filter) => filter is Emboss);
+            AppliedEffects.RemoveAll((effect) => effect is Emboss);
             ApplyFilters();
         }
 
@@ -461,7 +461,7 @@ namespace Lab02___Dithering_and_Color_Quantization
 
         private void CustomFunctionCheckbox_OnUnchecked(object sender, RoutedEventArgs e)
         {
-            AppliedEffects.RemoveAll((filter) => filter is CustomFunction);
+            AppliedEffects.RemoveAll((effect) => effect is CustomFunction);
             ApplyFilters();
         }
 
@@ -469,7 +469,7 @@ namespace Lab02___Dithering_and_Color_Quantization
         {
             if (CustomFunctionCheckbox.IsChecked == false) return;
 
-            var customFunctionFilter = (CustomFunction?)AppliedEffects.Find((filter) => filter is CustomFunction);
+            var customFunctionFilter = (CustomFunction?)AppliedEffects.Find((effect) => effect is CustomFunction);
 
             if (customFunctionFilter == null) throw new NullReferenceException();
 
@@ -524,7 +524,7 @@ namespace Lab02___Dithering_and_Color_Quantization
 
         private void MedianCheckbox_OnUnchecked(object sender, RoutedEventArgs e)
         {
-            AppliedEffects.RemoveAll((filter) => filter is Median);
+            AppliedEffects.RemoveAll((effect) => effect is Median);
             ApplyFilters();
         }
 
@@ -538,7 +538,34 @@ namespace Lab02___Dithering_and_Color_Quantization
 
         private void GreyScale_OnUnchecked(object sender, RoutedEventArgs e)
         {
-            AppliedEffects.RemoveAll((filter) => filter is Greyscale);
+            AppliedEffects.RemoveAll((effect) => effect is Greyscale);
+            ApplyFilters();
+        }
+
+        //---------------------------
+
+        private void RandomDithering_OnChecked(object sender, RoutedEventArgs e)
+        {
+            AppliedEffects.Add(new RandomDithering(int.Parse(RandomDithering.Text)));
+            ApplyFilters();
+        }
+
+        private void RandomDithering_OnUnchecked(object sender, RoutedEventArgs e)
+        {
+            AppliedEffects.RemoveAll((effect) => effect is RandomDithering);
+            ApplyFilters();
+        }
+
+        private void RandomDitheringSlider_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            if (RandomDitheringCheckbox.IsChecked == false) return;
+
+            var randomDitheringFilter = (RandomDithering?)AppliedEffects.Find((effect) => effect is RandomDithering);
+
+            if (randomDitheringFilter  == null) throw new NullReferenceException();
+
+            randomDitheringFilter.K= (int)Math.Floor(RandomDitheringSlider.Value);
+            
             ApplyFilters();
         }
 
@@ -546,6 +573,8 @@ namespace Lab02___Dithering_and_Color_Quantization
 
         private void ApplyFilters()
         {
+            if (OriginalImageCanvas.Source == null) return;
+            
             if (AppliedEffects.Count == 0)
             {
                 FlattenButton.IsEnabled = false;
@@ -625,6 +654,17 @@ namespace Lab02___Dithering_and_Color_Quantization
             ApplyFilters();
         }
 
-        
+        private void RandomDithering_OnTextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (RandomDithering.Text == string.Empty) return;
+            //if (RandomDithering.Text == "") return;
+
+            var value = int.Parse(RandomDithering.Text);
+            if (value < 2 || value > 100)
+            {
+                RandomDithering.Text = "4";
+            }
+
+        }
     }
 }

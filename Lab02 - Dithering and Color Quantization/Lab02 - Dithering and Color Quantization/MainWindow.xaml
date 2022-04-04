@@ -805,8 +805,8 @@
                                       HorizontalAlignment="Center"
                                       VerticalAlignment="Center"
                                       BorderBrush="Black"
-                                      Checked="GammaCheckbox_OnChecked"
-                                      Unchecked="GammaCheckbox_OnUnchecked"/>
+                                      Checked="RandomDithering_OnChecked"
+                                      Unchecked="RandomDithering_OnUnchecked"/>
                             
                             <TextBlock Grid.Row="1"
                                        Grid.Column="1" 
@@ -818,6 +818,13 @@
                                        Text="K="
                                        HorizontalAlignment="Right"
                                        VerticalAlignment="Center"/>
+                            <Slider Grid.Row="2" 
+                                    Grid.Column="1" 
+                                    Value="4"
+                                    Minimum="2" 
+                                    Maximum="30"
+                                    Name="RandomDitheringSlider"
+                                    ValueChanged="RandomDitheringSlider_OnValueChanged"/>
 
                             <TextBox Grid.Row="1" 
                                      Grid.Column="3"
@@ -825,8 +832,11 @@
                                      Width="35"
                                      Height="18"
                                      Name="RandomDithering" 
-                                     Text="0 {Binding RandomDitheringK,
-                                        StringFormat={}{0:F2},
+                                     Text="{Binding 
+                                        Mode=TwoWay, 
+                                        ElementName=RandomDitheringSlider,
+                                        Path=Value,
+                                        StringFormat={}{0:F0},
                                         UpdateSourceTrigger=PropertyChanged}"
                                      HorizontalContentAlignment="Center"/>
 
