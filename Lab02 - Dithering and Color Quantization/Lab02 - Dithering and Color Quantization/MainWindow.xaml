@@ -823,6 +823,8 @@
                                     Value="4"
                                     Minimum="2" 
                                     Maximum="30"
+                                    SmallChange="1"
+                                    LargeChange="4"
                                     Name="RandomDitheringSlider"
                                     ValueChanged="RandomDitheringSlider_OnValueChanged"/>
 

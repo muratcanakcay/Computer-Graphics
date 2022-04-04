@@ -70,10 +70,12 @@ namespace Lab02___Dithering_and_Color_Quantization
             MedianCheckbox.IsChecked = false;
             CustomFunctionCheckbox.IsChecked = false;
             GreyScaleCheckbox.IsChecked = false;
+            RandomDitheringCheckbox.IsChecked = false;
             
             BrightnessSlider.Value = 0;
             ContrastSlider.Value = 1;
             GammaSlider.Value = 1;
+            RandomDitheringSlider.Value = 4;
             FunctionPolyline.Points = new PointCollection() { new(0, 255), new(255, 0) };
 
             AppliedEffects.Clear();
@@ -558,14 +560,16 @@ namespace Lab02___Dithering_and_Color_Quantization
 
         private void RandomDitheringSlider_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
+            //return;
+
             if (RandomDitheringCheckbox.IsChecked == false) return;
 
             var randomDitheringFilter = (RandomDithering?)AppliedEffects.Find((effect) => effect is RandomDithering);
 
-            if (randomDitheringFilter  == null) throw new NullReferenceException();
+            if (randomDitheringFilter == null) throw new NullReferenceException();
 
-            randomDitheringFilter.K= (int)Math.Floor(RandomDitheringSlider.Value);
-            
+            randomDitheringFilter.K = int.Parse(RandomDithering.Text);
+
             ApplyFilters();
         }
 
