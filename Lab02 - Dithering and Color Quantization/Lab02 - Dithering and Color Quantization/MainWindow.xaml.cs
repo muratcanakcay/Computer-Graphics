@@ -562,8 +562,6 @@ namespace Lab02___Dithering_and_Color_Quantization
 
         private void RandomDitheringSlider_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            //return;
-
             if (RandomDitheringCheckbox.IsChecked == false) return;
 
             var randomDitheringFilter = (RandomDithering?)AppliedEffects.Find((effect) => effect is RandomDithering);
@@ -571,6 +569,33 @@ namespace Lab02___Dithering_and_Color_Quantization
             if (randomDitheringFilter == null) throw new NullReferenceException();
 
             randomDitheringFilter.K = int.Parse(RandomDithering.Text);
+
+            ApplyFilters();
+        }
+
+        //---------------------------
+
+        private void YCbCrDithering_OnChecked(object sender, RoutedEventArgs e)
+        {
+            AppliedEffects.Add(new YCbCrDithering(int.Parse(YCbCrDithering.Text)));
+            ApplyFilters();
+        }
+
+        private void YCbCrDithering_OnUnchecked(object sender, RoutedEventArgs e)
+        {
+            AppliedEffects.RemoveAll((effect) => effect is YCbCrDithering);
+            ApplyFilters();
+        }
+
+        private void YCbCrDitheringSlider_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            if (YCbCrDitheringCheckbox.IsChecked == false) return;
+
+            var YCbCrDitheringFilter = (YCbCrDithering?)AppliedEffects.Find((effect) => effect is YCbCrDithering);
+
+            if (YCbCrDitheringFilter == null) throw new NullReferenceException();
+
+            YCbCrDitheringFilter.K = int.Parse(YCbCrDithering.Text);
 
             ApplyFilters();
         }
@@ -693,6 +718,7 @@ namespace Lab02___Dithering_and_Color_Quantization
             }
 
         }
+
 
         
     }

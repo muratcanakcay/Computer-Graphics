@@ -847,23 +847,23 @@
                                         UpdateSourceTrigger=PropertyChanged}"
                                      HorizontalContentAlignment="Center"/>
 
-                            <!--K-MEANS-->
+                            <!--YCBCR DITHERING-->
 
                             <CheckBox Grid.Row="3"
                                       Grid.Column="0"
-                                      Name="KMeansCheckbox"
+                                      Name="YCbCrDitheringCheckbox"
                                       IsChecked="False"
                                       HorizontalAlignment="Center"
                                       VerticalAlignment="Center"
                                       BorderBrush="Black"
-                                      Checked="KMeans_OnChecked"
-                                      Unchecked="KMeans_OnUnchecked"/>
+                                      Checked="YCbCrDithering_OnChecked"
+                                      Unchecked="YCbCrDithering_OnUnchecked"/>
                             
                             <TextBlock Grid.Row="3"
                                        Grid.Column="1" 
-                                       Text="K-Means Quantization"
+                                       Text="YCbCr Dithering"
                                        VerticalAlignment="Center"/>
-                            
+
                             <TextBlock Grid.Row="4"
                                        Grid.Column="2" 
                                        Text="K="
@@ -877,10 +877,57 @@
                                     Maximum="16"
                                     SmallChange="1"
                                     LargeChange="4"
+                                    Name="YCbCrDitheringSlider"
+                                    ValueChanged="YCbCrDitheringSlider_OnValueChanged"/>
+
+                            <TextBox Grid.Row="4" 
+                                     Grid.Column="3"
+                                     Grid.ColumnSpan="2"
+                                     Width="35"
+                                     Height="18"
+                                     Name="YCbCrDithering" 
+                                     Text="{Binding 
+                                        Mode=TwoWay, 
+                                        ElementName=YCbCrDitheringSlider,
+                                        Path=Value,
+                                        StringFormat={}{0:F0},
+                                        UpdateSourceTrigger=PropertyChanged}"
+                                     HorizontalContentAlignment="Center"/>
+
+                            <!--K-MEANS-->
+
+                            <CheckBox Grid.Row="5"
+                                      Grid.Column="0"
+                                      Name="KMeansCheckbox"
+                                      IsChecked="False"
+                                      HorizontalAlignment="Center"
+                                      VerticalAlignment="Center"
+                                      BorderBrush="Black"
+                                      Checked="KMeans_OnChecked"
+                                      Unchecked="KMeans_OnUnchecked"/>
+                            
+                            <TextBlock Grid.Row="5"
+                                       Grid.Column="1" 
+                                       Text="K-Means Quantization"
+                                       VerticalAlignment="Center"/>
+                            
+                            <TextBlock Grid.Row="6"
+                                       Grid.Column="2" 
+                                       Text="K="
+                                       HorizontalAlignment="Right"
+                                       VerticalAlignment="Center"/>
+                            
+                            <Slider Grid.Row="6" 
+                                    Grid.Column="1" 
+                                    Value="4"
+                                    Minimum="2" 
+                                    Maximum="64"
+                                    SmallChange="1"
+                                    LargeChange="4"
                                     Name="KMeansSlider"
                                     ValueChanged="KMeansSlider_OnValueChanged"/>
 
-                            <TextBox Grid.Row="4" 
+                            <TextBox Grid.Row="6" 
                                      Grid.Column="3"
                                      Grid.ColumnSpan="2"
                                      Width="35"
@@ -895,19 +942,9 @@
                                      HorizontalContentAlignment="Center"/>
 
 
+
+
                         </Grid>
-
-
-
-
-
-
-
-
-
-
-
-
 
 
                     </TabItem>

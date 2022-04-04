@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Numerics;
 using System.Windows.Documents;
@@ -15,6 +16,8 @@ namespace Lab02___Dithering_and_Color_Quantization
     public class KMeans: ColorQuantization
     {
         public int K { get; set; }
+        private Dictionary<Vector3, Vector3> colorMap = new();
+        private int iterations = 0;
 
         public KMeans(int k)  
         {
@@ -29,7 +32,8 @@ namespace Lab02___Dithering_and_Color_Quantization
             var rng = new Random();
 
             var centroids = new List<Vector3>(K);
-            var clusters = new Dictionary<Vector3, List<Vector3>>(K);
+            //var clusters = new Dictionary<Vector3, List<Vector3>>(K);
+            var clusters = new Dictionary<Vector3, (Vector3 sum, int count)>(K);
 
             // initialize centroids with random colors chosen from the image
             for (var i = 0; i < K; i++)
@@ -52,15 +56,14 @@ namespace Lab02___Dithering_and_Color_Quantization
             // initialize clusters with the centroids
             for (var i = 0; i < K; i++)
             {
-                clusters.Add(centroids[i], new List<Vector3>());
+                clusters.Add(centroids[i], (new Vector3(), 0));
             }
 
             // run the K-means iterative algorithm
             UpdateClusters(ref centroids, ref clusters, wbm);
 
             // now the final clusters are formed
-            // assign pixels to their new colors
-
+            // assign their new colors to the pixels
             try
             {
                 wbm.Lock();
@@ -73,20 +76,13 @@ namespace Lab02___Dithering_and_Color_Quantization
                         var oldColor = clone.GetPixelColor(x, y);
                         var oldColorVector = new Vector3(oldColor.R, oldColor.G, oldColor.B);
 
-                        for (var i = 0; i < K; i++)
-                        {
-                            if (clusters[centroids[i]].Contains(oldColorVector))
-                            {
-                                clone.SetPixelColor(x, y, Color.FromArgb(
-                                    oldColor.A,
-                                    (int)centroids[i].X,
-                                    (int)centroids[i].Y,
-                                    (int)centroids[i].Z)
-                                    );
-                                break;
-                            }
-                        }
-
+                        
+                        clone.SetPixelColor(x, y, Color.FromArgb(
+                            oldColor.A,
+                            (int)colorMap[oldColorVector].X,
+                            (int)colorMap[oldColorVector].Y,
+                            (int)colorMap[oldColorVector].Z)
+                            );
                     }
                 }
             }
@@ -99,10 +95,12 @@ namespace Lab02___Dithering_and_Color_Quantization
             return clone;
         }
 
-        private void UpdateClusters(ref List<Vector3> centroids, ref Dictionary<Vector3, List<Vector3>> clusters, in WriteableBitmap wbm)
+        private void UpdateClusters(ref List<Vector3> centroids, ref Dictionary<Vector3, (Vector3 sum, int count)> clusters, in WriteableBitmap wbm)
         {
             var width = wbm.PixelWidth;
             var height = wbm.PixelHeight;
+
+            Debug.Print("Iteration #" + ++iterations);
             
             for (var x = 0; x < width; x++)
             {
@@ -130,7 +128,19 @@ namespace Lab02___Dithering_and_Color_Quantization
                     }
 
                     // assign the pixel color to the closest centroid's cluster
-                    clusters[centroids[closestCentroidIndex]].Add(colorVector);
+                    clusters[centroids[closestCentroidIndex]] = 
+                        (Vector3.Add(
+                            clusters[centroids[closestCentroidIndex]].sum, 
+                            colorVector), clusters[centroids[closestCentroidIndex]].count + 1);
+                    
+                    if (colorMap.ContainsKey(colorVector))
+                    {
+                        colorMap[colorVector] = centroids[closestCentroidIndex];
+                    }
+                    else
+                    {
+                        colorMap.Add(colorVector, centroids[closestCentroidIndex]);
+                    }
                 }
             }
 
@@ -140,44 +150,36 @@ namespace Lab02___Dithering_and_Color_Quantization
 
             var averages = new List<Vector3>(K) {};
             var centroidsChanged = false;
-            float error = 0.0f;
             for (var i = 0; i < K; i++)
             {
-                var sum = new Vector3(0, 0, 0);
-                for (var j = 0; j < clusters[centroids[i]].Count; j++)
-                {
-                    sum = Vector3.Add(sum, clusters[centroids[i]][j]);
-                }
-
-                averages.Add(Vector3.Divide(sum, clusters[centroids[i]].Count));
+                averages.Add(Vector3.Divide(clusters[centroids[i]].sum, clusters[centroids[i]].count));
                 
                 // check if average is the same as the original centroid
-                error = Vector3.Distance(averages[i], centroids[i]);
+                var error = Vector3.Distance(averages[i], centroids[i]);
                 if (error > 0.1f)
                 {
                     centroidsChanged = true;
                 }
             }
 
-            // if the centroids changed assign the new centroids, clear the cluster list
-            // and re-run the iteration
+            // if the centroids did not change more than error threshold, then return.
+            // if they changed more than the error threshold assign the new centroids,
+            // clear the cluster list and re-run the iteration
 
-            if (centroidsChanged)
+            if (!centroidsChanged) return;
+            
+            
+            clusters.Clear();
+            centroids.Clear();
+            centroids = averages;
+            
+            for (var i = 0; i < K; i++)
             {
-                centroids.Clear();
-                centroids = averages;
-                
-                clusters.Clear();
-                for (var i = 0; i < K; i++)
-                {
-                    clusters.Add(centroids[i], new List<Vector3>());
-                }
-
-                UpdateClusters(ref centroids, ref clusters, wbm);
+                clusters.Add(centroids[i], (new Vector3(), 0));
             }
+
+            UpdateClusters(ref centroids, ref clusters, wbm);
         }
-
-
 
         public override string ToString()
         {
