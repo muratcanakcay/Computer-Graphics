@@ -54,7 +54,7 @@ namespace Lab02___Dithering_and_Color_Quantization
                 _centroids.Add(colorVector);
             }
 
-            // initialize clusters with the centroids
+            // initialize clusters with the centroids // TODO: fix "An item with the same key has already been added" exception
             for (var i = 0; i < K; i++)
             {
                 _clusters.Add(_centroids[i], (new Vector3(), 0));
