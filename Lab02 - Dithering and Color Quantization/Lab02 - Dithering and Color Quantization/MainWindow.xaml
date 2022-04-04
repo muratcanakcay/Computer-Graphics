@@ -782,6 +782,8 @@
                                 <RowDefinition Height="20"/>
                                 <RowDefinition/>
                             </Grid.RowDefinitions>
+
+                            <!--GREYSCALE-->
                             
                             <CheckBox Grid.Row="0"
                                       Grid.Column="0"
@@ -798,6 +800,8 @@
                                        Text="GreyScale"
                                        VerticalAlignment="Center"/>
 
+                            <!--RANDOM DITHERING-->
+
                             <CheckBox Grid.Row="1"
                                       Grid.Column="0"
                                       Name="RandomDitheringCheckbox"
@@ -813,22 +817,23 @@
                                        Text="Random Dithering"
                                        VerticalAlignment="Center"/>
 
-                            <TextBlock Grid.Row="1"
+                            <TextBlock Grid.Row="2"
                                        Grid.Column="2" 
                                        Text="K="
                                        HorizontalAlignment="Right"
                                        VerticalAlignment="Center"/>
+                            
                             <Slider Grid.Row="2" 
                                     Grid.Column="1" 
                                     Value="4"
                                     Minimum="2" 
-                                    Maximum="30"
+                                    Maximum="16"
                                     SmallChange="1"
                                     LargeChange="4"
                                     Name="RandomDitheringSlider"
                                     ValueChanged="RandomDitheringSlider_OnValueChanged"/>
 
-                            <TextBox Grid.Row="1" 
+                            <TextBox Grid.Row="2" 
                                      Grid.Column="3"
                                      Grid.ColumnSpan="2"
                                      Width="35"
@@ -837,6 +842,53 @@
                                      Text="{Binding 
                                         Mode=TwoWay, 
                                         ElementName=RandomDitheringSlider,
+                                        Path=Value,
+                                        StringFormat={}{0:F0},
+                                        UpdateSourceTrigger=PropertyChanged}"
+                                     HorizontalContentAlignment="Center"/>
+
+                            <!--K-MEANS-->
+
+                            <CheckBox Grid.Row="3"
+                                      Grid.Column="0"
+                                      Name="KMeansCheckbox"
+                                      IsChecked="False"
+                                      HorizontalAlignment="Center"
+                                      VerticalAlignment="Center"
+                                      BorderBrush="Black"
+                                      Checked="KMeans_OnChecked"
+                                      Unchecked="KMeans_OnUnchecked"/>
+                            
+                            <TextBlock Grid.Row="3"
+                                       Grid.Column="1" 
+                                       Text="K-Means Quantization"
+                                       VerticalAlignment="Center"/>
+                            
+                            <TextBlock Grid.Row="4"
+                                       Grid.Column="2" 
+                                       Text="K="
+                                       HorizontalAlignment="Right"
+                                       VerticalAlignment="Center"/>
+                            
+                            <Slider Grid.Row="4" 
+                                    Grid.Column="1" 
+                                    Value="4"
+                                    Minimum="2" 
+                                    Maximum="16"
+                                    SmallChange="1"
+                                    LargeChange="4"
+                                    Name="KMeansSlider"
+                                    ValueChanged="KMeansSlider_OnValueChanged"/>
+
+                            <TextBox Grid.Row="4" 
+                                     Grid.Column="3"
+                                     Grid.ColumnSpan="2"
+                                     Width="35"
+                                     Height="18"
+                                     Name="KMeans" 
+                                     Text="{Binding 
+                                        Mode=TwoWay, 
+                                        ElementName=KMeansSlider,
                                         Path=Value,
                                         StringFormat={}{0:F0},
                                         UpdateSourceTrigger=PropertyChanged}"

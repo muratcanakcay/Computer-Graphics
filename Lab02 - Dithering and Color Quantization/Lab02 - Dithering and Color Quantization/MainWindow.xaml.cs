@@ -71,11 +71,13 @@ namespace Lab02___Dithering_and_Color_Quantization
             CustomFunctionCheckbox.IsChecked = false;
             GreyScaleCheckbox.IsChecked = false;
             RandomDitheringCheckbox.IsChecked = false;
+            KMeansCheckbox.IsChecked = false;
             
             BrightnessSlider.Value = 0;
             ContrastSlider.Value = 1;
             GammaSlider.Value = 1;
             RandomDitheringSlider.Value = 4;
+            KMeansSlider.Value = 4;
             FunctionPolyline.Points = new PointCollection() { new(0, 255), new(255, 0) };
 
             AppliedEffects.Clear();
@@ -575,6 +577,27 @@ namespace Lab02___Dithering_and_Color_Quantization
 
         //---------------------------
 
+        private void KMeans_OnChecked(object sender, RoutedEventArgs e)
+        {
+            AppliedEffects.Add(new KMeans(int.Parse(KMeans.Text)));
+            ApplyFilters();
+        }
+
+        private void KMeans_OnUnchecked(object sender, RoutedEventArgs e)
+        {
+            AppliedEffects.RemoveAll((effect) => effect is KMeans);
+            ApplyFilters();
+        }
+
+        private void KMeansSlider_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            return;
+            
+            //throw new NotImplementedException();
+        }
+
+        //---------------------------
+
         private void ApplyFilters()
         {
             if (OriginalImageCanvas.Source == null) return;
@@ -670,5 +693,7 @@ namespace Lab02___Dithering_and_Color_Quantization
             }
 
         }
+
+        
     }
 }
