@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32112.339
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lab03 - Rasterization", "Lab03 - Rasterization\Lab03 - Rasterization.csproj", "{2106D9CA-98C2-4CB2-9540-B27D43B3C345}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2106D9CA-98C2-4CB2-9540-B27D43B3C345}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2106D9CA-98C2-4CB2-9540-B27D43B3C345}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2106D9CA-98C2-4CB2-9540-B27D43B3C345}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2106D9CA-98C2-4CB2-9540-B27D43B3C345}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {0740AF5C-1041-4B91-9A77-C105216DDD72}
+	EndGlobalSection
+EndGlobal
