@@ -151,11 +151,11 @@
                                 Margin="1,0, 6, 0"
                                 Height="20"
                                 Width="100"
-                                Name="Line"
+                                Name="LineButton"
                                 IsEnabled="true"
                                 ToolTip="Draw line"
                                 Background="LightCyan"
-                                Click="dummyCallBack">
+                                Click="LineButton_OnClick">
                                 Line
                             </Button>
 
