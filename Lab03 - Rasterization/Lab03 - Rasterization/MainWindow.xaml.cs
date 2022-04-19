@@ -15,6 +15,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Color = System.Drawing.Color;
 
+// TODO check for out of bounds of canvas! maybe set canvas size to match panel size?
 
 namespace Lab03___Rasterization
 {
@@ -147,6 +148,8 @@ namespace Lab03___Rasterization
                 currentLine = new Line(new List<Point> { _points[0], cursorPosition });
                 currentLine.Draw(_wbm);
             }
+            
+            // draw polygon preview
             if (_isDrawingPolygon && _points.Count > 0)
             {
                 ClearCanvas();
@@ -215,6 +218,16 @@ namespace Lab03___Rasterization
         {
             _allShapes.Clear();
             ClearCanvas();
+        }
+
+        private void TheCanvas_OnMouseRightButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            if (_isDrawingLine) ToggleIsDrawingLine();
+            else if (_isDrawingPolygon) ToggleIsDrawingPolygon();
+
+            _points.Clear();
+            ClearCanvas();
+            DrawAllShapes();
         }
     }
 }
