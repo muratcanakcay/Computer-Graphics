@@ -13,6 +13,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Color = System.Drawing.Color;
+
 
 namespace Lab03___Rasterization
 {
@@ -25,10 +27,46 @@ namespace Lab03___Rasterization
         private static readonly Point NullPoint = new(-1, -1);
         private Point _startingPoint = NullPoint;
         private Point _endingPoint = NullPoint;
+        private List<Line> _allShapes = new();
+        private WriteableBitmap _wbm;
 
         public MainWindow()
         {
             InitializeComponent();
+
+            _wbm = new WriteableBitmap((int)TheCanvas.Width,
+                                                    (int)TheCanvas.Height, 
+                                                    96, 
+                                                    96, 
+                                                    PixelFormats.Bgr32, 
+                                                    null);
+            
+            try
+            {
+                _wbm.Lock();
+
+                for (int x = 0; x < _wbm.Width; x++)
+                {
+                    for (int y = 0; y < _wbm.Height; y++)
+                    {
+                        _wbm.SetPixelColor(x, y, Color.FromArgb(255, 255, 255, 255));
+                    }
+                
+                }
+            }
+            finally
+            {
+                _wbm.Unlock();
+            }
+            
+            
+
+            var brush = new ImageBrush
+            {
+                ImageSource = _wbm
+            };
+
+            TheCanvas.Background = brush;
         }
 
         private void dummyCallBack(object sender, RoutedEventArgs e)
@@ -57,8 +95,19 @@ namespace Lab03___Rasterization
             {
                 _endingPoint = clickPosition;
                 Debug.WriteLine($"Ending: {clickPosition.X}, {clickPosition.Y}");
+                _allShapes.Add(new Line(_startingPoint, _endingPoint));
                 ToggleIsDrawingLine();
+
+                foreach (var line in _allShapes)
+                {
+                    Debug.WriteLine(line);
+                    line.Draw(_wbm);
+                }
+
             }
+
+
+
 
         }
 

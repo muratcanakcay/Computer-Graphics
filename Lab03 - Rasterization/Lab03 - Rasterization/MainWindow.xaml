@@ -47,6 +47,8 @@
             <Grid Grid.Column="0"> 
                 <Canvas
                     Name="TheCanvas"
+                    Height="680" 
+                    Width="900"
                     Background="Transparent"
                     MouseLeftButtonDown="TheCanvas_OnMouseLeftButtonDown"
                     Cursor="Cross"
