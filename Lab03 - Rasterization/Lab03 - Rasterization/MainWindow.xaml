@@ -51,6 +51,7 @@
                     Width="900"
                     Background="Transparent"
                     MouseLeftButtonDown="TheCanvas_OnMouseLeftButtonDown"
+                    MouseMove="TheCanvas_OnMouseMove"
                     Cursor="Cross"
                         
                         />

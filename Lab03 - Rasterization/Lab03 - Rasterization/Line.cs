@@ -28,17 +28,16 @@ namespace Lab03___Rasterization
         {
             double dy = P2.Y - P1.Y;
             double dx = P2.X - P1.X;
-            double m = dy/dx;
-            
-            
 
             try
             {
                 wbm.Lock();
                 
-                if (Math.Abs(m)<1)
+                if (dx != 0 && Math.Abs(dy/dx) < 1)
                 {
                     double y = P1.Y;
+                    double m = dy/dx;
+
                     if (dx > 0)
                     {
                         for (int x = (int)P1.X; x <= P2.X; ++x)
@@ -47,7 +46,7 @@ namespace Lab03___Rasterization
                             y += m;
                         }
                     }
-                    else if (dx < 0)
+                    else
                     {
                         for (int x = (int)P1.X; x >= P2.X; --x)
                         {
@@ -56,10 +55,10 @@ namespace Lab03___Rasterization
                         }
                     }
                 }
-                else if (Math.Abs(m)>1)
+                else if (dy != 0)
                 {
-                    m = dx/dy;
                     double x = P1.X;
+                    double m = dx/dy;
 
                     if (dy > 0)
                     {
@@ -69,7 +68,7 @@ namespace Lab03___Rasterization
                             x += m;
                         }
                     }
-                    else if (dy < 0)
+                    else
                     {
                         for (int y = (int)P1.Y; y >= P2.Y; --y)
                         {

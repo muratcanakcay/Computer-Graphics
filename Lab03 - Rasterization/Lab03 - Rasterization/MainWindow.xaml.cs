@@ -27,14 +27,15 @@ namespace Lab03___Rasterization
         private static readonly Point NullPoint = new(-1, -1);
         private Point _startingPoint = NullPoint;
         private Point _endingPoint = NullPoint;
-        private List<Line> _allShapes = new();
+        private readonly List<IDrawable> _allShapes = new();
+        private readonly WriteableBitmap _whiteWbm;
         private WriteableBitmap _wbm;
 
         public MainWindow()
         {
             InitializeComponent();
 
-            _wbm = new WriteableBitmap((int)TheCanvas.Width,
+            _whiteWbm = new WriteableBitmap((int)TheCanvas.Width,
                                                     (int)TheCanvas.Height, 
                                                     96, 
                                                     96, 
@@ -43,23 +44,23 @@ namespace Lab03___Rasterization
             
             try
             {
-                _wbm.Lock();
+                _whiteWbm.Lock();
 
-                for (int x = 0; x < _wbm.Width; x++)
+                for (int x = 0; x < _whiteWbm.Width; x++)
                 {
-                    for (int y = 0; y < _wbm.Height; y++)
+                    for (int y = 0; y < _whiteWbm.Height; y++)
                     {
-                        _wbm.SetPixelColor(x, y, Color.FromArgb(255, 255, 255, 255));
+                        _whiteWbm.SetPixelColor(x, y, Color.FromArgb(255, 255, 255, 255));
                     }
                 
                 }
             }
             finally
             {
-                _wbm.Unlock();
+                _whiteWbm.Unlock();
             }
-            
-            
+
+            _wbm = _whiteWbm.Clone();
 
             var brush = new ImageBrush
             {
@@ -73,6 +74,19 @@ namespace Lab03___Rasterization
         {
             throw new NotImplementedException();
         }
+
+        private void ClearCanvas()
+        {
+            _wbm = _whiteWbm.Clone();
+            var brush = new ImageBrush
+            {
+                ImageSource = _wbm
+            };
+            TheCanvas.Background = brush;
+
+            DrawAllShapes();
+        }
+
 
         private void TheCanvas_OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
@@ -98,17 +112,17 @@ namespace Lab03___Rasterization
                 _allShapes.Add(new Line(_startingPoint, _endingPoint));
                 ToggleIsDrawingLine();
 
-                foreach (var line in _allShapes)
-                {
-                    Debug.WriteLine(line);
-                    line.Draw(_wbm);
-                }
-
+                DrawAllShapes();
             }
+        }
 
-
-
-
+        private void DrawAllShapes()
+        {
+            foreach (var line in _allShapes)
+            {
+                //Debug.WriteLine(line);
+                line.Draw(_wbm);
+            }
         }
 
         private void LineButton_OnClick(object sender, RoutedEventArgs e)
@@ -122,6 +136,18 @@ namespace Lab03___Rasterization
             _isDrawingLine = !_isDrawingLine;
             LineButton.Background = _isDrawingLine ? Brushes.LightSalmon : Brushes.LightCyan;
             if (_isDrawingLine == false) _startingPoint = NullPoint;
+        }
+
+        private void TheCanvas_OnMouseMove(object sender, MouseEventArgs e)
+        {
+            var cursorPosition = e.GetPosition(TheCanvas);
+
+            if (_isDrawingLine && !_startingPoint.Equals(NullPoint))
+            {
+                var currentLine = new Line(_startingPoint, cursorPosition);
+                ClearCanvas();
+                currentLine.Draw(_wbm);
+            }
         }
     }
 }
