@@ -132,7 +132,8 @@ namespace Lab03___Rasterization
 
         public bool SetPoints(List<Point> points)
         {
-            throw new NotImplementedException();
+            Points = points;
+            return true;
         }
 
         public override string ToString()

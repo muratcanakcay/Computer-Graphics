@@ -111,7 +111,7 @@ namespace Lab03___Rasterization
                         var pointIndex = points.IndexOf(point);
                         if (calculateDistance(point, cursorPosition) < 10)
                         {
-                            Debug.WriteLine("POINT!");
+                            Debug.WriteLine("VERTEX!");
                             _isDraggingVertex = true;
                             _currentPoints = points;
                             _currentPointIndex = pointIndex;
