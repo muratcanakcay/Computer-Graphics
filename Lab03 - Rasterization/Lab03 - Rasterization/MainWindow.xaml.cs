@@ -214,7 +214,7 @@ namespace Lab03___Rasterization
             return (int)Math.Round(Math.Sqrt(Math.Pow((p2.X - p1.X), 2) + Math.Pow((p2.Y - p1.Y), 2)));
         }
 
-        private void OnClick_ClearCanvas(object sender, RoutedEventArgs e)
+        private void OnClick_ResetCanvas(object sender, RoutedEventArgs e)
         {
             _allShapes.Clear();
             ClearCanvas();

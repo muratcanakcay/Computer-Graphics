@@ -27,7 +27,7 @@
             </Menu.ItemsPanel>
 
             <MenuItem HorizontalAlignment="Left" Header="_File">
-                <MenuItem Header="_Clear" Click="OnClick_ClearCanvas" ></MenuItem>
+                <MenuItem Header="_Reset" Click="OnClick_ResetCanvas" ></MenuItem>
                 <MenuItem Header="_Open Image" Click="dummyCallBack" InputGestureText="Alt+O"></MenuItem>
                 <MenuItem Header="_Save Image" Click="dummyCallBack" InputGestureText="Alt+S"></MenuItem>
             </MenuItem>
