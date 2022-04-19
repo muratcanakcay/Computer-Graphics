@@ -27,7 +27,7 @@
             </Menu.ItemsPanel>
 
             <MenuItem HorizontalAlignment="Left" Header="_File">
-                <MenuItem Header="_Reset" Click="dummyCallBack" ></MenuItem>
+                <MenuItem Header="_Clear" Click="OnClick_ClearCanvas" ></MenuItem>
                 <MenuItem Header="_Open Image" Click="dummyCallBack" InputGestureText="Alt+O"></MenuItem>
                 <MenuItem Header="_Save Image" Click="dummyCallBack" InputGestureText="Alt+S"></MenuItem>
             </MenuItem>
@@ -148,6 +148,7 @@
                             </Grid.RowDefinitions>
 
                             <Button  
+                                Grid.Row="0"
                                 Grid.Column="0"
                                 HorizontalAlignment="Left"
                                 VerticalAlignment="Center"
@@ -156,10 +157,26 @@
                                 Width="100"
                                 Name="LineButton"
                                 IsEnabled="true"
-                                ToolTip="Draw line"
+                                ToolTip="Draw Line"
                                 Background="LightCyan"
                                 Click="LineButton_OnClick">
-                                Line
+                                Draw Line
+                            </Button>
+
+                            <Button  
+                                Grid.Row="1"
+                                Grid.Column="0"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                Margin="1,0, 6, 0"
+                                Height="20"
+                                Width="100"
+                                Name="PolygonButton"
+                                IsEnabled="true"
+                                ToolTip="Draw Polygon"
+                                Background="LightCyan"
+                                Click="PolygonButton_OnClick">
+                                Draw Polygon
                             </Button>
 
 

@@ -24,50 +24,47 @@ namespace Lab03___Rasterization
     public partial class MainWindow : Window
     {
         private bool _isDrawingLine;
+        private bool _isDrawingPolygon;
         private static readonly Point NullPoint = new(-1, -1);
-        private Point _startingPoint = NullPoint;
-        private Point _endingPoint = NullPoint;
+        private readonly List<Point> _points = new(30) { NullPoint, NullPoint };
         private readonly List<IDrawable> _allShapes = new();
         private readonly WriteableBitmap _whiteWbm;
         private WriteableBitmap _wbm;
+        private Polygon currentPolygon;
+        
 
         public MainWindow()
         {
             InitializeComponent();
+            _whiteWbm = InitializeCanvas(ref _wbm);
+        }
 
-            _whiteWbm = new WriteableBitmap((int)TheCanvas.Width,
-                                                    (int)TheCanvas.Height, 
-                                                    96, 
-                                                    96, 
-                                                    PixelFormats.Bgr32, 
-                                                    null);
-            
+        private WriteableBitmap InitializeCanvas(ref WriteableBitmap _wbm)
+        {
+            var whiteWbm = new WriteableBitmap((int)TheCanvas.Width,
+                (int)TheCanvas.Height, 
+                96, 
+                96, 
+                PixelFormats.Bgr32, 
+                null);
+
             try
             {
-                _whiteWbm.Lock();
-
-                for (int x = 0; x < _whiteWbm.Width; x++)
-                {
-                    for (int y = 0; y < _whiteWbm.Height; y++)
-                    {
-                        _whiteWbm.SetPixelColor(x, y, Color.FromArgb(255, 255, 255, 255));
-                    }
-                
-                }
+                whiteWbm.Lock();
+                for (int x = 0; x < whiteWbm.Width; x++)
+                    for (int y = 0; y < whiteWbm.Height; y++)
+                        whiteWbm.SetPixelColor(x, y, Color.FromArgb(255, 255, 255, 255));
             }
             finally
             {
-                _whiteWbm.Unlock();
+                whiteWbm.Unlock();
             }
 
-            _wbm = _whiteWbm.Clone();
-
-            var brush = new ImageBrush
-            {
-                ImageSource = _wbm
-            };
-
+            _wbm = whiteWbm.Clone();
+            var brush = new ImageBrush { ImageSource = _wbm };
             TheCanvas.Background = brush;
+
+            return whiteWbm;
         }
 
         private void dummyCallBack(object sender, RoutedEventArgs e)
@@ -82,9 +79,8 @@ namespace Lab03___Rasterization
             {
                 ImageSource = _wbm
             };
-            TheCanvas.Background = brush;
 
-            DrawAllShapes();
+            TheCanvas.Background = brush;
         }
 
 
@@ -95,21 +91,21 @@ namespace Lab03___Rasterization
             Debug.WriteLine($"{clickPosition.X}, {clickPosition.Y}");
 
             if (_isDrawingLine) DrawLine(clickPosition);
-
+            if (_isDrawingPolygon) DrawPolygon(clickPosition);
         }
 
         private void DrawLine(Point clickPosition)
         {
-            if (_startingPoint.Equals(NullPoint))
+            if (_points[0].Equals(NullPoint))
             {
-                _startingPoint = clickPosition;
+                _points[0] = clickPosition;
                 Debug.WriteLine($"Starting: {clickPosition.X}, {clickPosition.Y}");
             }
             else
             {
-                _endingPoint = clickPosition;
+                _points[1] = clickPosition;
                 Debug.WriteLine($"Ending: {clickPosition.X}, {clickPosition.Y}");
-                _allShapes.Add(new Line(_startingPoint, _endingPoint));
+                _allShapes.Add(new Line(new List<Point>(_points)));
                 ToggleIsDrawingLine();
 
                 DrawAllShapes();
@@ -118,10 +114,9 @@ namespace Lab03___Rasterization
 
         private void DrawAllShapes()
         {
-            foreach (var line in _allShapes)
+            foreach (var shape in _allShapes)
             {
-                //Debug.WriteLine(line);
-                line.Draw(_wbm);
+                shape.Draw(_wbm);
             }
         }
 
@@ -135,19 +130,58 @@ namespace Lab03___Rasterization
             //TODO toggle All "isDrawing"s off first!!
             _isDrawingLine = !_isDrawingLine;
             LineButton.Background = _isDrawingLine ? Brushes.LightSalmon : Brushes.LightCyan;
-            if (_isDrawingLine == false) _startingPoint = NullPoint;
+            if (_isDrawingLine == false) _points[0] = NullPoint;
         }
 
         private void TheCanvas_OnMouseMove(object sender, MouseEventArgs e)
         {
             var cursorPosition = e.GetPosition(TheCanvas);
 
-            if (_isDrawingLine && !_startingPoint.Equals(NullPoint))
+            // draw line preview
+            if (_isDrawingLine && !_points[0].Equals(NullPoint))
             {
-                var currentLine = new Line(_startingPoint, cursorPosition);
+                var currentLine = new Line(new List<Point> { _points[0], cursorPosition });
                 ClearCanvas();
+                DrawAllShapes();
                 currentLine.Draw(_wbm);
             }
+        }
+
+        private void PolygonButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            ToggleIsDrawingPolygon();
+        }
+
+        private void ToggleIsDrawingPolygon()
+        {
+            //TODO toggle All "isDrawing"s off first!!
+            _isDrawingPolygon = !_isDrawingPolygon;
+            PolygonButton.Background = _isDrawingPolygon ? Brushes.LightSalmon : Brushes.LightCyan;
+            if (_isDrawingPolygon == false) _points[0] = NullPoint;
+        }
+
+        private void DrawPolygon(Point clickPosition)
+        {
+            if (_points[0].Equals(NullPoint))
+            {
+                _points[0] = clickPosition;
+                Debug.WriteLine($"Starting: {clickPosition.X}, {clickPosition.Y}");
+            }
+            else
+            {
+                _points[1] = clickPosition;
+                Debug.WriteLine($"Ending: {clickPosition.X}, {clickPosition.Y}");
+                _allShapes.Add(new Line(_points));
+                ToggleIsDrawingLine();
+
+                DrawAllShapes();
+            }
+        }
+
+        private void OnClick_ClearCanvas(object sender, RoutedEventArgs e)
+        {
+            _allShapes.Clear();
+            ClearCanvas();
         }
     }
 }

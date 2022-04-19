@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Media.Imaging;
 using Point = System.Windows.Point;
@@ -17,10 +18,10 @@ namespace Lab03___Rasterization
         public int Thickness { get; set; }
         public Color Color { get; set; } = Color.FromArgb(0, 0, 0, 1);
 
-        public Line(Point p1, Point p2, int thickness = 1)
+        public Line(List<Point> points, int thickness = 1)
         {
-            this.P1 = p1;
-            this.P2 = p2;
+            this.P1 = points[0];
+            this.P2 = points[1];
             this.Thickness = thickness;
         }
 
@@ -88,6 +89,35 @@ namespace Lab03___Rasterization
         public override string ToString()
         {
             return $"({P1.X}, {P1.Y})-({P2.X}, {P2.Y})";
+        }
+    }
+
+    public class Polygon : IDrawable
+    {
+        public List<Point> Points { get; set; }
+        public int Thickness { get; set; }
+        public Color Color { get; set; } = Color.FromArgb(0, 0, 0, 1);
+
+        public Polygon(List<Point> points, int thickness = 1)
+        {
+            this.Points = points;
+            this.Thickness = thickness;
+        }
+
+        public void Draw(WriteableBitmap wbm)
+        {
+            for (int i = 0; i < Points.Count; i++)
+            {
+                var endPoint = i < Points.Count - 1 ? Points[i + 1] : Points[0];
+                var edge = new Line(new List<Point> {Points[i], endPoint});
+                edge.Draw(wbm);
+            }
+        }
+
+        public override string ToString()
+        {
+
+            return $"NOT READY YET"; // ({P1.X}, {P1.Y})-({P2.X}, {P2.Y})";
         }
     }
 }
