@@ -280,7 +280,7 @@ namespace Lab03___Rasterization
             }
             else
             {
-                if (calculateDistance(_currentPoints[0], clickPosition) < 10)
+                if (DistanceBetween(_currentPoints[0], clickPosition) < 10)
                 {
                     Debug.WriteLine($"Ending: {clickPosition.X}, {clickPosition.Y}");
                     _allShapes.Add(new Polygon(new List<Point>(_currentPoints)));
@@ -298,7 +298,7 @@ namespace Lab03___Rasterization
             }
         }
 
-        public int calculateDistance(Point p1, Point p2)
+        public int DistanceBetween(Point p1, Point p2)
         {
             return (int)Math.Round(Math.Sqrt(Math.Pow((p2.X - p1.X), 2) + Math.Pow((p2.Y - p1.Y), 2)));
         }
