@@ -33,6 +33,7 @@ namespace Lab03___Rasterization
         private WriteableBitmap _wbm;
         private Polygon currentPolygon;
         private bool _isDraggingVertex;
+        private bool _isDraggingEdge;
         private Point _initialCursorPosition;
         private Point _currentCursorPosition;
 
@@ -95,6 +96,8 @@ namespace Lab03___Rasterization
         private int _currentShapeIndex;
         private int _currentPointIndex;
         private int _currentLineIndex;
+        private int _currentEdgeIndex;
+
         private void TheCanvas_OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             _currentCursorPosition = e.GetPosition(TheCanvas);
@@ -103,45 +106,40 @@ namespace Lab03___Rasterization
 
             if (_isDrawingLine) DrawLine(_currentCursorPosition);
             else if (_isDrawingPolygon) DrawPolygon(_currentCursorPosition);
-            else if (!_isDraggingVertex)
+            else if (!_isDraggingVertex || !_isDraggingEdge)
             {
                 // check if a vertex is clicked
                 foreach (var shape in _allShapes)
                 {
+                    _currentPointIndex = -1;
+                    _currentEdgeIndex = -1;
                     _currentShapeIndex = _allShapes.IndexOf(shape);
                     _currentPointIndex = shape.GetVertexIndexOf(_currentCursorPosition);
-                    if (_currentPointIndex == -1) 
-                        continue;
-                    
+                    if (_currentPointIndex == -1)
+                    {
+                        _currentEdgeIndex = shape.GetEdgeIndexOf(_currentCursorPosition);
+                        if (_currentEdgeIndex == -1)
+                            continue;
+                        
+                        Debug.WriteLine($"EDGE! {_currentEdgeIndex}");
+                        _initialCursorPosition = _currentCursorPosition;
+                        _isDraggingEdge= true;
+                        return;
+                    }
+
                     Debug.WriteLine("VERTEX!");
                     _initialCursorPosition = _currentCursorPosition;
                     _isDraggingVertex = true;
                     return;
-
-                    //foreach (var point in points)
-                    //{
-                    //    var pointIndex = points.IndexOf(point);
-                    //    if (calculateDistance(point, cursorPosition) < 10)
-                    //    {
-                    //        Debug.WriteLine("VERTEX!");
-                    //        _isDraggingVertex = true;
-                    //        _currentPoints = points;
-                    //        _currentPointIndex = pointIndex;
-                    //        _currentShapeIndex = shapeIndex;
-                    //        return;
-                    //    }
-                    //}
                 }
-
-                // check if edge is clicked
-
             }
         }
         private void TheCanvas_OnMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            if (_isDraggingVertex)
+            if (_isDraggingVertex || _isDraggingEdge)
             {
                 _isDraggingVertex = false;
+                _isDraggingEdge = false;
                 _currentPoints.Clear();
             }
         }
@@ -183,6 +181,15 @@ namespace Lab03___Rasterization
             if (_isDraggingVertex)
             {
                 _allShapes[_currentShapeIndex].MoveVertex(_currentPointIndex, Point.Subtract(_currentCursorPosition, _initialCursorPosition));
+                _initialCursorPosition = _currentCursorPosition;
+
+                ClearCanvas();
+                DrawAllShapes();
+            }
+
+            if (_isDraggingEdge)
+            {
+                _allShapes[_currentShapeIndex].MoveEdge(_currentEdgeIndex, Point.Subtract(_currentCursorPosition, _initialCursorPosition));
                 _initialCursorPosition = _currentCursorPosition;
 
                 ClearCanvas();
