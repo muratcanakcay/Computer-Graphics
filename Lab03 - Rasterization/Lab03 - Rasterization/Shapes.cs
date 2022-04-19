@@ -10,20 +10,17 @@ namespace Lab03___Rasterization
     {
         void Draw(WriteableBitmap wbm);
         List<Point> GetPoints();
+        bool SetPoints(List<Point> points);
     }
 
     public class Line : IDrawable
     {
-        public Point P1 { get; set; }
-        public Point P2 { get; set; }
         public List<Point> Points { get; set; }
         public int Thickness { get; set; }
         public Color Color { get; set; } = Color.FromArgb(255, 0, 0, 0);
 
         public Line(List<Point> points, int thickness = 1)
         {
-            this.P1 = points[0];
-            this.P2 = points[1];
             Points = points.GetRange(0, 2);
             this.Thickness = thickness;
         }
@@ -93,6 +90,13 @@ namespace Lab03___Rasterization
         {
             return Points;
         }
+
+        public bool SetPoints(List<Point> points)
+        {
+            Points = points;
+            return true;
+        }
+
         public override string ToString()
         {
             return $"({Points[0].X}, {Points[0].Y})-({Points[1].X}, {Points[1].Y})";
@@ -124,6 +128,11 @@ namespace Lab03___Rasterization
         public List<Point> GetPoints()
         {
             return Points;
+        }
+
+        public bool SetPoints(List<Point> points)
+        {
+            throw new NotImplementedException();
         }
 
         public override string ToString()
