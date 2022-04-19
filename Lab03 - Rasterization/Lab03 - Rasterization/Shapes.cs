@@ -19,18 +19,58 @@ namespace Lab03___Rasterization
 
     public abstract class Shape : IDrawable
     {
-        protected List<Point> _points;
-        protected int _thickness;
-        protected Color _color = Color.FromArgb(255, 0, 0, 0);
-        protected int _canvasHeight;
-        protected int _canvasWidth;
-        public abstract void Draw(WriteableBitmap wbm);
-        public abstract int GetVertexIndexOf(Point point);
-        public abstract void  MoveVertex(int vertexIndex, Vector offSet);
-        public abstract int GetEdgeIndexOf(Point point);
-        public abstract void MoveEdge(int edgeIndex, Vector offSet);
+        protected List<Point> Points = new();
+        protected int Thickness;
+        protected Color Color = Color.FromArgb(255, 0, 0, 0);
+        protected int CanvasHeight;
+        protected int CanvasWidth;
         
+        public abstract void Draw(WriteableBitmap wbm);
+        
+        
+        public virtual int GetVertexIndexOf(Point point)
+        {
+            foreach (var vertex in Points)
+                if (DistanceBetween(vertex, point) < Thickness + 10)
+                    return Points.IndexOf(vertex);
 
+            return -1;
+        }
+        
+        public virtual void MoveVertex(int vertexIndex, Vector offSet)
+        {
+            Points[vertexIndex] = Point.Add(Points[vertexIndex], offSet);
+        }
+
+        public virtual int GetEdgeIndexOf(Point point)
+        {
+            for (var i = 0; i < Points.Count - 1; i++)
+            {
+                if (DistanceFromLine(Points[i], Points[i+1], point) < Thickness + 10 &&
+                    IsInsideRectangle(Points[i], Points[i + 1], point))
+                    return i;
+            }
+
+            if (DistanceFromLine(Points[^1], Points[0], point) < Thickness + 10 &&
+                IsInsideRectangle(Points[^1], Points[0], point))
+                return Points.Count - 1;
+
+            return -1;
+        }
+        
+        public virtual void MoveEdge(int edgeIndex, Vector offSet)
+        {
+            var newP1 = Point.Add(Points[edgeIndex], offSet);
+            var nextIndex = edgeIndex == Points.Count - 1 ? 0 : edgeIndex + 1;
+            var newP2 = Point.Add(Points[nextIndex], offSet);
+
+            if (IsInsideRectangle(new Point(0, 0), new Point(CanvasWidth, CanvasHeight), newP1) &&
+                IsInsideRectangle(new Point(0, 0), new Point(CanvasWidth, CanvasHeight), newP2))
+            {
+                Points[edgeIndex] = newP1;
+                Points[nextIndex] = newP2;
+            }
+        }
 
         protected double DistanceBetween(Point p1, Point p2)
         {
@@ -59,17 +99,17 @@ namespace Lab03___Rasterization
     {
         public Line(List<Point> points, int thickness = 1)
         {
-            _points = points.GetRange(0, 2);
-            _thickness = thickness;
+            Points = points.GetRange(0, 2);
+            Thickness = thickness;
         }
 
         public override void Draw(WriteableBitmap wbm)
         {
-            _canvasHeight = wbm.PixelHeight;
-            _canvasWidth = wbm.PixelWidth;
+            CanvasHeight = wbm.PixelHeight;
+            CanvasWidth = wbm.PixelWidth;
             
-            double dy = _points[1].Y - _points[0].Y;
-            double dx = _points[1].X - _points[0].X;
+            double dy = Points[1].Y - Points[0].Y;
+            double dx = Points[1].X - Points[0].X;
 
             try
             {
@@ -77,48 +117,47 @@ namespace Lab03___Rasterization
                 
                 if (dx != 0 && Math.Abs(dy/dx) < 1)
                 {
-                    double y = _points[0].Y;
+                    double y = Points[0].Y;
                     double m = dy/dx;
 
                     if (dx > 0)
                     {
-                        for (int x = (int)_points[0].X; x <= _points[1].X; ++x)
+                        for (int x = (int)Points[0].X; x <= Points[1].X; ++x)
                         {
-                            wbm.SetPixelColor(x, (int)Math.Round(y), _color);
+                            wbm.SetPixelColor(x, (int)Math.Round(y), Color);
                             y += m;
                         }
                     }
                     else
                     {
-                        for (int x = (int)_points[0].X; x >= _points[1].X; --x)
+                        for (int x = (int)Points[0].X; x >= Points[1].X; --x)
                         {
-                            wbm.SetPixelColor(x, (int)Math.Round(y), _color);
+                            wbm.SetPixelColor(x, (int)Math.Round(y), Color);
                             y -= m;
                         }
                     }
                 }
                 else if (dy != 0)
                 {
-                    double x = _points[0].X;
+                    double x = Points[0].X;
                     double m = dx/dy;
 
                     if (dy > 0)
                     {
-                        for (int y = (int)_points[0].Y; y <= _points[1].Y; ++y)
+                        for (int y = (int)Points[0].Y; y <= Points[1].Y; ++y)
                         {
-                            wbm.SetPixelColor((int)Math.Round(x), y, _color);
+                            wbm.SetPixelColor((int)Math.Round(x), y, Color);
                             x += m;
                         }
                     }
                     else
                     {
-                        for (int y = (int)_points[0].Y; y >= _points[1].Y; --y)
+                        for (int y = (int)Points[0].Y; y >= Points[1].Y; --y)
                         {
-                            wbm.SetPixelColor((int)Math.Round(x), y, _color);
+                            wbm.SetPixelColor((int)Math.Round(x), y, Color);
                             x -= m;
                         }
                     }
-                    
                 }
             }
             finally
@@ -127,46 +166,9 @@ namespace Lab03___Rasterization
             }
         }
 
-        public override int GetVertexIndexOf(Point point)
-        {
-            foreach (var vertex in _points)
-                if (DistanceBetween(vertex, point) < _thickness + 10)
-                    return _points.IndexOf(vertex);
-
-            return -1;
-        }
-
-        public override void MoveVertex(int vertexIndex, Vector offSet)
-        {
-            _points[vertexIndex] = Point.Add(_points[vertexIndex], offSet);
-        }
-
-        public override int GetEdgeIndexOf(Point point)
-        {
-            if (DistanceFromLine(_points[0], _points[1], point) < _thickness + 10 &&
-                IsInsideRectangle(_points[0], _points[1], point))
-                return 0;
-
-            return -1;
-        }
-
-        public override void MoveEdge(int edgeIndex, Vector offSet)
-        {
-            var newP1 = Point.Add(_points[edgeIndex], offSet);
-            var nextIndex = edgeIndex == _points.Count - 1 ? 0 : edgeIndex + 1;
-            var newP2 = Point.Add(_points[nextIndex], offSet);
-
-            if (IsInsideRectangle(new Point(0, 0), new Point(_canvasWidth, _canvasHeight), newP1) &&
-                IsInsideRectangle(new Point(0, 0), new Point(_canvasWidth, _canvasHeight), newP2))
-            {
-                _points[edgeIndex] = newP1;
-                _points[nextIndex] = newP2;
-            }
-        }
-
         public override string ToString()
         {
-            return $"({_points[0].X}, {_points[0].Y})-({_points[1].X}, {_points[1].Y})";
+            return $"({Points[0].X}, {Points[0].Y})-({Points[1].X}, {Points[1].Y})";
         }
     }
 
@@ -174,67 +176,22 @@ namespace Lab03___Rasterization
     {
         public Polygon(List<Point> points, int thickness = 1)
         {
-            _points = points;
-            _thickness = thickness;
+            Points = points;
+            Thickness = thickness;
         }
 
         public override void Draw(WriteableBitmap wbm)
         {
-            _canvasHeight = wbm.PixelHeight;
-            _canvasWidth = wbm.PixelWidth;
+            CanvasHeight = wbm.PixelHeight;
+            CanvasWidth = wbm.PixelWidth;
             
-            for (int i = 0; i < _points.Count; i++)
+            for (int i = 0; i < Points.Count; i++)
             {
-                var endPoint = i < _points.Count - 1 ? _points[i + 1] : _points[0];
-                var edge = new Line(new List<Point> {_points[i], endPoint});
+                var endPoint = i < Points.Count - 1 ? Points[i + 1] : Points[0];
+                var edge = new Line(new List<Point> {Points[i], endPoint});
                 edge.Draw(wbm);
             }
         }
-
-        public override int GetVertexIndexOf(Point point)
-        {
-            foreach (var vertex in _points)
-                if (DistanceBetween(vertex, point) < _thickness + 10)
-                    return _points.IndexOf(vertex);
-
-            return -1;
-        }
-
-        public override void MoveVertex(int vertexIndex, Vector offSet)
-        {
-            _points[vertexIndex] = Point.Add(_points[vertexIndex], offSet);
-        }
-
-        public override int GetEdgeIndexOf(Point point)
-        {
-            for (int i = 0; i < _points.Count - 1; i++)
-            {
-                if (DistanceFromLine(_points[i], _points[i+1], point) < _thickness + 10 &&
-                    IsInsideRectangle(_points[i], _points[i + 1], point))
-                    return i;
-            }
-
-            if (DistanceFromLine(_points[^1], _points[0], point) < _thickness + 10 &&
-                IsInsideRectangle(_points[^1], _points[0], point))
-                return _points.Count - 1;
-
-            return -1;
-        }
-
-        public override void MoveEdge(int edgeIndex, Vector offSet)
-        {
-            var newP1 = Point.Add(_points[edgeIndex], offSet);
-            var nextIndex = edgeIndex == _points.Count - 1 ? 0 : edgeIndex + 1;
-            var newP2 = Point.Add(_points[nextIndex], offSet);
-
-            if (IsInsideRectangle(new Point(0, 0), new Point(_canvasWidth, _canvasHeight), newP1) &&
-                IsInsideRectangle(new Point(0, 0), new Point(_canvasWidth, _canvasHeight), newP2))
-            {
-                _points[edgeIndex] = newP1;
-                _points[nextIndex] = newP2;
-            }
-        }
-
 
         public override string ToString()
         {
