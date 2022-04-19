@@ -29,26 +29,55 @@ namespace Lab03___Rasterization
             double dy = P2.Y - P1.Y;
             double dx = P2.X - P1.X;
             double m = dy/dx;
-            double y = P1.Y;
+            
+            
 
             try
             {
                 wbm.Lock();
-                if (dx > 0)
+                
+                if (Math.Abs(m)<1)
                 {
-                    for (int x = (int)P1.X; x <= P2.X; ++x)
+                    double y = P1.Y;
+                    if (dx > 0)
                     {
-                        wbm.SetPixelColor(x, (int)Math.Round(y), Color);
-                        y += m;
+                        for (int x = (int)P1.X; x <= P2.X; ++x)
+                        {
+                            wbm.SetPixelColor(x, (int)Math.Round(y), Color);
+                            y += m;
+                        }
+                    }
+                    else if (dx < 0)
+                    {
+                        for (int x = (int)P1.X; x >= P2.X; --x)
+                        {
+                            wbm.SetPixelColor(x, (int)Math.Round(y), Color);
+                            y -= m;
+                        }
                     }
                 }
-                else if (dx < 0)
+                else if (Math.Abs(m)>1)
                 {
-                    for (int x = (int)P1.X; x >= P2.X; --x)
+                    m = dx/dy;
+                    double x = P1.X;
+
+                    if (dy > 0)
                     {
-                        wbm.SetPixelColor(x, (int)Math.Round(y), Color);
-                        y -= m;
+                        for (int y = (int)P1.Y; y <= P2.Y; ++y)
+                        {
+                            wbm.SetPixelColor((int)Math.Round(x), y, Color);
+                            x += m;
+                        }
                     }
+                    else if (dy < 0)
+                    {
+                        for (int y = (int)P1.Y; y >= P2.Y; --y)
+                        {
+                            wbm.SetPixelColor((int)Math.Round(x), y, Color);
+                            x -= m;
+                        }
+                    }
+                    
                 }
             }
             finally
