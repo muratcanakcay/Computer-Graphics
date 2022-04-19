@@ -33,6 +33,9 @@ namespace Lab03___Rasterization
         private WriteableBitmap _wbm;
         private Polygon currentPolygon;
         private bool _isDraggingVertex;
+        private Point _initialCursorPosition;
+        private Point _currentCursorPosition;
+
 
 
         public MainWindow()
@@ -94,32 +97,44 @@ namespace Lab03___Rasterization
         private int _currentLineIndex;
         private void TheCanvas_OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            var cursorPosition = e.GetPosition(TheCanvas);
+            _currentCursorPosition = e.GetPosition(TheCanvas);
             Debug.WriteLine("CLICKED!");
-            Debug.WriteLine($"{cursorPosition.X}, {cursorPosition.Y}");
+            Debug.WriteLine($"{_currentCursorPosition.X}, {_currentCursorPosition.Y}");
 
-            if (_isDrawingLine) DrawLine(cursorPosition);
-            else if (_isDrawingPolygon) DrawPolygon(cursorPosition);
-            else
+            if (_isDrawingLine) DrawLine(_currentCursorPosition);
+            else if (_isDrawingPolygon) DrawPolygon(_currentCursorPosition);
+            else if (!_isDraggingVertex)
             {
+                // check if a vertex is clicked
                 foreach (var shape in _allShapes)
                 {
-                    var shapeIndex = _allShapes.IndexOf(shape);
-                    var points = shape.GetPoints();
-                    foreach (var point in points)
-                    {
-                        var pointIndex = points.IndexOf(point);
-                        if (calculateDistance(point, cursorPosition) < 10)
-                        {
-                            Debug.WriteLine("VERTEX!");
-                            _isDraggingVertex = true;
-                            _currentPoints = points;
-                            _currentPointIndex = pointIndex;
-                            _currentShapeIndex = shapeIndex;
-                            return;
-                        }
-                    }
+                    _currentShapeIndex = _allShapes.IndexOf(shape);
+                    _currentPointIndex = shape.GetVertexIndexOf(_currentCursorPosition);
+                    if (_currentPointIndex == -1) 
+                        continue;
+                    
+                    Debug.WriteLine("VERTEX!");
+                    _initialCursorPosition = _currentCursorPosition;
+                    _isDraggingVertex = true;
+                    return;
+
+                    //foreach (var point in points)
+                    //{
+                    //    var pointIndex = points.IndexOf(point);
+                    //    if (calculateDistance(point, cursorPosition) < 10)
+                    //    {
+                    //        Debug.WriteLine("VERTEX!");
+                    //        _isDraggingVertex = true;
+                    //        _currentPoints = points;
+                    //        _currentPointIndex = pointIndex;
+                    //        _currentShapeIndex = shapeIndex;
+                    //        return;
+                    //    }
+                    //}
                 }
+
+                // check if edge is clicked
+
             }
         }
         private void TheCanvas_OnMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
@@ -139,14 +154,14 @@ namespace Lab03___Rasterization
         private void TheCanvas_OnMouseMove(object sender, MouseEventArgs e)
         {
             Line currentLine;
-            var cursorPosition = e.GetPosition(TheCanvas);
+            _currentCursorPosition = e.GetPosition(TheCanvas);
 
             // draw line preview
             if (_isDrawingLine && _currentPoints.Count > 0)
             {
                 ClearCanvas();
                 DrawAllShapes();
-                currentLine = new Line(new List<Point> { _currentPoints[0], cursorPosition });
+                currentLine = new Line(new List<Point> { _currentPoints[0], _currentCursorPosition });
                 currentLine.Draw(_wbm);
             }
             
@@ -161,14 +176,14 @@ namespace Lab03___Rasterization
                     currentLine.Draw(_wbm);
                 }
 
-                currentLine = new Line(new List<Point> { _currentPoints[^1], cursorPosition });
+                currentLine = new Line(new List<Point> { _currentPoints[^1], _currentCursorPosition });
                 currentLine.Draw(_wbm);
             }
 
             if (_isDraggingVertex)
             {
-                _currentPoints[_currentPointIndex] = cursorPosition;
-                _allShapes[_currentShapeIndex].SetPoints(new List<Point>(_currentPoints));
+                _allShapes[_currentShapeIndex].MoveVertex(_currentPointIndex, Point.Subtract(_currentCursorPosition, _initialCursorPosition));
+                _initialCursorPosition = _currentCursorPosition;
 
                 ClearCanvas();
                 DrawAllShapes();
@@ -276,7 +291,7 @@ namespace Lab03___Rasterization
             }
         }
 
-        private int calculateDistance(Point p1, Point p2)
+        public int calculateDistance(Point p1, Point p2)
         {
             return (int)Math.Round(Math.Sqrt(Math.Pow((p2.X - p1.X), 2) + Math.Pow((p2.Y - p1.Y), 2)));
         }

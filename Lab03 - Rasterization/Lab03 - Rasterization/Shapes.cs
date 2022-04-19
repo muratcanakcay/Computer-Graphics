@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Windows;
 using System.Windows.Media.Imaging;
 using Point = System.Windows.Point;
 
@@ -9,26 +10,42 @@ namespace Lab03___Rasterization
     interface IDrawable
     {
         void Draw(WriteableBitmap wbm);
-        List<Point> GetPoints();
-        bool SetPoints(List<Point> points);
+        int GetVertexIndexOf(Point point);
+        void MoveVertex(int vertexIndex, Vector offSet);
+        int GetEdgeIndexOf(Point point);
     }
 
-    public class Line : IDrawable
+    public abstract class Shape : IDrawable
     {
-        public List<Point> Points { get; set; }
-        public int Thickness { get; set; }
-        public Color Color { get; set; } = Color.FromArgb(255, 0, 0, 0);
+        protected List<Point> _points;
+        protected int _thickness;
+        protected Color _color = Color.FromArgb(255, 0, 0, 0);
+        public abstract void Draw(WriteableBitmap wbm);
+        public abstract int GetVertexIndexOf(Point point);
+        public abstract void  MoveVertex(int vertexIndex, Vector offSet);
+        public abstract int GetEdgeIndexOf(Point point);
+        
 
-        public Line(List<Point> points, int thickness = 1)
+
+        protected int DistanceBetween(Point p1, Point p2)
         {
-            Points = points.GetRange(0, 2);
-            this.Thickness = thickness;
+            return (int)Math.Round(Math.Sqrt(Math.Pow((p2.X - p1.X), 2) + Math.Pow((p2.Y - p1.Y), 2)));
         }
 
-        public void Draw(WriteableBitmap wbm)
+    }
+
+    public class Line : Shape
+    {
+        public Line(List<Point> points, int thickness = 1)
         {
-            double dy = Points[1].Y - Points[0].Y;
-            double dx = Points[1].X - Points[0].X;
+            _points = points.GetRange(0, 2);
+            _thickness = thickness;
+        }
+
+        public override void Draw(WriteableBitmap wbm)
+        {
+            double dy = _points[1].Y - _points[0].Y;
+            double dx = _points[1].X - _points[0].X;
 
             try
             {
@@ -36,44 +53,44 @@ namespace Lab03___Rasterization
                 
                 if (dx != 0 && Math.Abs(dy/dx) < 1)
                 {
-                    double y = Points[0].Y;
+                    double y = _points[0].Y;
                     double m = dy/dx;
 
                     if (dx > 0)
                     {
-                        for (int x = (int)Points[0].X; x <= Points[1].X; ++x)
+                        for (int x = (int)_points[0].X; x <= _points[1].X; ++x)
                         {
-                            wbm.SetPixelColor(x, (int)Math.Round(y), Color);
+                            wbm.SetPixelColor(x, (int)Math.Round(y), _color);
                             y += m;
                         }
                     }
                     else
                     {
-                        for (int x = (int)Points[0].X; x >= Points[1].X; --x)
+                        for (int x = (int)_points[0].X; x >= _points[1].X; --x)
                         {
-                            wbm.SetPixelColor(x, (int)Math.Round(y), Color);
+                            wbm.SetPixelColor(x, (int)Math.Round(y), _color);
                             y -= m;
                         }
                     }
                 }
                 else if (dy != 0)
                 {
-                    double x = Points[0].X;
+                    double x = _points[0].X;
                     double m = dx/dy;
 
                     if (dy > 0)
                     {
-                        for (int y = (int)Points[0].Y; y <= Points[1].Y; ++y)
+                        for (int y = (int)_points[0].Y; y <= _points[1].Y; ++y)
                         {
-                            wbm.SetPixelColor((int)Math.Round(x), y, Color);
+                            wbm.SetPixelColor((int)Math.Round(x), y, _color);
                             x += m;
                         }
                     }
                     else
                     {
-                        for (int y = (int)Points[0].Y; y >= Points[1].Y; --y)
+                        for (int y = (int)_points[0].Y; y >= _points[1].Y; --y)
                         {
-                            wbm.SetPixelColor((int)Math.Round(x), y, Color);
+                            wbm.SetPixelColor((int)Math.Round(x), y, _color);
                             x -= m;
                         }
                     }
@@ -86,55 +103,68 @@ namespace Lab03___Rasterization
             }
         }
 
-        public List<Point> GetPoints()
+        public override int GetVertexIndexOf(Point point)
         {
-            return Points;
+            foreach (var vertex in _points)
+                if (DistanceBetween(vertex, point) < _thickness + 10)
+                    return _points.IndexOf(vertex);
+
+            return -1;
         }
 
-        public bool SetPoints(List<Point> points)
+        public override void MoveVertex(int vertexIndex, Vector offSet)
         {
-            Points = points;
-            return true;
+            _points[vertexIndex] = Point.Add(_points[vertexIndex], offSet);
+        }
+
+        public override int GetEdgeIndexOf(Point point)
+        {
+            throw new NotImplementedException();
         }
 
         public override string ToString()
         {
-            return $"({Points[0].X}, {Points[0].Y})-({Points[1].X}, {Points[1].Y})";
+            return $"({_points[0].X}, {_points[0].Y})-({_points[1].X}, {_points[1].Y})";
         }
     }
 
-    public class Polygon : IDrawable
+    public class Polygon : Shape
     {
-        public List<Point> Points { get; set; }
-        public int Thickness { get; set; }
-        public Color Color { get; set; } = Color.FromArgb(0, 0, 0, 1);
-
         public Polygon(List<Point> points, int thickness = 1)
         {
-            this.Points = points;
-            this.Thickness = thickness;
+            _points = points;
+            _thickness = thickness;
         }
 
-        public void Draw(WriteableBitmap wbm)
+        public override void Draw(WriteableBitmap wbm)
         {
-            for (int i = 0; i < Points.Count; i++)
+            for (int i = 0; i < _points.Count; i++)
             {
-                var endPoint = i < Points.Count - 1 ? Points[i + 1] : Points[0];
-                var edge = new Line(new List<Point> {Points[i], endPoint});
+                var endPoint = i < _points.Count - 1 ? _points[i + 1] : _points[0];
+                var edge = new Line(new List<Point> {_points[i], endPoint});
                 edge.Draw(wbm);
             }
         }
 
-        public List<Point> GetPoints()
+        public override int GetVertexIndexOf(Point point)
         {
-            return Points;
+            foreach (var vertex in _points)
+                if (DistanceBetween(vertex, point) < _thickness + 10)
+                    return _points.IndexOf(vertex);
+
+            return -1;
         }
 
-        public bool SetPoints(List<Point> points)
+        public override void MoveVertex(int vertexIndex, Vector offSet)
         {
-            Points = points;
-            return true;
+            _points[vertexIndex] = Point.Add(_points[vertexIndex], offSet);
         }
+
+        public override int GetEdgeIndexOf(Point point)
+        {
+            throw new NotImplementedException();
+        }
+        
 
         public override string ToString()
         {
