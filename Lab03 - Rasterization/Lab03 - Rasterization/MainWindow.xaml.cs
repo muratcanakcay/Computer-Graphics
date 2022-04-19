@@ -26,7 +26,7 @@ namespace Lab03___Rasterization
         private bool _isDrawingLine;
         private bool _isDrawingPolygon;
         private static readonly Point NullPoint = new(-1, -1);
-        private readonly List<Point> _points = new(30) { NullPoint, NullPoint };
+        private readonly List<Point> _points = new();
         private readonly List<IDrawable> _allShapes = new();
         private readonly WriteableBitmap _whiteWbm;
         private WriteableBitmap _wbm;
@@ -96,18 +96,20 @@ namespace Lab03___Rasterization
 
         private void DrawLine(Point clickPosition)
         {
-            if (_points[0].Equals(NullPoint))
+            if (_points.Count == 0)
             {
-                _points[0] = clickPosition;
+                _points.Add(clickPosition);
                 Debug.WriteLine($"Starting: {clickPosition.X}, {clickPosition.Y}");
             }
             else
             {
-                _points[1] = clickPosition;
+                _points.Add(clickPosition);
                 Debug.WriteLine($"Ending: {clickPosition.X}, {clickPosition.Y}");
                 _allShapes.Add(new Line(new List<Point>(_points)));
+                _points.Clear();
+                
                 ToggleIsDrawingLine();
-
+                ClearCanvas();
                 DrawAllShapes();
             }
         }
@@ -130,19 +132,32 @@ namespace Lab03___Rasterization
             //TODO toggle All "isDrawing"s off first!!
             _isDrawingLine = !_isDrawingLine;
             LineButton.Background = _isDrawingLine ? Brushes.LightSalmon : Brushes.LightCyan;
-            if (_isDrawingLine == false) _points[0] = NullPoint;
         }
 
         private void TheCanvas_OnMouseMove(object sender, MouseEventArgs e)
         {
+            Line currentLine;
             var cursorPosition = e.GetPosition(TheCanvas);
 
             // draw line preview
-            if (_isDrawingLine && !_points[0].Equals(NullPoint))
+            if (_isDrawingLine && _points.Count > 0)
             {
-                var currentLine = new Line(new List<Point> { _points[0], cursorPosition });
                 ClearCanvas();
                 DrawAllShapes();
+                currentLine = new Line(new List<Point> { _points[0], cursorPosition });
+                currentLine.Draw(_wbm);
+            }
+            if (_isDrawingPolygon && _points.Count > 0)
+            {
+                ClearCanvas();
+                DrawAllShapes();
+                for (int i = 0; i < _points.Count - 1; i++)
+                {
+                    currentLine = new Line(new List<Point> { _points[i], _points[i+1] });
+                    currentLine.Draw(_wbm);
+                }
+
+                currentLine = new Line(new List<Point> { _points[^1], cursorPosition });
                 currentLine.Draw(_wbm);
             }
         }
@@ -157,25 +172,43 @@ namespace Lab03___Rasterization
             //TODO toggle All "isDrawing"s off first!!
             _isDrawingPolygon = !_isDrawingPolygon;
             PolygonButton.Background = _isDrawingPolygon ? Brushes.LightSalmon : Brushes.LightCyan;
-            if (_isDrawingPolygon == false) _points[0] = NullPoint;
         }
 
         private void DrawPolygon(Point clickPosition)
         {
-            if (_points[0].Equals(NullPoint))
+            if (_points.Count == 0)
             {
-                _points[0] = clickPosition;
+                _points.Add(clickPosition);
                 Debug.WriteLine($"Starting: {clickPosition.X}, {clickPosition.Y}");
+            }
+            else if (_points.Count < 2)
+            {
+                _points.Add(clickPosition);
+                Debug.WriteLine($"PolygonPoint: {clickPosition.X}, {clickPosition.Y}");
             }
             else
             {
-                _points[1] = clickPosition;
-                Debug.WriteLine($"Ending: {clickPosition.X}, {clickPosition.Y}");
-                _allShapes.Add(new Line(_points));
-                ToggleIsDrawingLine();
-
-                DrawAllShapes();
+                if (calculateDistance(_points[0], clickPosition) < 10)
+                {
+                    Debug.WriteLine($"Ending: {clickPosition.X}, {clickPosition.Y}");
+                    _allShapes.Add(new Polygon(new List<Point>(_points)));
+                    _points.Clear(); // when the polygon is finished
+                    Debug.WriteLine("Clearing _points");
+                    ToggleIsDrawingPolygon();
+                    ClearCanvas();
+                    DrawAllShapes();
+                }
+                else
+                {
+                    _points.Add(clickPosition);
+                    Debug.WriteLine($"PolygonPoint: {clickPosition.X}, {clickPosition.Y}");
+                }
             }
+        }
+
+        private int calculateDistance(Point p1, Point p2)
+        {
+            return (int)Math.Round(Math.Sqrt(Math.Pow((p2.X - p1.X), 2) + Math.Pow((p2.Y - p1.Y), 2)));
         }
 
         private void OnClick_ClearCanvas(object sender, RoutedEventArgs e)
