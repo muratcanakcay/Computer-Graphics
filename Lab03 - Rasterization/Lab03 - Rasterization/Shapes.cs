@@ -9,26 +9,29 @@ namespace Lab03___Rasterization
     interface IDrawable
     {
         void Draw(WriteableBitmap wbm);
+        List<Point> GetPoints();
     }
 
     public class Line : IDrawable
     {
         public Point P1 { get; set; }
         public Point P2 { get; set; }
+        public List<Point> Points { get; set; }
         public int Thickness { get; set; }
-        public Color Color { get; set; } = Color.FromArgb(0, 0, 0, 1);
+        public Color Color { get; set; } = Color.FromArgb(255, 0, 0, 0);
 
         public Line(List<Point> points, int thickness = 1)
         {
             this.P1 = points[0];
             this.P2 = points[1];
+            Points = points.GetRange(0, 2);
             this.Thickness = thickness;
         }
 
         public void Draw(WriteableBitmap wbm)
         {
-            double dy = P2.Y - P1.Y;
-            double dx = P2.X - P1.X;
+            double dy = Points[1].Y - Points[0].Y;
+            double dx = Points[1].X - Points[0].X;
 
             try
             {
@@ -36,12 +39,12 @@ namespace Lab03___Rasterization
                 
                 if (dx != 0 && Math.Abs(dy/dx) < 1)
                 {
-                    double y = P1.Y;
+                    double y = Points[0].Y;
                     double m = dy/dx;
 
                     if (dx > 0)
                     {
-                        for (int x = (int)P1.X; x <= P2.X; ++x)
+                        for (int x = (int)Points[0].X; x <= Points[1].X; ++x)
                         {
                             wbm.SetPixelColor(x, (int)Math.Round(y), Color);
                             y += m;
@@ -49,7 +52,7 @@ namespace Lab03___Rasterization
                     }
                     else
                     {
-                        for (int x = (int)P1.X; x >= P2.X; --x)
+                        for (int x = (int)Points[0].X; x >= Points[1].X; --x)
                         {
                             wbm.SetPixelColor(x, (int)Math.Round(y), Color);
                             y -= m;
@@ -58,12 +61,12 @@ namespace Lab03___Rasterization
                 }
                 else if (dy != 0)
                 {
-                    double x = P1.X;
+                    double x = Points[0].X;
                     double m = dx/dy;
 
                     if (dy > 0)
                     {
-                        for (int y = (int)P1.Y; y <= P2.Y; ++y)
+                        for (int y = (int)Points[0].Y; y <= Points[1].Y; ++y)
                         {
                             wbm.SetPixelColor((int)Math.Round(x), y, Color);
                             x += m;
@@ -71,7 +74,7 @@ namespace Lab03___Rasterization
                     }
                     else
                     {
-                        for (int y = (int)P1.Y; y >= P2.Y; --y)
+                        for (int y = (int)Points[0].Y; y >= Points[1].Y; --y)
                         {
                             wbm.SetPixelColor((int)Math.Round(x), y, Color);
                             x -= m;
@@ -86,9 +89,13 @@ namespace Lab03___Rasterization
             }
         }
 
+        public List<Point> GetPoints()
+        {
+            return Points;
+        }
         public override string ToString()
         {
-            return $"({P1.X}, {P1.Y})-({P2.X}, {P2.Y})";
+            return $"({Points[0].X}, {Points[0].Y})-({Points[1].X}, {Points[1].Y})";
         }
     }
 
@@ -114,10 +121,15 @@ namespace Lab03___Rasterization
             }
         }
 
+        public List<Point> GetPoints()
+        {
+            return Points;
+        }
+
         public override string ToString()
         {
 
-            return $"NOT READY YET"; // ({P1.X}, {P1.Y})-({P2.X}, {P2.Y})";
+            return $"POLYGON.TOSTRING NOT IMPLEMENTED YET"; // ({Points[0].X}, {Points[0].Y})-({Points[1].X}, {Points[1].Y})";
         }
     }
 }

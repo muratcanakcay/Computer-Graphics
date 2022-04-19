@@ -26,7 +26,7 @@ namespace Lab03___Rasterization
     {
         private bool _isDrawingLine;
         private bool _isDrawingPolygon;
-        private static readonly Point NullPoint = new(-1, -1);
+        private bool _isDrawingCircle;
         private readonly List<Point> _points = new();
         private readonly List<IDrawable> _allShapes = new();
         private readonly WriteableBitmap _whiteWbm;
@@ -72,7 +72,11 @@ namespace Lab03___Rasterization
         {
             throw new NotImplementedException();
         }
-
+        private void OnClick_ResetCanvas(object sender, RoutedEventArgs e)
+        {
+            _allShapes.Clear();
+            ClearCanvas();
+        }
         private void ClearCanvas()
         {
             _wbm = _whiteWbm.Clone();
@@ -84,7 +88,6 @@ namespace Lab03___Rasterization
             TheCanvas.Background = brush;
         }
 
-
         private void TheCanvas_OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             var clickPosition = e.GetPosition(TheCanvas);
@@ -92,21 +95,52 @@ namespace Lab03___Rasterization
             Debug.WriteLine($"{clickPosition.X}, {clickPosition.Y}");
 
             if (_isDrawingLine) DrawLine(clickPosition);
-            if (_isDrawingPolygon) DrawPolygon(clickPosition);
+            else if (_isDrawingPolygon) DrawPolygon(clickPosition);
+            else
+            {
+                foreach (var shape in _allShapes)
+                {
+                    var points = shape.GetPoints();
+                    foreach (var p in points)
+                    {
+                        if (calculateDistance(p, clickPosition) < 10)
+                            Debug.WriteLine("POINT!");
+                    }
+                    
+                }
+
+            }
+        }
+
+        private void TheCanvas_OnMouseRightButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            ToggleAllOff();
+        }
+
+        private void ToggleAllOff()
+        {
+            if (_isDrawingLine) ToggleIsDrawingLine();
+            else if (_isDrawingPolygon) ToggleIsDrawingPolygon();
+
+            _points.Clear();
+            ClearCanvas();
+            DrawAllShapes();
         }
 
         private void DrawLine(Point clickPosition)
         {
-            if (_points.Count == 0)
+            if (_points.Count == 0) // add startPoint
             {
                 _points.Add(clickPosition);
                 Debug.WriteLine($"Starting: {clickPosition.X}, {clickPosition.Y}");
             }
-            else
+            else // add endPoint and add Line to _allShapes
             {
                 _points.Add(clickPosition);
                 Debug.WriteLine($"Ending: {clickPosition.X}, {clickPosition.Y}");
                 _allShapes.Add(new Line(new List<Point>(_points)));
+                
+                // clear the points
                 _points.Clear();
                 
                 ToggleIsDrawingLine();
@@ -125,12 +159,12 @@ namespace Lab03___Rasterization
 
         private void LineButton_OnClick(object sender, RoutedEventArgs e)
         {
+            ToggleAllOff();
             ToggleIsDrawingLine();
         }
 
         private void ToggleIsDrawingLine()
         {
-            //TODO toggle All "isDrawing"s off first!!
             _isDrawingLine = !_isDrawingLine;
             LineButton.Background = _isDrawingLine ? Brushes.LightSalmon : Brushes.LightCyan;
         }
@@ -167,12 +201,14 @@ namespace Lab03___Rasterization
 
         private void PolygonButton_OnClick(object sender, RoutedEventArgs e)
         {
+            ToggleAllOff();
             ToggleIsDrawingPolygon();
         }
 
         private void ToggleIsDrawingPolygon()
         {
-            //TODO toggle All "isDrawing"s off first!!
+            
+
             _isDrawingPolygon = !_isDrawingPolygon;
             PolygonButton.Background = _isDrawingPolygon ? Brushes.LightSalmon : Brushes.LightCyan;
         }
@@ -214,20 +250,8 @@ namespace Lab03___Rasterization
             return (int)Math.Round(Math.Sqrt(Math.Pow((p2.X - p1.X), 2) + Math.Pow((p2.Y - p1.Y), 2)));
         }
 
-        private void OnClick_ResetCanvas(object sender, RoutedEventArgs e)
-        {
-            _allShapes.Clear();
-            ClearCanvas();
-        }
+        
 
-        private void TheCanvas_OnMouseRightButtonUp(object sender, MouseButtonEventArgs e)
-        {
-            if (_isDrawingLine) ToggleIsDrawingLine();
-            else if (_isDrawingPolygon) ToggleIsDrawingPolygon();
-
-            _points.Clear();
-            ClearCanvas();
-            DrawAllShapes();
-        }
+       
     }
 }

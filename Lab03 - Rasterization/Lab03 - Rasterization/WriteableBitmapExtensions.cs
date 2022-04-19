@@ -52,10 +52,5 @@ namespace Lab03___Rasterization
 
             return pixelColor;
         }
-
-        //public static WriteableBitmap ApplyFilter(this WriteableBitmap wbm, IEffect effect)
-        //{
-        //    return effect.ApplyTo(wbm);
-        //}
     }
 }
