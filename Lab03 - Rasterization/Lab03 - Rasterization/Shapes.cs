@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Drawing;
 using System.Windows;
 using System.Windows.Media.Imaging;
@@ -8,7 +7,8 @@ using Point = System.Windows.Point;
 
 namespace Lab03___Rasterization
 {
-    interface IDrawable
+    
+    internal interface IDrawable
     {
         void Draw(WriteableBitmap wbm);
         int GetVertexIndexOf(Point point);
@@ -19,19 +19,19 @@ namespace Lab03___Rasterization
 
     public abstract class Shape : IDrawable
     {
+        private const uint GrabDistance = 10;
         protected List<Point> Points = new();
-        protected int Thickness;
+        protected uint Thickness;
         protected Color Color = Color.FromArgb(255, 0, 0, 0);
         protected int CanvasHeight;
         protected int CanvasWidth;
         
         public abstract void Draw(WriteableBitmap wbm);
-        
-        
+
         public virtual int GetVertexIndexOf(Point point)
         {
             foreach (var vertex in Points)
-                if (DistanceBetween(vertex, point) < Thickness + 10)
+                if (DistanceBetween(vertex, point) < Thickness + GrabDistance)
                     return Points.IndexOf(vertex);
 
             return -1;
@@ -46,13 +46,13 @@ namespace Lab03___Rasterization
         {
             for (var i = 0; i < Points.Count - 1; i++)
             {
-                if (DistanceFromLine(Points[i], Points[i+1], point) < Thickness + 10 &&
-                    IsInsideRectangle(Points[i], Points[i + 1], point))
+                if (DistanceFromLine(Points[i], Points[i+1], point) < Thickness + GrabDistance &&
+                    IsInsideRectangle(Points[i], Points[i + 1], point, Thickness + GrabDistance))
                     return i;
             }
 
-            if (DistanceFromLine(Points[^1], Points[0], point) < Thickness + 10 &&
-                IsInsideRectangle(Points[^1], Points[0], point))
+            if (DistanceFromLine(Points[^1], Points[0], point) < Thickness + GrabDistance &&
+                IsInsideRectangle(Points[^1], Points[0], point, Thickness + GrabDistance))
                 return Points.Count - 1;
 
             return -1;
@@ -64,20 +64,21 @@ namespace Lab03___Rasterization
             var nextIndex = edgeIndex == Points.Count - 1 ? 0 : edgeIndex + 1;
             var newP2 = Point.Add(Points[nextIndex], offSet);
 
-            if (IsInsideRectangle(new Point(0, 0), new Point(CanvasWidth, CanvasHeight), newP1) &&
-                IsInsideRectangle(new Point(0, 0), new Point(CanvasWidth, CanvasHeight), newP2))
+            // checking for canvas boundaries not needed if setPixelColor just returns without throwing an exception
+            //if (IsInsideRectangle(new Point(0, 0), new Point(CanvasWidth, CanvasHeight), newP1) &&
+            //    IsInsideRectangle(new Point(0, 0), new Point(CanvasWidth, CanvasHeight), newP2))
             {
                 Points[edgeIndex] = newP1;
                 Points[nextIndex] = newP2;
             }
         }
 
-        protected double DistanceBetween(Point p1, Point p2)
+        protected static double DistanceBetween(Point p1, Point p2)
         {
             return Math.Round(Math.Sqrt(Math.Pow((p2.X - p1.X), 2) + Math.Pow((p2.Y - p1.Y), 2)));
         }
 
-        protected double DistanceFromLine(Point onLine1, Point onLine2, Point exterior)
+        protected static double DistanceFromLine(Point onLine1, Point onLine2, Point exterior)
         {
             var denominator = DistanceBetween(onLine1, onLine2);
             var numerator = Math.Abs((onLine2.X - onLine1.X) * (onLine1.Y - exterior.Y) -
@@ -86,18 +87,19 @@ namespace Lab03___Rasterization
             return numerator / denominator;
         }
 
-        protected bool IsInsideRectangle(Point vertex1, Point vertex2, Point p)
+        protected static bool IsInsideRectangle(Point vertex1, Point vertex2, Point p, uint offSet = 0)
         {
-            return (p.X > Math.Min(vertex1.X, vertex2.X) &&
-                    p.X < Math.Max(vertex1.X, vertex2.X) &&
-                    p.Y > Math.Min(vertex1.Y, vertex2.Y) &&
-                    p.Y < Math.Max(vertex1.Y, vertex2.Y));
+            // offSet value is used to increase the rectangle size by 2*offSet on each edge
+            return (p.X > Math.Min(vertex1.X, vertex2.X) - offSet &&
+                    p.X < Math.Max(vertex1.X, vertex2.X) + offSet &&
+                    p.Y > Math.Min(vertex1.Y, vertex2.Y) - offSet &&
+                    p.Y < Math.Max(vertex1.Y, vertex2.Y) + offSet);
         }
     }
 
     public class Line : Shape
     {
-        public Line(List<Point> points, int thickness = 1)
+        public Line(List<Point> points, uint thickness = 1)
         {
             Points = points.GetRange(0, 2);
             Thickness = thickness;
@@ -122,7 +124,7 @@ namespace Lab03___Rasterization
 
                     if (dx > 0)
                     {
-                        for (int x = (int)Points[0].X; x <= Points[1].X; ++x)
+                        for (var x = (int)Points[0].X; x <= Points[1].X; ++x)
                         {
                             wbm.SetPixelColor(x, (int)Math.Round(y), Color);
                             y += m;
@@ -130,7 +132,7 @@ namespace Lab03___Rasterization
                     }
                     else
                     {
-                        for (int x = (int)Points[0].X; x >= Points[1].X; --x)
+                        for (var x = (int)Points[0].X; x >= Points[1].X; --x)
                         {
                             wbm.SetPixelColor(x, (int)Math.Round(y), Color);
                             y -= m;
@@ -144,7 +146,7 @@ namespace Lab03___Rasterization
 
                     if (dy > 0)
                     {
-                        for (int y = (int)Points[0].Y; y <= Points[1].Y; ++y)
+                        for (var y = (int)Points[0].Y; y <= Points[1].Y; ++y)
                         {
                             wbm.SetPixelColor((int)Math.Round(x), y, Color);
                             x += m;
@@ -152,7 +154,7 @@ namespace Lab03___Rasterization
                     }
                     else
                     {
-                        for (int y = (int)Points[0].Y; y >= Points[1].Y; --y)
+                        for (var y = (int)Points[0].Y; y >= Points[1].Y; --y)
                         {
                             wbm.SetPixelColor((int)Math.Round(x), y, Color);
                             x -= m;
@@ -174,7 +176,7 @@ namespace Lab03___Rasterization
 
     public class Polygon : Shape
     {
-        public Polygon(List<Point> points, int thickness = 1)
+        public Polygon(List<Point> points, uint thickness = 1)
         {
             Points = points;
             Thickness = thickness;
@@ -185,7 +187,7 @@ namespace Lab03___Rasterization
             CanvasHeight = wbm.PixelHeight;
             CanvasWidth = wbm.PixelWidth;
             
-            for (int i = 0; i < Points.Count; i++)
+            for (var i = 0; i < Points.Count; i++)
             {
                 var endPoint = i < Points.Count - 1 ? Points[i + 1] : Points[0];
                 var edge = new Line(new List<Point> {Points[i], endPoint});

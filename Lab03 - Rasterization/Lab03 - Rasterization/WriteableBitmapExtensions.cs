@@ -11,7 +11,8 @@ namespace Lab03___Rasterization
         public static void SetPixelColor(this WriteableBitmap wbm, int x, int y, Color color)
         {
             if (y < 0 || x < 0 || y > wbm.PixelHeight - 1 || x > wbm.PixelWidth - 1)
-                throw new Exception("SetPixelColor target out of bitmap bounds");
+                return;
+                //throw new Exception("SetPixelColor target out of bitmap bounds");
             
             IntPtr pBackBuffer = wbm.BackBuffer;
             int stride = wbm.BackBufferStride;
@@ -60,8 +61,8 @@ namespace Lab03___Rasterization
             {
                 wbm.Lock();
                 for (int x = 0; x < wbm.Width; x++)
-                for (int y = 0; y < wbm.Height; y++)
-                    wbm.SetPixelColor(x, y, Color.FromArgb(255, 255, 255, 255));
+                    for (int y = 0; y < wbm.Height; y++)
+                        wbm.SetPixelColor(x, y, Color.FromArgb(255, 255, 255, 255));
             }
             finally
             {

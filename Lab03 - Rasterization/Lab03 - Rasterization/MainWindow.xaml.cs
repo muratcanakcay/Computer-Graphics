@@ -27,38 +27,36 @@ namespace Lab03___Rasterization
         private bool _isDrawingLine;
         private bool _isDrawingPolygon;
         private bool _isDrawingCircle;
-        private List<Point> _currentPoints = new();
-        private readonly List<IDrawable> _allShapes = new();
-        private readonly WriteableBitmap _whiteWbm;
-        private WriteableBitmap _wbm;
-        private bool _isDraggingVertex;
         private bool _isDraggingEdge;
+        private bool _isDraggingVertex;
         private Point _initialCursorPosition;
         private Point _currentCursorPosition;
-
-
-
+        private int _currentShapeIndex;
+        private int _currentEdgeIndex;
+        private int _currentPointIndex;
+        private readonly List<Point> _currentPoints = new();
+        private readonly List<IDrawable> _allShapes = new();
+        private readonly WriteableBitmap _emptyWbm;
+        private WriteableBitmap _wbm;
+        
         public MainWindow()
         {
             InitializeComponent();
-            _whiteWbm = InitializeCanvas(ref _wbm);
+            (_emptyWbm, _wbm) = InitializeCanvas();
         }
 
-        private WriteableBitmap InitializeCanvas(ref WriteableBitmap _wbm)
+        private (WriteableBitmap, WriteableBitmap) InitializeCanvas()
         {
-            var whiteWbm = new WriteableBitmap((int)TheCanvas.Width,
-                (int)TheCanvas.Height, 
-                96, 
-                96, 
-                PixelFormats.Bgr32, 
-                null);
+            var emptyWbm = new WriteableBitmap((int)TheCanvas.Width,
+                                                (int)TheCanvas.Height, 
+                                                96, 
+                                                96, 
+                                                PixelFormats.Bgr32, 
+                                                null);
 
-            whiteWbm.Clear();
-            _wbm = whiteWbm;
-            var brush = new ImageBrush { ImageSource = _wbm };
-            TheCanvas.Background = brush;
-
-            return whiteWbm;
+            emptyWbm.Clear();            
+            TheCanvas.Background = new ImageBrush { ImageSource = emptyWbm };
+            return (emptyWbm, emptyWbm);
         }
 
         private void dummyCallBack(object sender, RoutedEventArgs e)
@@ -68,24 +66,14 @@ namespace Lab03___Rasterization
         private void OnClick_ResetCanvas(object sender, RoutedEventArgs e)
         {
             _allShapes.Clear();
-            ClearCanvas();
+            RedrawCanvas();
         }
-        private void ClearCanvas()
+        private void RedrawCanvas()
         {
-            _wbm = _whiteWbm.Clone();
-
-            var brush = new ImageBrush
-            {
-                ImageSource = _wbm
-            };
-
-            TheCanvas.Background = brush;
+            _wbm = _emptyWbm.Clone();
+            DrawAllShapes(_wbm);
+            TheCanvas.Background = new ImageBrush { ImageSource = _wbm };
         }
-
-        private int _currentShapeIndex;
-        private int _currentPointIndex;
-        private int _currentLineIndex;
-        private int _currentEdgeIndex;
 
         private void TheCanvas_OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
@@ -97,29 +85,35 @@ namespace Lab03___Rasterization
             else if (_isDrawingPolygon) DrawPolygon(_currentCursorPosition);
             else if (!_isDraggingVertex || !_isDraggingEdge)
             {
-                // check if a vertex is clicked
+                // for each shape, check if a vertex or edge is clicked
                 foreach (var shape in _allShapes)
                 {
                     _currentPointIndex = -1;
                     _currentEdgeIndex = -1;
                     _currentShapeIndex = _allShapes.IndexOf(shape);
                     _currentPointIndex = shape.GetVertexIndexOf(_currentCursorPosition);
-                    if (_currentPointIndex == -1)
+                    if (_currentPointIndex > -1)
                     {
-                        _currentEdgeIndex = shape.GetEdgeIndexOf(_currentCursorPosition);
-                        if (_currentEdgeIndex == -1)
-                            continue;
-                        
-                        Debug.WriteLine($"EDGE! {_currentEdgeIndex}");
+                        Debug.WriteLine("VERTEX!");
                         _initialCursorPosition = _currentCursorPosition;
-                        _isDraggingEdge= true;
+                        _isDraggingVertex = true;
                         return;
                     }
-
-                    Debug.WriteLine("VERTEX!");
-                    _initialCursorPosition = _currentCursorPosition;
-                    _isDraggingVertex = true;
-                    return;
+                    else // check for edge
+                    {
+                        _currentEdgeIndex = shape.GetEdgeIndexOf(_currentCursorPosition);
+                        if (_currentEdgeIndex > -1)
+                        {
+                            Debug.WriteLine($"EDGE! {_currentEdgeIndex}");
+                            _initialCursorPosition = _currentCursorPosition;
+                            _isDraggingEdge= true;
+                            return;
+                        }
+                        else
+                        {
+                            continue;  // to the next shape    
+                        }
+                    }
                 }
             }
         }
@@ -146,8 +140,7 @@ namespace Lab03___Rasterization
             // draw line preview
             if (_isDrawingLine && _currentPoints.Count > 0)
             {
-                ClearCanvas();
-                DrawAllShapes();
+                RedrawCanvas();
                 currentLine = new Line(new List<Point> { _currentPoints[0], _currentCursorPosition });
                 currentLine.Draw(_wbm);
             }
@@ -155,9 +148,8 @@ namespace Lab03___Rasterization
             // draw polygon preview
             if (_isDrawingPolygon && _currentPoints.Count > 0)
             {
-                ClearCanvas();
-                DrawAllShapes();
-                for (int i = 0; i < _currentPoints.Count - 1; i++)
+                RedrawCanvas();
+                for (var i = 0; i < _currentPoints.Count - 1; i++)
                 {
                     currentLine = new Line(new List<Point> { _currentPoints[i], _currentPoints[i+1] });
                     currentLine.Draw(_wbm);
@@ -172,8 +164,7 @@ namespace Lab03___Rasterization
                 _allShapes[_currentShapeIndex].MoveVertex(_currentPointIndex, Point.Subtract(_currentCursorPosition, _initialCursorPosition));
                 _initialCursorPosition = _currentCursorPosition;
 
-                ClearCanvas();
-                DrawAllShapes();
+                RedrawCanvas();
             }
 
             if (_isDraggingEdge)
@@ -181,8 +172,7 @@ namespace Lab03___Rasterization
                 _allShapes[_currentShapeIndex].MoveEdge(_currentEdgeIndex, Point.Subtract(_currentCursorPosition, _initialCursorPosition));
                 _initialCursorPosition = _currentCursorPosition;
 
-                ClearCanvas();
-                DrawAllShapes();
+                RedrawCanvas();
             }
         }
 
@@ -193,8 +183,7 @@ namespace Lab03___Rasterization
             else if (_isDrawingPolygon) ToggleIsDrawingPolygon();
 
             _currentPoints.Clear();
-            ClearCanvas();
-            DrawAllShapes();
+            RedrawCanvas();
         }
 
         private void DrawLine(Point clickPosition)
@@ -214,17 +203,14 @@ namespace Lab03___Rasterization
                 _currentPoints.Clear();
                 
                 ToggleIsDrawingLine();
-                ClearCanvas();
-                DrawAllShapes();
+                RedrawCanvas();
             }
         }
 
-        private void DrawAllShapes()
+        private void DrawAllShapes(WriteableBitmap wbm)
         {
             foreach (var shape in _allShapes)
-            {
-                shape.Draw(_wbm);
-            }
+                shape.Draw(wbm);
         }
 
         private void LineButton_OnClick(object sender, RoutedEventArgs e)
@@ -276,8 +262,7 @@ namespace Lab03___Rasterization
                     _currentPoints.Clear(); // when the polygon is finished
                     Debug.WriteLine("Clearing _points");
                     ToggleIsDrawingPolygon();
-                    ClearCanvas();
-                    DrawAllShapes();
+                    RedrawCanvas();
                 }
                 else
                 {
