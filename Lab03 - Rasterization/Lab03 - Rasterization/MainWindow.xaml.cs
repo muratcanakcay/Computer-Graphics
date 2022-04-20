@@ -31,7 +31,6 @@ namespace Lab03___Rasterization
         private readonly List<IDrawable> _allShapes = new();
         private readonly WriteableBitmap _whiteWbm;
         private WriteableBitmap _wbm;
-        private Polygon currentPolygon;
         private bool _isDraggingVertex;
         private bool _isDraggingEdge;
         private Point _initialCursorPosition;
@@ -54,19 +53,8 @@ namespace Lab03___Rasterization
                 PixelFormats.Bgr32, 
                 null);
 
-            try
-            {
-                whiteWbm.Lock();
-                for (int x = 0; x < whiteWbm.Width; x++)
-                    for (int y = 0; y < whiteWbm.Height; y++)
-                        whiteWbm.SetPixelColor(x, y, Color.FromArgb(255, 255, 255, 255));
-            }
-            finally
-            {
-                whiteWbm.Unlock();
-            }
-
-            _wbm = whiteWbm.Clone();
+            whiteWbm.Clear();
+            _wbm = whiteWbm;
             var brush = new ImageBrush { ImageSource = _wbm };
             TheCanvas.Background = brush;
 
@@ -85,6 +73,7 @@ namespace Lab03___Rasterization
         private void ClearCanvas()
         {
             _wbm = _whiteWbm.Clone();
+
             var brush = new ImageBrush
             {
                 ImageSource = _wbm
