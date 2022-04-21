@@ -81,8 +81,13 @@ namespace Lab03___Rasterization
             Debug.WriteLine("CLICKED!");
             Debug.WriteLine($"{_currentCursorPosition.X}, {_currentCursorPosition.Y}");
 
-            if (_isDrawingLine) DrawLine(_currentCursorPosition);
+            if (e.ClickCount == 2)
+            {
+                Debug.Write("DOUBLECLICK!!");
+            }
+            else if (_isDrawingLine) DrawLine(_currentCursorPosition);
             else if (_isDrawingPolygon) DrawPolygon(_currentCursorPosition);
+            else if (_isDrawingCircle) DrawCircle(_currentCursorPosition);
             else if (!_isDraggingVertex || !_isDraggingEdge)
             {
                 // for each shape, check if a vertex or edge is clicked
@@ -117,6 +122,28 @@ namespace Lab03___Rasterization
                 }
             }
         }
+
+        private void DrawCircle(Point clickPosition)
+        {
+            if (_currentPoints.Count == 0) // add center
+            {
+                _currentPoints.Add(clickPosition);
+                Debug.WriteLine($"Center: {clickPosition.X}, {clickPosition.Y}");
+            }
+            else // add endPoint and add Line to _allShapes
+            {
+                _currentPoints.Add(clickPosition);
+                Debug.WriteLine($"Edge: {clickPosition.X}, {clickPosition.Y}");
+                _allShapes.Add(new Circle(new List<Point>(_currentPoints)));
+                
+                // clear the points
+                _currentPoints.Clear();
+                
+                ToggleIsDrawingLine();
+                RedrawCanvas();
+            }
+        }
+
         private void TheCanvas_OnMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             if (_isDraggingVertex || _isDraggingEdge)
@@ -156,6 +183,14 @@ namespace Lab03___Rasterization
                 }
 
                 currentLine = new Line(new List<Point> { _currentPoints[^1], _currentCursorPosition });
+                currentLine.Draw(_wbm);
+            }
+
+            // draw circle preview
+            if (_isDrawingCircle && _currentPoints.Count > 0)
+            {
+                RedrawCanvas();
+                currentLine = new Line(new List<Point> { _currentPoints[0], _currentCursorPosition });
                 currentLine.Draw(_wbm);
             }
 
@@ -235,8 +270,6 @@ namespace Lab03___Rasterization
 
         private void ToggleIsDrawingPolygon()
         {
-            
-
             _isDrawingPolygon = !_isDrawingPolygon;
             PolygonButton.Background = _isDrawingPolygon ? Brushes.LightSalmon : Brushes.LightCyan;
         }
@@ -278,6 +311,16 @@ namespace Lab03___Rasterization
         }
 
 
-        
+        private void CircleButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            ToggleAllOff();
+            ToggleIsDrawingCircle();
+        }
+
+        private void ToggleIsDrawingCircle()
+        {
+            _isDrawingCircle = !_isDrawingCircle;
+            CircleButton.Background = _isDrawingCircle ? Brushes.LightSalmon : Brushes.LightCyan;
+        }
     }
 }

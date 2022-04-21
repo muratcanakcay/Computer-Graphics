@@ -201,4 +201,26 @@ namespace Lab03___Rasterization
             return $"POLYGON.TOSTRING NOT IMPLEMENTED YET"; // ({Points[0].X}, {Points[0].Y})-({Points[1].X}, {Points[1].Y})";
         }
     }
+
+    public class Circle : Shape
+    {
+        public Point Center => Points[0];
+        public double Radius => DistanceBetween(Points[0], Points[1]);
+        public Circle(List<Point> points, uint thickness = 1)
+        {
+            Points = points;
+            Thickness = thickness;
+        }
+        
+        public override void Draw(WriteableBitmap wbm)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override string ToString()
+        {
+
+            return $"Center:({Center.X}, {Center.Y})-Radius:{Radius})";
+        }
+    }
 }

@@ -55,8 +55,8 @@
                     MouseMove="TheCanvas_OnMouseMove"
                     MouseRightButtonUp="TheCanvas_OnMouseRightButtonUp"
                     Cursor="Cross"
-                        
-                        />
+
+                />
             </Grid>
 
             <!--C_PANEL-->
@@ -149,6 +149,7 @@
                                 <RowDefinition/>
                             </Grid.RowDefinitions>
 
+                            <!--LINE-->
                             <Button  
                                 Grid.Row="0"
                                 Grid.Column="0"
@@ -165,6 +166,7 @@
                                 Draw Line
                             </Button>
 
+                            <!--POLYGON-->
                             <Button  
                                 Grid.Row="1"
                                 Grid.Column="0"
@@ -179,6 +181,23 @@
                                 Background="LightCyan"
                                 Click="PolygonButton_OnClick">
                                 Draw Polygon
+                            </Button>
+
+                            <!--CIRCLE-->
+                            <Button  
+                                Grid.Row="2"
+                                Grid.Column="0"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                Margin="1,0, 6, 0"
+                                Height="20"
+                                Width="100"
+                                Name="CircleButton"
+                                IsEnabled="true"
+                                ToolTip="Draw Circle"
+                                Background="LightCyan"
+                                Click="CircleButton_OnClick">
+                                Draw Circle
                             </Button>
 
 
