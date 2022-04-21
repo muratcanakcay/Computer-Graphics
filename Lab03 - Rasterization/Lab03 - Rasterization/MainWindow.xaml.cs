@@ -139,7 +139,7 @@ namespace Lab03___Rasterization
                 // clear the points
                 _currentPoints.Clear();
                 
-                ToggleIsDrawingLine();
+                ToggleIsDrawingCircle();
                 RedrawCanvas();
             }
         }
@@ -190,8 +190,8 @@ namespace Lab03___Rasterization
             if (_isDrawingCircle && _currentPoints.Count > 0)
             {
                 RedrawCanvas();
-                currentLine = new Line(new List<Point> { _currentPoints[0], _currentCursorPosition });
-                currentLine.Draw(_wbm);
+                var currentCircle = new Circle(new List<Point> { _currentPoints[0], _currentCursorPosition });
+                currentCircle.Draw(_wbm);
             }
 
             if (_isDraggingVertex)
@@ -216,6 +216,7 @@ namespace Lab03___Rasterization
         {
             if (_isDrawingLine) ToggleIsDrawingLine();
             else if (_isDrawingPolygon) ToggleIsDrawingPolygon();
+            else if (_isDrawingCircle) ToggleIsDrawingCircle();
 
             _currentPoints.Clear();
             RedrawCanvas();

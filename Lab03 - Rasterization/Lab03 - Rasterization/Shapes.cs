@@ -204,17 +204,53 @@ namespace Lab03___Rasterization
 
     public class Circle : Shape
     {
+        private int _radius;
         public Point Center => Points[0];
-        public double Radius => DistanceBetween(Points[0], Points[1]);
+
+        public int Radius
+        {
+            get => _radius;
+            private set => _radius = value;
+        }
+
         public Circle(List<Point> points, uint thickness = 1)
         {
             Points = points;
             Thickness = thickness;
+            Radius = (int)Math.Round(DistanceBetween(Points[0], Points[1]));
         }
         
         public override void Draw(WriteableBitmap wbm)
         {
-            throw new NotImplementedException();
+            int d = 1 - Radius;
+            int x = (int)Center.X;
+            int y = (int)Center.Y + Radius;
+
+            try
+            {
+                wbm.Lock();
+
+                wbm.SetPixelColor(x, y, Color);
+                while (y > x)
+                {
+                    if (d < 0)
+                        //move to E
+                        d += 2 * x + 3;
+                    else
+                        //move to NE
+                    {
+                        d += 2 * x - 2 * y + 5;
+                        --y;
+                    }
+
+                    ++x;
+                    wbm.SetPixelColor(x, y, Color);
+                }
+            }
+            finally
+            {
+                wbm.Unlock();
+            }
         }
 
         public override string ToString()
