@@ -272,9 +272,8 @@ namespace Lab03___Rasterization
             }
             else // add endPoint and add Line to _allShapes
             {
-                _currentPoints.Add(clickPosition);
                 Debug.WriteLine($"Ending: {clickPosition.X}, {clickPosition.Y}");
-                _allShapes.Add(new Line(new List<Point>(_currentPoints), _currentShapeThickness, _currentShapeColor));
+                _allShapes.Add(new Line(new List<Point> { _currentPoints[0], clickPosition }, _currentShapeThickness, _currentShapeColor));
                 
                 // clear the points
                 _currentPoints.Clear();

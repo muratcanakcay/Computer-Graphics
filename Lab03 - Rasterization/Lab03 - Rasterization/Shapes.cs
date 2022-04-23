@@ -24,10 +24,18 @@ namespace Lab03___Rasterization
 
     public abstract class Shape : IDrawable
     {
+        public List<Point> Points { get; protected set; }
         public uint Thickness { get; set; }
         public Color Color { get; set; }
         protected const uint GrabDistance = 10;
-        public List<Point> Points { get; protected set; } = new();
+
+        protected Shape(List<Point> points, uint thickness, Color color)
+        {
+            Points = points;
+            Thickness = thickness;
+            Color = color;
+        }
+        
         public abstract void Draw(WriteableBitmap wbm);
 
         public virtual int GetVertexIndexOf(Point point)
@@ -105,12 +113,7 @@ namespace Lab03___Rasterization
 
     public class Line : Shape
     {
-        public Line(List<Point> points, uint thickness, Color color)
-        {
-            Points = points.GetRange(0, 2);
-            Thickness = thickness;
-            Color = color;
-        }
+        public Line(List<Point> points, uint thickness, Color color) : base(points, thickness, color) {}
 
         public override void Draw(WriteableBitmap wbm)
         {
@@ -184,12 +187,7 @@ namespace Lab03___Rasterization
 
     public class Polygon : Shape
     {
-        public Polygon(List<Point> points, uint thickness, Color color)
-        {
-            Points = points;
-            Thickness = thickness;
-            Color = color;
-        }
+        public Polygon(List<Point> points, uint thickness, Color color) : base(points, thickness, color) {}
 
         public override void Draw(WriteableBitmap wbm)
         {
@@ -211,15 +209,8 @@ namespace Lab03___Rasterization
     public class Circle : Shape
     {
         public Point Center => Points[0];
-
         public int Radius => (int)Math.Round(DistanceBetween(Points[0], Points[1]));
-
-        public Circle(List<Point> points, uint thickness, Color color)
-        {
-            Points = points;
-            Thickness = thickness;
-            Color = color;
-        }
+        public Circle(List<Point> points, uint thickness, Color color) : base(points, thickness, color) {}
         
         public override void Draw(WriteableBitmap wbm)
         {
