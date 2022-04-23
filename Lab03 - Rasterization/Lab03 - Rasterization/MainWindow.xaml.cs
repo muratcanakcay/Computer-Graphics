@@ -36,6 +36,7 @@ namespace Lab03___Rasterization
         private int _currentEdgeIndex;
         private int _currentPointIndex;
         private uint _currentShapeThickness = 1;
+        private Color _currentShapeColor = Color.FromArgb(255, 0, 0, 0);
         private readonly List<Point> _currentPoints = new();
         private readonly List<IDrawable> _allShapes = new();
         private readonly WriteableBitmap _emptyWbm;
@@ -136,7 +137,7 @@ namespace Lab03___Rasterization
             {
                 _currentPoints.Add(clickPosition);
                 Debug.WriteLine($"Edge: {clickPosition.X}, {clickPosition.Y}");
-                _allShapes.Add(new Circle(new List<Point>(_currentPoints), _currentShapeThickness));
+                _allShapes.Add(new Circle(new List<Point>(_currentPoints), _currentShapeThickness, _currentShapeColor));
                 
                 // clear the points
                 _currentPoints.Clear();
@@ -170,7 +171,7 @@ namespace Lab03___Rasterization
             if (_isDrawingLine && _currentPoints.Count > 0)
             {
                 RedrawCanvas();
-                currentLine = new Line(new List<Point> { _currentPoints[0], _currentCursorPosition }, _currentShapeThickness);
+                currentLine = new Line(new List<Point> { _currentPoints[0], _currentCursorPosition }, _currentShapeThickness, _currentShapeColor);
                 currentLine.Draw(_wbm);
             }
             
@@ -180,11 +181,11 @@ namespace Lab03___Rasterization
                 RedrawCanvas();
                 for (var i = 0; i < _currentPoints.Count - 1; i++)
                 {
-                    currentLine = new Line(new List<Point> { _currentPoints[i], _currentPoints[i+1] }, _currentShapeThickness);
+                    currentLine = new Line(new List<Point> { _currentPoints[i], _currentPoints[i+1] }, _currentShapeThickness, _currentShapeColor);
                     currentLine.Draw(_wbm);
                 }
 
-                currentLine = new Line(new List<Point> { _currentPoints[^1], _currentCursorPosition }, _currentShapeThickness);
+                currentLine = new Line(new List<Point> { _currentPoints[^1], _currentCursorPosition }, _currentShapeThickness, _currentShapeColor);
                 currentLine.Draw(_wbm);
             }
 
@@ -192,7 +193,7 @@ namespace Lab03___Rasterization
             if (_isDrawingCircle && _currentPoints.Count > 0)
             {
                 RedrawCanvas();
-                var currentCircle = new Circle(new List<Point> { _currentPoints[0], _currentCursorPosition }, _currentShapeThickness);
+                var currentCircle = new Circle(new List<Point> { _currentPoints[0], _currentCursorPosition }, _currentShapeThickness, _currentShapeColor);
                 currentCircle.Draw(_wbm);
             }
 
@@ -235,7 +236,7 @@ namespace Lab03___Rasterization
             {
                 _currentPoints.Add(clickPosition);
                 Debug.WriteLine($"Ending: {clickPosition.X}, {clickPosition.Y}");
-                _allShapes.Add(new Line(new List<Point>(_currentPoints), _currentShapeThickness));
+                _allShapes.Add(new Line(new List<Point>(_currentPoints), _currentShapeThickness, _currentShapeColor));
                 
                 // clear the points
                 _currentPoints.Clear();
@@ -284,26 +285,18 @@ namespace Lab03___Rasterization
                 _currentPoints.Add(clickPosition);
                 Debug.WriteLine($"Starting: {clickPosition.X}, {clickPosition.Y}");
             }
-            else if (_currentPoints.Count < 2)
+            else if (_currentPoints.Count < 2 || DistanceBetween(_currentPoints[0], clickPosition) > 10)
             {
                 _currentPoints.Add(clickPosition);
-                Debug.WriteLine($"PolygonPoint: {clickPosition.X}, {clickPosition.Y}");
+                Debug.WriteLine($"PolygonPoint: {clickPosition.X}, {clickPosition.Y}");  
             }
             else
             {
-                if (DistanceBetween(_currentPoints[0], clickPosition) < 10)
-                {
-                    Debug.WriteLine($"Ending: {clickPosition.X}, {clickPosition.Y}");
-                    _allShapes.Add(new Polygon(new List<Point>(_currentPoints), _currentShapeThickness));
-                    _currentPoints.Clear(); // when the polygon is finished
-                    ToggleIsDrawingPolygon();
-                    RedrawCanvas();
-                }
-                else
-                {
-                    _currentPoints.Add(clickPosition);
-                    Debug.WriteLine($"PolygonPoint: {clickPosition.X}, {clickPosition.Y}");
-                }
+                Debug.WriteLine($"Ending: {clickPosition.X}, {clickPosition.Y}");
+                _allShapes.Add(new Polygon(new List<Point>(_currentPoints), _currentShapeThickness, _currentShapeColor));
+                _currentPoints.Clear(); // when the polygon is finished
+                ToggleIsDrawingPolygon();
+                RedrawCanvas();
             }
         }
 
@@ -311,7 +304,6 @@ namespace Lab03___Rasterization
         {
             return (int)Math.Round(Math.Sqrt(Math.Pow((p2.X - p1.X), 2) + Math.Pow((p2.Y - p1.Y), 2)));
         }
-
 
         private void CircleButton_OnClick(object sender, RoutedEventArgs e)
         {
@@ -340,9 +332,17 @@ namespace Lab03___Rasterization
             }
         }
 
-        private void ColorButton_OnClick(object sender, RoutedEventArgs e)
+        private void ShapeColorButton_OnClick(object sender, RoutedEventArgs e)
         {
-            throw new NotImplementedException();
+            System.Windows.Forms.ColorDialog colorDialog = new System.Windows.Forms.ColorDialog();
+            if (colorDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                ShapeColor.Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(colorDialog.Color.A, colorDialog.Color.R, colorDialog.Color.G, colorDialog.Color.B));
+                _currentShapeColor = Color.FromArgb(colorDialog.Color.A, colorDialog.Color.R, colorDialog.Color.G, colorDialog.Color.B);
+
+            }
         }
+
+
     }
 }

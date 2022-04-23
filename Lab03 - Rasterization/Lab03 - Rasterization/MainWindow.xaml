@@ -190,7 +190,9 @@
                                 IsEnabled="true"
                                 ToolTip="Select Color"
                                 Background="Black"
-                                Click="ColorButton_OnClick"/>
+                                Click="ShapeColorButton_OnClick"
+                                
+                                />
                             
                             <!--LINE-->
                             <Button  
@@ -245,6 +247,8 @@
                                 Click="CircleButton_OnClick">
                                 Draw Circle
                             </Button>
+
+                            
 
 
                         </Grid>

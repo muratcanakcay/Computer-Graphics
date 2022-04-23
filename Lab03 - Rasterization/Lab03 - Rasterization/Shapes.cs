@@ -23,7 +23,7 @@ namespace Lab03___Rasterization
         protected const uint GrabDistance = 10;
         protected List<Point> Points = new();
         protected uint Thickness;
-        protected Color Color = Color.FromArgb(255, 0, 0, 0);
+        protected Color Color;
         protected int CanvasHeight;
         protected int CanvasWidth;
         
@@ -95,10 +95,11 @@ namespace Lab03___Rasterization
 
     public class Line : Shape
     {
-        public Line(List<Point> points, uint thickness = 1)
+        public Line(List<Point> points, uint thickness, Color color)
         {
             Points = points.GetRange(0, 2);
             Thickness = thickness;
+            Color = color;
         }
 
         public override void Draw(WriteableBitmap wbm)
@@ -176,10 +177,11 @@ namespace Lab03___Rasterization
 
     public class Polygon : Shape
     {
-        public Polygon(List<Point> points, uint thickness = 1)
+        public Polygon(List<Point> points, uint thickness, Color color)
         {
             Points = points;
             Thickness = thickness;
+            Color = color;
         }
 
         public override void Draw(WriteableBitmap wbm)
@@ -190,7 +192,7 @@ namespace Lab03___Rasterization
             for (var i = 0; i < Points.Count; i++)
             {
                 var endPoint = i < Points.Count - 1 ? Points[i + 1] : Points[0];
-                var edge = new Line(new List<Point> {Points[i], endPoint}, Thickness);
+                var edge = new Line(new List<Point> {Points[i], endPoint}, Thickness, Color);
                 edge.Draw(wbm);
             }
         }
@@ -208,10 +210,11 @@ namespace Lab03___Rasterization
 
         public int Radius => (int)Math.Round(DistanceBetween(Points[0], Points[1]));
 
-        public Circle(List<Point> points, uint thickness = 4)
+        public Circle(List<Point> points, uint thickness, Color color)
         {
             Points = points;
             Thickness = thickness;
+            Color = color;
         }
         
         public override void Draw(WriteableBitmap wbm)
@@ -290,7 +293,8 @@ namespace Lab03___Rasterization
             if (DistanceBetween(Center, point) < Radius + Thickness + GrabDistance &&
                 DistanceBetween(Center, point) > Radius - Thickness - GrabDistance)
             {
-                var v = Point.Subtract(point, Points[0]); // vector from center to the point
+                // change edgePoint to the closest point on circle to the clicked point
+                var v = Point.Subtract(point, Points[0]); 
                 var vUnit = v / v.Length;
                 var newEdgePoint = Point.Add(Center, Radius * vUnit);
                 Points[1] = newEdgePoint;
