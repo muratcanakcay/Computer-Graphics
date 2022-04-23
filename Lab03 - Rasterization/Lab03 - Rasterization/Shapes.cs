@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Windows;
 using System.Windows.Media.Imaging;
@@ -19,7 +20,7 @@ namespace Lab03___Rasterization
 
     public abstract class Shape : IDrawable
     {
-        private const uint GrabDistance = 10;
+        protected const uint GrabDistance = 10;
         protected List<Point> Points = new();
         protected uint Thickness;
         protected Color Color = Color.FromArgb(255, 0, 0, 0);
@@ -204,47 +205,55 @@ namespace Lab03___Rasterization
 
     public class Circle : Shape
     {
-        private int _radius;
         public Point Center => Points[0];
 
-        public int Radius
-        {
-            get => _radius;
-            private set => _radius = value;
-        }
+        public int Radius => (int)Math.Round(DistanceBetween(Points[0], Points[1]));
 
         public Circle(List<Point> points, uint thickness = 1)
         {
             Points = points;
             Thickness = thickness;
-            Radius = (int)Math.Round(DistanceBetween(Points[0], Points[1]));
         }
         
         public override void Draw(WriteableBitmap wbm)
         {
-            int d = 1 - Radius;
-            int x = (int)Center.X;
-            int y = (int)Center.Y + Radius;
+            int x = 0;
+            int y = Radius;
+            int d = 1-Radius;
 
             try
             {
                 wbm.Lock();
 
-                wbm.SetPixelColor(x, y, Color);
+                wbm.SetPixelColor((int)Center.X + x, (int)Center.Y + y, Color);
+                wbm.SetPixelColor((int)Center.X + x, (int)Center.Y - y, Color);
+                wbm.SetPixelColor((int)Center.X + y, (int)Center.Y + x, Color);
+                wbm.SetPixelColor((int)Center.X - y, (int)Center.Y + x, Color);
+                
                 while (y > x)
                 {
                     if (d < 0)
                         //move to E
                         d += 2 * x + 3;
-                    else
-                        //move to NE
+                    else //move to NE
                     {
                         d += 2 * x - 2 * y + 5;
                         --y;
                     }
 
                     ++x;
-                    wbm.SetPixelColor(x, y, Color);
+                    
+                    wbm.SetPixelColor((int)Center.X + x, (int)Center.Y + y, Color);
+                    wbm.SetPixelColor((int)Center.X + x, (int)Center.Y - y, Color);
+                    
+                    wbm.SetPixelColor((int)Center.X - x, (int)Center.Y + y, Color);
+                    wbm.SetPixelColor((int)Center.X - x, (int)Center.Y - y, Color);
+
+                    wbm.SetPixelColor((int)Center.X + y, (int)Center.Y + x, Color);
+                    wbm.SetPixelColor((int)Center.X - y, (int)Center.Y + x, Color);
+                    
+                    wbm.SetPixelColor((int)Center.X + y, (int)Center.Y - x, Color);
+                    wbm.SetPixelColor((int)Center.X - y, (int)Center.Y - x, Color);
                 }
             }
             finally
@@ -253,10 +262,35 @@ namespace Lab03___Rasterization
             }
         }
 
+        public override int GetVertexIndexOf(Point point)
+        {
+            return -1; // circle has no vertices
+        }
+
+        public override int GetEdgeIndexOf(Point point)
+        {
+            if (DistanceBetween(Center, point) < Radius + Thickness + GrabDistance &&
+                DistanceBetween(Center, point) > Radius - Thickness - GrabDistance)
+            {
+                var v = Point.Subtract(point, Points[0]); // vector from center to the point
+                v /= v.Length;
+                var newP = Point.Add(Center, v * Radius);
+                Points[1] = newP;
+
+                return 1;
+            }
+
+            return -1;
+        }
+
+        public override void MoveEdge(int edgeIndex, Vector offSet)
+        {
+            Points[edgeIndex] = Point.Add(Points[edgeIndex], offSet);
+        }
+
         public override string ToString()
         {
-
-            return $"Center:({Center.X}, {Center.Y})-Radius:{Radius})";
+            return $"Center:({Center.X}, {Center.Y}) - Radius:{Radius})";
         }
     }
 }
