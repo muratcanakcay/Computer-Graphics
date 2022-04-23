@@ -95,7 +95,7 @@ namespace Lab03___Rasterization
 
     public class Line : Shape
     {
-        public Line(List<Point> points, uint thickness = 2)
+        public Line(List<Point> points, uint thickness = 1)
         {
             Points = points.GetRange(0, 2);
             Thickness = thickness;
@@ -208,7 +208,7 @@ namespace Lab03___Rasterization
 
         public int Radius => (int)Math.Round(DistanceBetween(Points[0], Points[1]));
 
-        public Circle(List<Point> points, uint thickness = 1)
+        public Circle(List<Point> points, uint thickness = 4)
         {
             Points = points;
             Thickness = thickness;
@@ -224,11 +224,17 @@ namespace Lab03___Rasterization
             {
                 wbm.Lock();
 
-                wbm.SetPixelColor((int)Center.X + x, (int)Center.Y + y, Color);
-                wbm.SetPixelColor((int)Center.X + x, (int)Center.Y - y, Color);
+                //wbm.SetPixelColor((int)Center.X + x, (int)Center.Y + y, Color);
+                //wbm.SetPixelColor((int)Center.X + x, (int)Center.Y - y, Color);
 
-                wbm.SetPixelColor((int)Center.X + y, (int)Center.Y + x, Color);
-                wbm.SetPixelColor((int)Center.X - y, (int)Center.Y + x, Color);
+                //wbm.SetPixelColor((int)Center.X + y, (int)Center.Y + x, Color);
+                //wbm.SetPixelColor((int)Center.X - y, (int)Center.Y + x, Color);
+                
+                wbm.ApplyBrush((int)Center.X + x, (int)Center.Y + y, Thickness, Color);
+                wbm.ApplyBrush((int)Center.X + x, (int)Center.Y - y, Thickness, Color);
+
+                wbm.ApplyBrush((int)Center.X + y, (int)Center.Y + x, Thickness, Color);
+                wbm.ApplyBrush((int)Center.X - y, (int)Center.Y + x, Thickness, Color);
                 
                 while (y > x)
                 {
@@ -243,17 +249,29 @@ namespace Lab03___Rasterization
 
                     ++x;
                     
-                    wbm.SetPixelColor((int)Center.X + x, (int)Center.Y + y, Color);
-                    wbm.SetPixelColor((int)Center.X + x, (int)Center.Y - y, Color);
+                    //wbm.SetPixelColor((int)Center.X + x, (int)Center.Y + y, Color);
+                    //wbm.SetPixelColor((int)Center.X + x, (int)Center.Y - y, Color);
                     
-                    wbm.SetPixelColor((int)Center.X - x, (int)Center.Y + y, Color);
-                    wbm.SetPixelColor((int)Center.X - x, (int)Center.Y - y, Color);
+                    //wbm.SetPixelColor((int)Center.X - x, (int)Center.Y + y, Color);
+                    //wbm.SetPixelColor((int)Center.X - x, (int)Center.Y - y, Color);
 
-                    wbm.SetPixelColor((int)Center.X + y, (int)Center.Y + x, Color);
-                    wbm.SetPixelColor((int)Center.X - y, (int)Center.Y + x, Color);
+                    //wbm.SetPixelColor((int)Center.X + y, (int)Center.Y + x, Color);
+                    //wbm.SetPixelColor((int)Center.X - y, (int)Center.Y + x, Color);
                     
-                    wbm.SetPixelColor((int)Center.X + y, (int)Center.Y - x, Color);
-                    wbm.SetPixelColor((int)Center.X - y, (int)Center.Y - x, Color);
+                    //wbm.SetPixelColor((int)Center.X + y, (int)Center.Y - x, Color);
+                    //wbm.SetPixelColor((int)Center.X - y, (int)Center.Y - x, Color);
+                    
+                    wbm.ApplyBrush((int)Center.X + x, (int)Center.Y + y, Thickness, Color);
+                    wbm.ApplyBrush((int)Center.X + x, (int)Center.Y - y, Thickness, Color);
+                    
+                    wbm.ApplyBrush((int)Center.X - x, (int)Center.Y + y, Thickness, Color);
+                    wbm.ApplyBrush((int)Center.X - x, (int)Center.Y - y, Thickness, Color);
+                    
+                    wbm.ApplyBrush((int)Center.X + y, (int)Center.Y + x, Thickness, Color);
+                    wbm.ApplyBrush((int)Center.X - y, (int)Center.Y + x, Thickness, Color);
+                    
+                    wbm.ApplyBrush((int)Center.X + y, (int)Center.Y - x, Thickness, Color);
+                    wbm.ApplyBrush((int)Center.X - y, (int)Center.Y - x, Thickness, Color);
                 }
             }
             finally
