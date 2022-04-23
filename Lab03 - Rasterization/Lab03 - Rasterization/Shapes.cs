@@ -11,19 +11,22 @@ namespace Lab03___Rasterization
     
     internal interface IDrawable
     {
+        uint Thickness { get; set; }
+        Color Color { get; set; }
         void Draw(WriteableBitmap wbm);
         int GetVertexIndexOf(Point point);
         void MoveVertex(int vertexIndex, Vector offSet);
         int GetEdgeIndexOf(Point point);
         void MoveEdge(int edgeIndex, Vector offSet);
+        void MoveShape(Vector offset);
     }
 
     public abstract class Shape : IDrawable
     {
         protected const uint GrabDistance = 10;
         protected List<Point> Points = new();
-        protected uint Thickness;
-        protected Color Color;
+        public uint Thickness { get; set; }
+        public Color Color { get; set; }
         protected int CanvasHeight;
         protected int CanvasWidth;
         
@@ -67,6 +70,15 @@ namespace Lab03___Rasterization
 
             Points[edgeIndex] = newP1;
             Points[nextIndex] = newP2;
+        }
+
+        public void MoveShape(Vector offset)
+        {
+            for (int i = 0; i < Points.Count; i++)
+            {
+                var newP = Point.Add(Points[i], offset);
+                Points[i] = newP;
+            }
         }
 
         protected static double DistanceBetween(Point p1, Point p2)

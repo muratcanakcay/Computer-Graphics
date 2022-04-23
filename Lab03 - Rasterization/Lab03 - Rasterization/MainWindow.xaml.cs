@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -14,7 +15,9 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Brushes = System.Windows.Media.Brushes;
 using Color = System.Drawing.Color;
+using Point = System.Windows.Point;
 
 // TODO check for out of bounds of canvas! maybe set canvas size to match panel size?
 
@@ -28,8 +31,10 @@ namespace Lab03___Rasterization
         private bool _isDrawingLine;
         private bool _isDrawingPolygon;
         private bool _isDrawingCircle;
-        private bool _isDraggingEdge;
-        private bool _isDraggingVertex;
+        private bool _isMovingVertex;
+        private bool _isMovingEdge;
+        private bool _isMovingShape;
+        private bool _isModifyingShape;
         private Point _initialCursorPosition;
         private Point _currentCursorPosition;
         private int _currentShapeIndex;
@@ -42,6 +47,8 @@ namespace Lab03___Rasterization
         private readonly WriteableBitmap _emptyWbm;
         private WriteableBitmap _wbm;
         
+
+
         public MainWindow()
         {
             InitializeComponent();
@@ -70,6 +77,7 @@ namespace Lab03___Rasterization
         
         private void TheCanvas_OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
+            _isModifyingShape = false;
             _currentCursorPosition = e.GetPosition(TheCanvas);
             Debug.WriteLine("CLICKED!");
             Debug.WriteLine($"{_currentCursorPosition.X}, {_currentCursorPosition.Y}");
@@ -77,11 +85,32 @@ namespace Lab03___Rasterization
             if (e.ClickCount == 2)
             {
                 Debug.Write("DOUBLECLICK!!");
+                // for each shape, check if a vertex or edge is clicked
+                foreach (var shape in _allShapes)
+                {
+                    _currentShapeIndex = -1;
+                    if (shape.GetVertexIndexOf(_currentCursorPosition) > -1 || shape.GetEdgeIndexOf(_currentCursorPosition) > -1)
+                    {
+                        _currentShapeIndex = _allShapes.IndexOf(shape);
+                        break;
+                    }
+                }
+
+                if (_currentShapeIndex == -1) return;
+
+                _isModifyingShape = true;
+                _isMovingShape = true;
+                ShapeThickness.Text = _allShapes[_currentShapeIndex].Thickness.ToString();
+                var shapeColor = _allShapes[_currentShapeIndex].Color;
+                ShapeColor.Fill = new SolidColorBrush(System.Windows.Media.Color.FromArgb(shapeColor.A, 
+                                                                                        shapeColor.R, 
+                                                                                        shapeColor.G,
+                                                                                        shapeColor.B));
             }
             else if (_isDrawingLine) DrawLine(_currentCursorPosition);
             else if (_isDrawingPolygon) DrawPolygon(_currentCursorPosition);
             else if (_isDrawingCircle) DrawCircle(_currentCursorPosition);
-            else if (!_isDraggingVertex || !_isDraggingEdge)
+            else if (!_isMovingVertex || !_isMovingEdge)
             {
                 // for each shape, check if a vertex or edge is clicked
                 foreach (var shape in _allShapes)
@@ -94,7 +123,7 @@ namespace Lab03___Rasterization
                     {
                         Debug.WriteLine("VERTEX!");
                         _initialCursorPosition = _currentCursorPosition;
-                        _isDraggingVertex = true;
+                        _isMovingVertex = true;
                         return;
                     }
                     else // check for edge
@@ -104,7 +133,7 @@ namespace Lab03___Rasterization
                         {
                             Debug.WriteLine($"EDGE! {_currentEdgeIndex}");
                             _initialCursorPosition = _currentCursorPosition;
-                            _isDraggingEdge= true;
+                            _isMovingEdge= true;
                             return;
                         }
                         else
@@ -117,10 +146,12 @@ namespace Lab03___Rasterization
         }
         private void TheCanvas_OnMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            if (_isDraggingVertex || _isDraggingEdge)
+            _isMovingShape = false;
+
+            if (_isMovingVertex || _isMovingEdge)
             {
-                _isDraggingVertex = false;
-                _isDraggingEdge = false;
+                _isMovingVertex = false;
+                _isMovingEdge = false;
                 _currentPoints.Clear();
             }
         }
@@ -163,7 +194,7 @@ namespace Lab03___Rasterization
                 currentCircle.Draw(_wbm);
             }
 
-            if (_isDraggingVertex)
+            if (_isMovingVertex)
             {
                 _allShapes[_currentShapeIndex].MoveVertex(_currentPointIndex, Point.Subtract(_currentCursorPosition, _initialCursorPosition));
                 _initialCursorPosition = _currentCursorPosition;
@@ -171,9 +202,17 @@ namespace Lab03___Rasterization
                 RedrawCanvas();
             }
 
-            if (_isDraggingEdge)
+            if (_isMovingEdge)
             {
                 _allShapes[_currentShapeIndex].MoveEdge(_currentEdgeIndex, Point.Subtract(_currentCursorPosition, _initialCursorPosition));
+                _initialCursorPosition = _currentCursorPosition;
+
+                RedrawCanvas();
+            }
+
+            if (_isMovingShape)
+            {
+                _allShapes[_currentShapeIndex].MoveShape(Point.Subtract(_currentCursorPosition, _initialCursorPosition));
                 _initialCursorPosition = _currentCursorPosition;
 
                 RedrawCanvas();
@@ -182,6 +221,7 @@ namespace Lab03___Rasterization
         
         private void ToggleAllOff()
         {
+            _isModifyingShape = false;
             if (_isDrawingLine) ToggleIsDrawingLine();
             else if (_isDrawingPolygon) ToggleIsDrawingPolygon();
             else if (_isDrawingCircle) ToggleIsDrawingCircle();
@@ -292,12 +332,19 @@ namespace Lab03___Rasterization
         }
         private void ShapeThickness_OnPreviewTextInput(object sender, TextCompositionEventArgs e)
         {
-            if (int.TryParse(e.Text, out int t) && t is > 0 and < 9)
+            if (int.TryParse(e.Text, out var inputNum) && inputNum is > 0 and < 9)
             {
-                _currentShapeThickness = (uint)t;
+                _currentShapeThickness = (uint)inputNum;
                 Debug.WriteLine($"thickness changed to {_currentShapeThickness}");
                 ShapeThickness.Text = "";
                 e.Handled = false;
+
+                if (_isModifyingShape)
+                {
+                    _allShapes[_currentShapeIndex].Thickness = _currentShapeThickness;
+                    RedrawCanvas();
+                }
+
                 return;
             }
 
@@ -310,9 +357,15 @@ namespace Lab03___Rasterization
             {
                 ShapeColor.Fill = new SolidColorBrush(System.Windows.Media.Color.FromArgb(colorDialog.Color.A, colorDialog.Color.R, colorDialog.Color.G, colorDialog.Color.B));
                 _currentShapeColor = Color.FromArgb(colorDialog.Color.A, colorDialog.Color.R, colorDialog.Color.G, colorDialog.Color.B);
+
+                if (_isModifyingShape)
+                {
+                    _allShapes[_currentShapeIndex].Color = _currentShapeColor;
+                    RedrawCanvas();
+                }
             }
         }
-        private int DistanceBetween(Point p1, Point p2)
+        private static int DistanceBetween(Point p1, Point p2)
         {
             return (int)Math.Round(Math.Sqrt(Math.Pow((p2.X - p1.X), 2) + Math.Pow((p2.Y - p1.Y), 2)));
         }
