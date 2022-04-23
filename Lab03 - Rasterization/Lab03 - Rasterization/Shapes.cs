@@ -190,7 +190,7 @@ namespace Lab03___Rasterization
             for (var i = 0; i < Points.Count; i++)
             {
                 var endPoint = i < Points.Count - 1 ? Points[i + 1] : Points[0];
-                var edge = new Line(new List<Point> {Points[i], endPoint});
+                var edge = new Line(new List<Point> {Points[i], endPoint}, Thickness);
                 edge.Draw(wbm);
             }
         }

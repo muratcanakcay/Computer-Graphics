@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -34,6 +35,7 @@ namespace Lab03___Rasterization
         private int _currentShapeIndex;
         private int _currentEdgeIndex;
         private int _currentPointIndex;
+        private uint _currentShapeThickness = 1;
         private readonly List<Point> _currentPoints = new();
         private readonly List<IDrawable> _allShapes = new();
         private readonly WriteableBitmap _emptyWbm;
@@ -130,11 +132,11 @@ namespace Lab03___Rasterization
                 _currentPoints.Add(clickPosition);
                 Debug.WriteLine($"Center: {clickPosition.X}, {clickPosition.Y}");
             }
-            else // add endPoint and add Line to _allShapes
+            else // add edgePoint and add Circle to _allShapes
             {
                 _currentPoints.Add(clickPosition);
                 Debug.WriteLine($"Edge: {clickPosition.X}, {clickPosition.Y}");
-                _allShapes.Add(new Circle(new List<Point>(_currentPoints)));
+                _allShapes.Add(new Circle(new List<Point>(_currentPoints), _currentShapeThickness));
                 
                 // clear the points
                 _currentPoints.Clear();
@@ -168,7 +170,7 @@ namespace Lab03___Rasterization
             if (_isDrawingLine && _currentPoints.Count > 0)
             {
                 RedrawCanvas();
-                currentLine = new Line(new List<Point> { _currentPoints[0], _currentCursorPosition });
+                currentLine = new Line(new List<Point> { _currentPoints[0], _currentCursorPosition }, _currentShapeThickness);
                 currentLine.Draw(_wbm);
             }
             
@@ -178,11 +180,11 @@ namespace Lab03___Rasterization
                 RedrawCanvas();
                 for (var i = 0; i < _currentPoints.Count - 1; i++)
                 {
-                    currentLine = new Line(new List<Point> { _currentPoints[i], _currentPoints[i+1] });
+                    currentLine = new Line(new List<Point> { _currentPoints[i], _currentPoints[i+1] }, _currentShapeThickness);
                     currentLine.Draw(_wbm);
                 }
 
-                currentLine = new Line(new List<Point> { _currentPoints[^1], _currentCursorPosition });
+                currentLine = new Line(new List<Point> { _currentPoints[^1], _currentCursorPosition }, _currentShapeThickness);
                 currentLine.Draw(_wbm);
             }
 
@@ -190,7 +192,7 @@ namespace Lab03___Rasterization
             if (_isDrawingCircle && _currentPoints.Count > 0)
             {
                 RedrawCanvas();
-                var currentCircle = new Circle(new List<Point> { _currentPoints[0], _currentCursorPosition });
+                var currentCircle = new Circle(new List<Point> { _currentPoints[0], _currentCursorPosition }, _currentShapeThickness);
                 currentCircle.Draw(_wbm);
             }
 
@@ -233,7 +235,7 @@ namespace Lab03___Rasterization
             {
                 _currentPoints.Add(clickPosition);
                 Debug.WriteLine($"Ending: {clickPosition.X}, {clickPosition.Y}");
-                _allShapes.Add(new Line(new List<Point>(_currentPoints)));
+                _allShapes.Add(new Line(new List<Point>(_currentPoints), _currentShapeThickness));
                 
                 // clear the points
                 _currentPoints.Clear();
@@ -292,9 +294,8 @@ namespace Lab03___Rasterization
                 if (DistanceBetween(_currentPoints[0], clickPosition) < 10)
                 {
                     Debug.WriteLine($"Ending: {clickPosition.X}, {clickPosition.Y}");
-                    _allShapes.Add(new Polygon(new List<Point>(_currentPoints)));
+                    _allShapes.Add(new Polygon(new List<Point>(_currentPoints), _currentShapeThickness));
                     _currentPoints.Clear(); // when the polygon is finished
-                    Debug.WriteLine("Clearing _points");
                     ToggleIsDrawingPolygon();
                     RedrawCanvas();
                 }
@@ -322,6 +323,26 @@ namespace Lab03___Rasterization
         {
             _isDrawingCircle = !_isDrawingCircle;
             CircleButton.Background = _isDrawingCircle ? Brushes.LightSalmon : Brushes.LightCyan;
+        }
+
+        private void ShapeThickness_OnPreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            Regex regex = new Regex("[1-8]");
+            if (regex.IsMatch(e.Text))
+            {
+                _currentShapeThickness = (uint)int.Parse(e.Text);
+                Debug.WriteLine($"thickness changed to {_currentShapeThickness}");
+                e.Handled = false;
+            }
+            else
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void ColorButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            throw new NotImplementedException();
         }
     }
 }

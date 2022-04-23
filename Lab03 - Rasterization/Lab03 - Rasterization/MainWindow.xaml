@@ -129,7 +129,8 @@
                     <TabItem Header="Shapes">
                         <Grid>
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="3*"/>
+                                <ColumnDefinition Width="2*"/>
+                                <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="*"/>
@@ -149,10 +150,53 @@
                                 <RowDefinition/>
                             </Grid.RowDefinitions>
 
-                            <!--LINE-->
+                            
+                            <!--THICKNESS & COLOR--> 
+                            <TextBlock Grid.Row="0"
+                                       Grid.Column="0"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"
+                                       Text="Thickness"
+                            />
+
+                            <TextBox
+                                Grid.Row="0"
+                                Grid.Column="1"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Width="25"
+                                Name="ShapeThickness"
+                                PreviewTextInput="ShapeThickness_OnPreviewTextInput"
+                                Text="1"
+                                TextAlignment="Center"
+                            />
+
+                            <TextBlock Grid.Row="0"
+                                       Grid.Column="2"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"
+                                       Text="Color"
+                            />
+
                             <Button  
                                 Grid.Row="0"
+                                Grid.Column="3"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Margin="1,0, 6, 0"
+                                Height="15"
+                                Width="20"
+                                Name="ShapeColor"
+                                IsEnabled="true"
+                                ToolTip="Select Color"
+                                Background="Black"
+                                Click="ColorButton_OnClick"/>
+                            
+                            <!--LINE-->
+                            <Button  
+                                Grid.Row="1"
                                 Grid.Column="0"
+                                Grid.ColumnSpan="2"
                                 HorizontalAlignment="Left"
                                 VerticalAlignment="Center"
                                 Margin="1,0, 6, 0"
@@ -168,8 +212,9 @@
 
                             <!--POLYGON-->
                             <Button  
-                                Grid.Row="1"
+                                Grid.Row="2"
                                 Grid.Column="0"
+                                Grid.ColumnSpan="2"
                                 HorizontalAlignment="Left"
                                 VerticalAlignment="Center"
                                 Margin="1,0, 6, 0"
@@ -185,8 +230,9 @@
 
                             <!--CIRCLE-->
                             <Button  
-                                Grid.Row="2"
+                                Grid.Row="3"
                                 Grid.Column="0"
+                                Grid.ColumnSpan="2"
                                 HorizontalAlignment="Left"
                                 VerticalAlignment="Center"
                                 Margin="1,0, 6, 0"
