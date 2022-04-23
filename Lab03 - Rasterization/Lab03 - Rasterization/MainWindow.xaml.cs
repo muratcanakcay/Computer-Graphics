@@ -292,17 +292,16 @@ namespace Lab03___Rasterization
         }
         private void ShapeThickness_OnPreviewTextInput(object sender, TextCompositionEventArgs e)
         {
-            Regex regex = new Regex("[1-8]");
-            if (regex.IsMatch(e.Text))
+            if (int.TryParse(e.Text, out int t) && t is > 0 and < 9)
             {
-                _currentShapeThickness = (uint)int.Parse(e.Text);
+                _currentShapeThickness = (uint)t;
                 Debug.WriteLine($"thickness changed to {_currentShapeThickness}");
+                ShapeThickness.Text = "";
                 e.Handled = false;
+                return;
             }
-            else
-            {
-                e.Handled = true;
-            }
+
+            e.Handled = true;
         }
         private void ShapeColorButton_OnClick(object sender, RoutedEventArgs e)
         {
