@@ -55,6 +55,15 @@ namespace Lab03___Rasterization
             return pixelColor;
         }
 
+        public static void ApplyBrush(this WriteableBitmap wbm, int x, int y, uint thickness, Color color)
+        {
+            for (var i = (int)-thickness+1; i < thickness; i++)
+                for (var j = (int)-thickness + 1; j < thickness; j++)
+                {
+                    if (Math.Abs(i) + Math.Abs(j) <= thickness)
+                        wbm.SetPixelColor(x+i, y+j, color);
+                }
+        }
         public static void Clear(this WriteableBitmap wbm)
         {
             try

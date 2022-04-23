@@ -65,13 +65,8 @@ namespace Lab03___Rasterization
             var nextIndex = edgeIndex == Points.Count - 1 ? 0 : edgeIndex + 1;
             var newP2 = Point.Add(Points[nextIndex], offSet);
 
-            // checking for canvas boundaries not needed if setPixelColor just returns without throwing an exception
-            //if (IsInsideRectangle(new Point(0, 0), new Point(CanvasWidth, CanvasHeight), newP1) &&
-            //    IsInsideRectangle(new Point(0, 0), new Point(CanvasWidth, CanvasHeight), newP2))
-            {
-                Points[edgeIndex] = newP1;
-                Points[nextIndex] = newP2;
-            }
+            Points[edgeIndex] = newP1;
+            Points[nextIndex] = newP2;
         }
 
         protected static double DistanceBetween(Point p1, Point p2)
@@ -100,7 +95,7 @@ namespace Lab03___Rasterization
 
     public class Line : Shape
     {
-        public Line(List<Point> points, uint thickness = 1)
+        public Line(List<Point> points, uint thickness = 2)
         {
             Points = points.GetRange(0, 2);
             Thickness = thickness;
@@ -127,7 +122,8 @@ namespace Lab03___Rasterization
                     {
                         for (var x = (int)Points[0].X; x <= Points[1].X; ++x)
                         {
-                            wbm.SetPixelColor(x, (int)Math.Round(y), Color);
+                            wbm.ApplyBrush(x, (int)Math.Round(y), Thickness, Color);
+                            //wbm.SetPixelColor(x, (int)Math.Round(y), Color);
                             y += m;
                         }
                     }
@@ -135,7 +131,8 @@ namespace Lab03___Rasterization
                     {
                         for (var x = (int)Points[0].X; x >= Points[1].X; --x)
                         {
-                            wbm.SetPixelColor(x, (int)Math.Round(y), Color);
+                            wbm.ApplyBrush(x, (int)Math.Round(y), Thickness, Color);
+                            //wbm.SetPixelColor(x, (int)Math.Round(y), Color);
                             y -= m;
                         }
                     }
@@ -149,7 +146,8 @@ namespace Lab03___Rasterization
                     {
                         for (var y = (int)Points[0].Y; y <= Points[1].Y; ++y)
                         {
-                            wbm.SetPixelColor((int)Math.Round(x), y, Color);
+                            wbm.ApplyBrush((int)Math.Round(x), y, Thickness, Color);
+                            //wbm.SetPixelColor((int)Math.Round(x), y, Color);
                             x += m;
                         }
                     }
@@ -157,7 +155,8 @@ namespace Lab03___Rasterization
                     {
                         for (var y = (int)Points[0].Y; y >= Points[1].Y; --y)
                         {
-                            wbm.SetPixelColor((int)Math.Round(x), y, Color);
+                            wbm.ApplyBrush((int)Math.Round(x), y, Thickness, Color);
+                            //wbm.SetPixelColor((int)Math.Round(x), y, Color);
                             x -= m;
                         }
                     }
@@ -227,6 +226,7 @@ namespace Lab03___Rasterization
 
                 wbm.SetPixelColor((int)Center.X + x, (int)Center.Y + y, Color);
                 wbm.SetPixelColor((int)Center.X + x, (int)Center.Y - y, Color);
+
                 wbm.SetPixelColor((int)Center.X + y, (int)Center.Y + x, Color);
                 wbm.SetPixelColor((int)Center.X - y, (int)Center.Y + x, Color);
                 
@@ -273,11 +273,11 @@ namespace Lab03___Rasterization
                 DistanceBetween(Center, point) > Radius - Thickness - GrabDistance)
             {
                 var v = Point.Subtract(point, Points[0]); // vector from center to the point
-                v /= v.Length;
-                var newP = Point.Add(Center, v * Radius);
-                Points[1] = newP;
+                var vUnit = v / v.Length;
+                var newEdgePoint = Point.Add(Center, Radius * vUnit);
+                Points[1] = newEdgePoint;
 
-                return 1;
+                return 1; // circle has only one edge with index 1
             }
 
             return -1;
