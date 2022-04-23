@@ -112,12 +112,13 @@ namespace Lab03___Rasterization
         {
             _isModifyingShape = false;
             _currentCursorPosition = e.GetPosition(TheCanvas);
-            Debug.WriteLine("CLICKED!");
-            Debug.WriteLine($"{_currentCursorPosition.X}, {_currentCursorPosition.Y}");
+            Debug.WriteLine($"CLICKED ({_currentCursorPosition.X}, {_currentCursorPosition.Y})");
 
             if (e.ClickCount == 2)
             {
                 Debug.WriteLine("DOUBLECLICK!!");
+                ToggleAllOff();
+
                 // for each shape, check if a vertex or edge is clicked
                 foreach (var shape in _allShapes)
                 {
@@ -129,16 +130,13 @@ namespace Lab03___Rasterization
                     }
                 }
 
-                if (_currentShapeIndex == -1) return;
+                if (_currentShapeIndex == -1) return; // did not click on a shape
 
                 _isModifyingShape = true;
                 _isMovingShape = true;
-                ShapeThickness.Text = _allShapes[_currentShapeIndex].Thickness.ToString();
+                ShapeThicknessTextBox.Text = _allShapes[_currentShapeIndex].Thickness.ToString();
                 var shapeColor = _allShapes[_currentShapeIndex].Color;
-                ShapeColor.Fill = new SolidColorBrush(System.Windows.Media.Color.FromArgb(shapeColor.A, 
-                                                                                        shapeColor.R, 
-                                                                                        shapeColor.G,
-                                                                                        shapeColor.B));
+                ShapeColorButton.Fill = new SolidColorBrush(System.Windows.Media.Color.FromArgb(shapeColor.A, shapeColor.R, shapeColor.G, shapeColor.B));
             }
             else if (_isDrawingLine) DrawLine(_currentCursorPosition);
             else if (_isDrawingPolygon) DrawPolygon(_currentCursorPosition);
@@ -151,6 +149,8 @@ namespace Lab03___Rasterization
                     _currentPointIndex = -1;
                     _currentEdgeIndex = -1;
                     _currentShapeIndex = _allShapes.IndexOf(shape);
+                    
+                    // check for vertex
                     _currentPointIndex = shape.GetVertexIndexOf(_currentCursorPosition);
                     if (_currentPointIndex > -1)
                     {
@@ -159,21 +159,18 @@ namespace Lab03___Rasterization
                         _isMovingVertex = true;
                         return;
                     }
-                    else // check for edge
+                    
+                    // check for edge
+                    _currentEdgeIndex = shape.GetEdgeIndexOf(_currentCursorPosition);
+                    if (_currentEdgeIndex > -1)
                     {
-                        _currentEdgeIndex = shape.GetEdgeIndexOf(_currentCursorPosition);
-                        if (_currentEdgeIndex > -1)
-                        {
-                            Debug.WriteLine($"EDGE! {_currentEdgeIndex}");
-                            _initialCursorPosition = _currentCursorPosition;
-                            _isMovingEdge= true;
-                            return;
-                        }
-                        else
-                        {
-                            continue;  // to the next shape    
-                        }
+                        Debug.WriteLine($"EDGE! {_currentEdgeIndex}");
+                        _initialCursorPosition = _currentCursorPosition;
+                        _isMovingEdge= true;
+                        return;
                     }
+
+                    _currentShapeIndex = -1;
                 }
             }
         }
@@ -355,7 +352,7 @@ namespace Lab03___Rasterization
             {
                 _currentShapeThickness = (uint)inputNum;
                 Debug.WriteLine($"thickness changed to {_currentShapeThickness}");
-                ShapeThickness.Text = "";
+                ShapeThicknessTextBox.Text = "";
                 e.Handled = false;
 
                 if (_isModifyingShape)
@@ -374,7 +371,7 @@ namespace Lab03___Rasterization
             using System.Windows.Forms.ColorDialog colorDialog = new System.Windows.Forms.ColorDialog();
             if (colorDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                ShapeColor.Fill = new SolidColorBrush(System.Windows.Media.Color.FromArgb(colorDialog.Color.A, colorDialog.Color.R, colorDialog.Color.G, colorDialog.Color.B));
+                ShapeColorButton.Fill = new SolidColorBrush(System.Windows.Media.Color.FromArgb(colorDialog.Color.A, colorDialog.Color.R, colorDialog.Color.G, colorDialog.Color.B));
                 _currentShapeColor = Color.FromArgb(colorDialog.Color.A, colorDialog.Color.R, colorDialog.Color.G, colorDialog.Color.B);
 
                 if (_isModifyingShape)
@@ -404,11 +401,13 @@ namespace Lab03___Rasterization
             using var fs = new FileStream(dlg.FileName, FileMode.Create);
             var s = new XmlSerializer(typeof(List<ShapeT>));
 
-            List<ShapeT> shapesList = _allShapes.Select(shape => new ShapeT() { 
+            List<ShapeT> shapesList = _allShapes
+                .Select(shape => new ShapeT() { 
                     ClassName = shape.GetType().Name, 
                     Points = shape.Points, 
                     Thickness = shape.Thickness, 
-                    Color = shape.Color.ToArgb() }).ToList();
+                    Color = shape.Color.ToArgb() })
+                .ToList();
 
             s.Serialize(fs, shapesList);
         }
