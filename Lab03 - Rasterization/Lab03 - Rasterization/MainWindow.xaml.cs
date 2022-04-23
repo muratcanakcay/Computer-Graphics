@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -15,6 +17,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Xml.Serialization;
+using Microsoft.Win32;
 using Brushes = System.Windows.Media.Brushes;
 using Color = System.Drawing.Color;
 using Point = System.Windows.Point;
@@ -28,6 +32,14 @@ namespace Lab03___Rasterization
     /// </summary>
     public partial class MainWindow : Window
     {
+        public struct ShapeT
+        {
+            public string ClassName;
+            public List<Point> Points;
+            public uint Thickness;
+            public int Color;
+        };
+        
         private bool _isDrawingLine;
         private bool _isDrawingPolygon;
         private bool _isDrawingCircle;
@@ -55,6 +67,7 @@ namespace Lab03___Rasterization
             (_emptyWbm, _wbm) = InitializeCanvas();
         }
 
+        //---------- HELPER FUNCTIONS
         private (WriteableBitmap, WriteableBitmap) InitializeCanvas()
         {
             var emptyWbm = new WriteableBitmap((int)TheCanvas.Width,
@@ -74,7 +87,27 @@ namespace Lab03___Rasterization
             DrawAllShapes(_wbm);
             TheCanvas.Background = new ImageBrush { ImageSource = _wbm };
         }
+        private void ToggleAllOff()
+        {
+            _isModifyingShape = false;
+            if (_isDrawingLine) ToggleIsDrawingLine();
+            else if (_isDrawingPolygon) ToggleIsDrawingPolygon();
+            else if (_isDrawingCircle) ToggleIsDrawingCircle();
+
+            _currentPoints.Clear();
+            RedrawCanvas();
+        }
+        private void DrawAllShapes(WriteableBitmap wbm)
+        {
+            foreach (var shape in _allShapes)
+                shape.Draw(wbm);
+        }
+        private static int DistanceBetween(Point p1, Point p2)
+        {
+            return (int)Math.Round(Math.Sqrt(Math.Pow((p2.X - p1.X), 2) + Math.Pow((p2.Y - p1.Y), 2)));
+        }
         
+        //---------- MOUSE ACTIONS
         private void TheCanvas_OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             _isModifyingShape = false;
@@ -84,7 +117,7 @@ namespace Lab03___Rasterization
 
             if (e.ClickCount == 2)
             {
-                Debug.Write("DOUBLECLICK!!");
+                Debug.WriteLine("DOUBLECLICK!!");
                 // for each shape, check if a vertex or edge is clicked
                 foreach (var shape in _allShapes)
                 {
@@ -219,21 +252,7 @@ namespace Lab03___Rasterization
             }
         }
         
-        private void ToggleAllOff()
-        {
-            _isModifyingShape = false;
-            if (_isDrawingLine) ToggleIsDrawingLine();
-            else if (_isDrawingPolygon) ToggleIsDrawingPolygon();
-            else if (_isDrawingCircle) ToggleIsDrawingCircle();
-
-            _currentPoints.Clear();
-            RedrawCanvas();
-        }
-        private void DrawAllShapes(WriteableBitmap wbm)
-        {
-            foreach (var shape in _allShapes)
-                shape.Draw(wbm);
-        }
+        //---------- LINE METHODS
         private void LineButton_OnClick(object sender, RoutedEventArgs e)
         {
             ToggleAllOff();
@@ -264,6 +283,8 @@ namespace Lab03___Rasterization
                 RedrawCanvas();
             }
         }
+        
+        //---------- POLYGON METHODS
         private void PolygonButton_OnClick(object sender, RoutedEventArgs e)
         {
             ToggleAllOff();
@@ -295,6 +316,8 @@ namespace Lab03___Rasterization
                 RedrawCanvas();
             }
         }
+        
+        //---------- CIRCLE METHODS
         private void CircleButton_OnClick(object sender, RoutedEventArgs e)
         {
             ToggleAllOff();
@@ -325,11 +348,8 @@ namespace Lab03___Rasterization
                 RedrawCanvas();
             }
         }
-        private void OnClick_ResetCanvas(object sender, RoutedEventArgs e)
-        {
-            _allShapes.Clear();
-            RedrawCanvas();
-        }
+        
+        //---------- THICKNESS AND COLOR
         private void ShapeThickness_OnPreviewTextInput(object sender, TextCompositionEventArgs e)
         {
             if (int.TryParse(e.Text, out var inputNum) && inputNum is > 0 and < 9)
@@ -365,14 +385,84 @@ namespace Lab03___Rasterization
                 }
             }
         }
-        private static int DistanceBetween(Point p1, Point p2)
+        
+        //---------- MENU ITEMS
+        private void OnClick_ResetCanvas(object sender, RoutedEventArgs e)
         {
-            return (int)Math.Round(Math.Sqrt(Math.Pow((p2.X - p1.X), 2) + Math.Pow((p2.Y - p1.Y), 2)));
+            _allShapes.Clear();
+            RedrawCanvas();
         }
+        private void OnClick_SaveShapes(object sender, RoutedEventArgs e)
+        {
+            SaveFileDialog dlg = new()
+            {
+                Filter = "XML files|*.xml",
+                RestoreDirectory = true
+            };
 
+            if (dlg.ShowDialog() != true || dlg.FileName == string.Empty) return;
+        
+            using var fs = new FileStream(dlg.FileName, FileMode.Create);
+            var s = new XmlSerializer(typeof(List<ShapeT>));
+
+            List<ShapeT> shapesList = _allShapes.Select(shape => new ShapeT() { 
+                    ClassName = shape.GetType().Name, 
+                    Points = shape.Points, 
+                    Thickness = shape.Thickness, 
+                    Color = shape.Color.ToArgb() }).ToList();
+
+            s.Serialize(fs, shapesList);
+        }
+        private void OnClick_LoadShapes(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog dlg = new()
+            {
+                Filter = "XML files|*.xml",
+                RestoreDirectory = true
+            };
+
+            if (dlg.ShowDialog() != true || dlg.FileName.Equals("")) return;
+
+            var s = new XmlSerializer(typeof(List<ShapeT>));
+            using var fs = new FileStream($"{dlg.FileName}", FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+            try
+            {
+                var loadedObject = s.Deserialize(fs);
+                if (loadedObject != null)
+                {
+                    var loadedList = (List<ShapeT>)loadedObject;
+                    _allShapes.Clear();
+
+                    foreach (var shape in loadedList)
+                    {
+                        switch(shape.ClassName)
+                        {
+                            case "Line":
+                                _allShapes.Add(new Line(shape.Points, shape.Thickness, Color.FromArgb(shape.Color)));
+                                break;
+                            case "Polygon":
+                                _allShapes.Add(new Polygon(shape.Points, shape.Thickness, Color.FromArgb(shape.Color)));
+                                break;
+                            case "Circle":
+                                _allShapes.Add(new Circle(shape.Points, shape.Thickness, Color.FromArgb(shape.Color)));
+                                break;
+                        }
+                    }
+                }
+
+                RedrawCanvas();
+            }
+            catch (InvalidOperationException)
+            {
+                MessageBox.Show("Error in file!", "Error!");
+            }
+        }
+        
+        //-----------
         private void dummyCallBack(object sender, RoutedEventArgs e)
         {
             return;
         }
     }
+
 }

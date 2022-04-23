@@ -13,6 +13,7 @@ namespace Lab03___Rasterization
     {
         uint Thickness { get; set; }
         Color Color { get; set; }
+        List<Point> Points { get; }
         void Draw(WriteableBitmap wbm);
         int GetVertexIndexOf(Point point);
         void MoveVertex(int vertexIndex, Vector offSet);
@@ -23,13 +24,10 @@ namespace Lab03___Rasterization
 
     public abstract class Shape : IDrawable
     {
-        protected const uint GrabDistance = 10;
-        protected List<Point> Points = new();
         public uint Thickness { get; set; }
         public Color Color { get; set; }
-        protected int CanvasHeight;
-        protected int CanvasWidth;
-        
+        protected const uint GrabDistance = 10;
+        public List<Point> Points { get; protected set; } = new();
         public abstract void Draw(WriteableBitmap wbm);
 
         public virtual int GetVertexIndexOf(Point point)
@@ -116,9 +114,6 @@ namespace Lab03___Rasterization
 
         public override void Draw(WriteableBitmap wbm)
         {
-            CanvasHeight = wbm.PixelHeight;
-            CanvasWidth = wbm.PixelWidth;
-            
             double dy = Points[1].Y - Points[0].Y;
             double dx = Points[1].X - Points[0].X;
 
@@ -198,9 +193,6 @@ namespace Lab03___Rasterization
 
         public override void Draw(WriteableBitmap wbm)
         {
-            CanvasHeight = wbm.PixelHeight;
-            CanvasWidth = wbm.PixelWidth;
-            
             for (var i = 0; i < Points.Count; i++)
             {
                 var endPoint = i < Points.Count - 1 ? Points[i + 1] : Points[0];
@@ -299,7 +291,7 @@ namespace Lab03___Rasterization
         {
             return -1; // circle has no vertices
         }
-
+        
         public override int GetEdgeIndexOf(Point point)
         {
             if (DistanceBetween(Center, point) < Radius + Thickness + GrabDistance &&
