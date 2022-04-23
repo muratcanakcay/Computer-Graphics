@@ -61,23 +61,13 @@ namespace Lab03___Rasterization
             TheCanvas.Background = new ImageBrush { ImageSource = emptyWbm };
             return (emptyWbm, emptyWbm);
         }
-
-        private void dummyCallBack(object sender, RoutedEventArgs e)
-        {
-            throw new NotImplementedException();
-        }
-        private void OnClick_ResetCanvas(object sender, RoutedEventArgs e)
-        {
-            _allShapes.Clear();
-            RedrawCanvas();
-        }
         private void RedrawCanvas()
         {
             _wbm = _emptyWbm.Clone();
             DrawAllShapes(_wbm);
             TheCanvas.Background = new ImageBrush { ImageSource = _wbm };
         }
-
+        
         private void TheCanvas_OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             _currentCursorPosition = e.GetPosition(TheCanvas);
@@ -125,28 +115,6 @@ namespace Lab03___Rasterization
                 }
             }
         }
-
-        private void DrawCircle(Point clickPosition)
-        {
-            if (_currentPoints.Count == 0) // add center
-            {
-                _currentPoints.Add(clickPosition);
-                Debug.WriteLine($"Center: {clickPosition.X}, {clickPosition.Y}");
-            }
-            else // add edgePoint and add Circle to _allShapes
-            {
-                _currentPoints.Add(clickPosition);
-                Debug.WriteLine($"Edge: {clickPosition.X}, {clickPosition.Y}");
-                _allShapes.Add(new Circle(new List<Point>(_currentPoints), _currentShapeThickness, _currentShapeColor));
-                
-                // clear the points
-                _currentPoints.Clear();
-                
-                ToggleIsDrawingCircle();
-                RedrawCanvas();
-            }
-        }
-
         private void TheCanvas_OnMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             if (_isDraggingVertex || _isDraggingEdge)
@@ -156,12 +124,10 @@ namespace Lab03___Rasterization
                 _currentPoints.Clear();
             }
         }
-
         private void TheCanvas_OnMouseRightButtonUp(object sender, MouseButtonEventArgs e)
         {
             ToggleAllOff();
         }
-
         private void TheCanvas_OnMouseMove(object sender, MouseEventArgs e)
         {
             Line currentLine;
@@ -213,6 +179,7 @@ namespace Lab03___Rasterization
                 RedrawCanvas();
             }
         }
+        
         private void ToggleAllOff()
         {
             if (_isDrawingLine) ToggleIsDrawingLine();
@@ -222,7 +189,21 @@ namespace Lab03___Rasterization
             _currentPoints.Clear();
             RedrawCanvas();
         }
-
+        private void DrawAllShapes(WriteableBitmap wbm)
+        {
+            foreach (var shape in _allShapes)
+                shape.Draw(wbm);
+        }
+        private void LineButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            ToggleAllOff();
+            ToggleIsDrawingLine();
+        }
+        private void ToggleIsDrawingLine()
+        {
+            _isDrawingLine = !_isDrawingLine;
+            LineButton.Background = _isDrawingLine ? Brushes.LightSalmon : Brushes.LightCyan;
+        }
         private void DrawLine(Point clickPosition)
         {
             if (_currentPoints.Count == 0) // add startPoint
@@ -243,37 +224,16 @@ namespace Lab03___Rasterization
                 RedrawCanvas();
             }
         }
-
-        private void DrawAllShapes(WriteableBitmap wbm)
-        {
-            foreach (var shape in _allShapes)
-                shape.Draw(wbm);
-        }
-
-        private void LineButton_OnClick(object sender, RoutedEventArgs e)
-        {
-            ToggleAllOff();
-            ToggleIsDrawingLine();
-        }
-
-        private void ToggleIsDrawingLine()
-        {
-            _isDrawingLine = !_isDrawingLine;
-            LineButton.Background = _isDrawingLine ? Brushes.LightSalmon : Brushes.LightCyan;
-        }
-
         private void PolygonButton_OnClick(object sender, RoutedEventArgs e)
         {
             ToggleAllOff();
             ToggleIsDrawingPolygon();
         }
-
         private void ToggleIsDrawingPolygon()
         {
             _isDrawingPolygon = !_isDrawingPolygon;
             PolygonButton.Background = _isDrawingPolygon ? Brushes.LightSalmon : Brushes.LightCyan;
         }
-
         private void DrawPolygon(Point clickPosition)
         {
             if (_currentPoints.Count == 0)
@@ -290,29 +250,46 @@ namespace Lab03___Rasterization
             {
                 Debug.WriteLine($"Ending: {clickPosition.X}, {clickPosition.Y}");
                 _allShapes.Add(new Polygon(new List<Point>(_currentPoints), _currentShapeThickness, _currentShapeColor));
-                _currentPoints.Clear(); // when the polygon is finished
+                _currentPoints.Clear();
                 ToggleIsDrawingPolygon();
                 RedrawCanvas();
             }
         }
-
-        public int DistanceBetween(Point p1, Point p2)
-        {
-            return (int)Math.Round(Math.Sqrt(Math.Pow((p2.X - p1.X), 2) + Math.Pow((p2.Y - p1.Y), 2)));
-        }
-
         private void CircleButton_OnClick(object sender, RoutedEventArgs e)
         {
             ToggleAllOff();
             ToggleIsDrawingCircle();
         }
-
         private void ToggleIsDrawingCircle()
         {
             _isDrawingCircle = !_isDrawingCircle;
             CircleButton.Background = _isDrawingCircle ? Brushes.LightSalmon : Brushes.LightCyan;
         }
-
+        private void DrawCircle(Point clickPosition)
+        {
+            if (_currentPoints.Count == 0) // add center
+            {
+                _currentPoints.Add(clickPosition);
+                Debug.WriteLine($"Center: {clickPosition.X}, {clickPosition.Y}");
+            }
+            else // add edgePoint and add Circle to _allShapes
+            {
+                _currentPoints.Add(clickPosition);
+                Debug.WriteLine($"Edge: {clickPosition.X}, {clickPosition.Y}");
+                _allShapes.Add(new Circle(new List<Point>(_currentPoints), _currentShapeThickness, _currentShapeColor));
+                
+                // clear the points
+                _currentPoints.Clear();
+                
+                ToggleIsDrawingCircle();
+                RedrawCanvas();
+            }
+        }
+        private void OnClick_ResetCanvas(object sender, RoutedEventArgs e)
+        {
+            _allShapes.Clear();
+            RedrawCanvas();
+        }
         private void ShapeThickness_OnPreviewTextInput(object sender, TextCompositionEventArgs e)
         {
             Regex regex = new Regex("[1-8]");
@@ -327,7 +304,6 @@ namespace Lab03___Rasterization
                 e.Handled = true;
             }
         }
-
         private void ShapeColorButton_OnClick(object sender, RoutedEventArgs e)
         {
             using System.Windows.Forms.ColorDialog colorDialog = new System.Windows.Forms.ColorDialog();
@@ -336,6 +312,15 @@ namespace Lab03___Rasterization
                 ShapeColor.Fill = new SolidColorBrush(System.Windows.Media.Color.FromArgb(colorDialog.Color.A, colorDialog.Color.R, colorDialog.Color.G, colorDialog.Color.B));
                 _currentShapeColor = Color.FromArgb(colorDialog.Color.A, colorDialog.Color.R, colorDialog.Color.G, colorDialog.Color.B);
             }
+        }
+        private int DistanceBetween(Point p1, Point p2)
+        {
+            return (int)Math.Round(Math.Sqrt(Math.Pow((p2.X - p1.X), 2) + Math.Pow((p2.Y - p1.Y), 2)));
+        }
+
+        private void dummyCallBack(object sender, RoutedEventArgs e)
+        {
+            return;
         }
     }
 }
