@@ -178,21 +178,21 @@
                                        Text="Color"
                             />
 
-                            <Button  
+                            <Rectangle  
                                 Grid.Row="0"
                                 Grid.Column="3"
                                 HorizontalAlignment="Center"
                                 VerticalAlignment="Center"
-                                Margin="1,0, 6, 0"
+                                Margin="1,0, 1, 0"
                                 Height="15"
-                                Width="20"
+                                Width="30"
                                 Name="ShapeColor"
                                 IsEnabled="true"
                                 ToolTip="Select Color"
-                                Background="Black"
-                                Click="ShapeColorButton_OnClick"
-                                
-                                />
+                                Fill="Black"
+                                Stroke="Black"
+                                MouseLeftButtonUp="ShapeColorButton_OnClick"
+                            />
                             
                             <!--LINE-->
                             <Button  

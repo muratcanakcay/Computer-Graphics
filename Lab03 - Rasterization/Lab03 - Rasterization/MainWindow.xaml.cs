@@ -213,8 +213,6 @@ namespace Lab03___Rasterization
                 RedrawCanvas();
             }
         }
-
-
         private void ToggleAllOff()
         {
             if (_isDrawingLine) ToggleIsDrawingLine();
@@ -263,8 +261,6 @@ namespace Lab03___Rasterization
             _isDrawingLine = !_isDrawingLine;
             LineButton.Background = _isDrawingLine ? Brushes.LightSalmon : Brushes.LightCyan;
         }
-
-        
 
         private void PolygonButton_OnClick(object sender, RoutedEventArgs e)
         {
@@ -334,15 +330,12 @@ namespace Lab03___Rasterization
 
         private void ShapeColorButton_OnClick(object sender, RoutedEventArgs e)
         {
-            System.Windows.Forms.ColorDialog colorDialog = new System.Windows.Forms.ColorDialog();
+            using System.Windows.Forms.ColorDialog colorDialog = new System.Windows.Forms.ColorDialog();
             if (colorDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                ShapeColor.Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(colorDialog.Color.A, colorDialog.Color.R, colorDialog.Color.G, colorDialog.Color.B));
+                ShapeColor.Fill = new SolidColorBrush(System.Windows.Media.Color.FromArgb(colorDialog.Color.A, colorDialog.Color.R, colorDialog.Color.G, colorDialog.Color.B));
                 _currentShapeColor = Color.FromArgb(colorDialog.Color.A, colorDialog.Color.R, colorDialog.Color.G, colorDialog.Color.B);
-
             }
         }
-
-
     }
 }
