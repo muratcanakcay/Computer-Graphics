@@ -68,15 +68,19 @@ namespace Lab03___Rasterization
                                                 PixelFormats.Bgr32, 
                                                 null);
 
-            emptyWbm.Clear();            
-            TheCanvas.Background = new ImageBrush { ImageSource = emptyWbm };
+            emptyWbm.Clear();
+            CanvasImage.Source = emptyWbm;
+            //TheCanvas.Background = new ImageBrush { ImageSource = emptyWbm };
             return (emptyWbm, emptyWbm);
         }
         private void RedrawCanvas()
         {
             _wbm = _emptyWbm.Clone();
             DrawAllShapes(_wbm);
-            TheCanvas.Background = new ImageBrush { ImageSource = _wbm };
+            //TheCanvas.Background = new ImageBrush { ImageSource = _wbm };
+            CanvasImage.Source = _wbm;
+
+            
         }
         private void ToggleAllOff()
         {

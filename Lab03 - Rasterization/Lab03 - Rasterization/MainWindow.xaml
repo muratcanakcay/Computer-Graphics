@@ -57,9 +57,19 @@
                     MouseMove="TheCanvas_OnMouseMove"
                     MouseRightButtonUp="TheCanvas_OnMouseRightButtonUp"
                     Cursor="Cross"
-                    
-
-                />
+                    >
+                    <Image
+                        Name="CanvasImage" RenderTransformOrigin="0.5,0.5">
+                        <Image.RenderTransform>
+                            <TransformGroup>
+                                <ScaleTransform ScaleX="10" ScaleY="10"/>
+                                <SkewTransform/>
+                                <RotateTransform/>
+                                <TranslateTransform/>
+                            </TransformGroup>
+                        </Image.RenderTransform>
+                    </Image>
+                </Canvas>
             </Grid>
 
             <!--C_PANEL-->
