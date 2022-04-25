@@ -223,7 +223,7 @@ namespace Lab03___Rasterization
                 else
                 // move to NE
                 {
-                    two_v_dx = d-dx;
+                    two_v_dx = d - dx;
                     d += dNE;
                     ++y;
                 }
@@ -244,7 +244,8 @@ namespace Lab03___Rasterization
                 try
                 {
                     wbm.Lock();
-                    var newColor = Color.FromArgb(Color.A, (int)(Color.R * (1-cov)), (int)(Color.G * (1-cov)), (int)(Color.B * (1-cov)));
+                    //var newColor = Color.FromArgb(Color.A, (int)(Color.R * cov), (int)(Color.G * cov), (int)(Color.B * cov));
+                    var newColor = Color.FromArgb(Color.A, (int)(255 - (255-Color.R) * cov), (int)(255 - (255-Color.G) * cov), (int)(255 - (255-Color.B) * cov));
                     wbm.SetPixelColor(x, y, newColor);
                 }
                 finally
@@ -258,7 +259,7 @@ namespace Lab03___Rasterization
 
         private double Coverage(double D, double r)
         {
-            var w = (double)Thickness / 2;
+            var w = (double)Thickness - 0.5d;
 
             if (w >= r)
             {

@@ -57,6 +57,7 @@
                     MouseMove="TheCanvas_OnMouseMove"
                     MouseRightButtonUp="TheCanvas_OnMouseRightButtonUp"
                     Cursor="Cross"
+                    
 
                 />
             </Grid>
