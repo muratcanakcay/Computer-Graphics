@@ -320,7 +320,7 @@ namespace Lab03___Rasterization
         }
     }
 
-    public class Circle : Shape // TODO: implement supersampling for Circle
+    public class Circle : Shape //
     {
         public Point Center => Points[0];
         public int Radius => (int)Math.Round(DistanceBetween(Points[0], Points[1]));
@@ -328,19 +328,24 @@ namespace Lab03___Rasterization
         
         public override void Draw(WriteableBitmap wbm, bool isAntiAliased, bool isSuperSampled)
         {
-            int x = 0;
-            int y = Radius;
-            int d = 1-Radius;
+            SSAA = (uint)(isSuperSampled ? 2 : 1);
+            
+            var x = 0;
+            var y = (int)(SSAA * Radius);
+            var d = (int)(1 - (SSAA * Radius));
+            var xC = (int)(SSAA * Center.X);
+            var yC = (int)(SSAA * Center.Y);
+            
 
             try
             {
                 wbm.Lock();
                 
-                wbm.ApplyBrush((int)Center.X + x, (int)Center.Y + y, Thickness, Color);
-                wbm.ApplyBrush((int)Center.X + x, (int)Center.Y - y, Thickness, Color);
+                wbm.ApplyBrush(xC + x, yC + y, SSAA * Thickness, Color);
+                wbm.ApplyBrush(xC + x, yC - y, SSAA * Thickness, Color);
 
-                wbm.ApplyBrush((int)Center.X + y, (int)Center.Y + x, Thickness, Color);
-                wbm.ApplyBrush((int)Center.X - y, (int)Center.Y + x, Thickness, Color);
+                wbm.ApplyBrush(xC + y, yC + x, SSAA * Thickness, Color);
+                wbm.ApplyBrush(xC - y, yC + x, SSAA * Thickness, Color);
                 
                 while (y > x)
                 {
@@ -355,17 +360,17 @@ namespace Lab03___Rasterization
 
                     ++x;
                     
-                    wbm.ApplyBrush((int)Center.X + x, (int)Center.Y + y, Thickness, Color);
-                    wbm.ApplyBrush((int)Center.X + x, (int)Center.Y - y, Thickness, Color);
+                    wbm.ApplyBrush(xC + x, yC + y, SSAA * Thickness, Color);
+                    wbm.ApplyBrush(xC + x, yC - y, SSAA * Thickness, Color);
                     
-                    wbm.ApplyBrush((int)Center.X - x, (int)Center.Y + y, Thickness, Color);
-                    wbm.ApplyBrush((int)Center.X - x, (int)Center.Y - y, Thickness, Color);
+                    wbm.ApplyBrush(xC - x, yC + y, SSAA * Thickness, Color);
+                    wbm.ApplyBrush(xC - x, yC - y, SSAA * Thickness, Color);
                     
-                    wbm.ApplyBrush((int)Center.X + y, (int)Center.Y + x, Thickness, Color);
-                    wbm.ApplyBrush((int)Center.X - y, (int)Center.Y + x, Thickness, Color);
+                    wbm.ApplyBrush(xC + y, yC + x, SSAA * Thickness, Color);
+                    wbm.ApplyBrush(xC - y, yC + x, SSAA * Thickness, Color);
                     
-                    wbm.ApplyBrush((int)Center.X + y, (int)Center.Y - x, Thickness, Color);
-                    wbm.ApplyBrush((int)Center.X - y, (int)Center.Y - x, Thickness, Color);
+                    wbm.ApplyBrush(xC + y, yC - x, SSAA * Thickness, Color);
+                    wbm.ApplyBrush(xC - y, yC - x, SSAA * Thickness, Color);
                 }
             }
             finally
