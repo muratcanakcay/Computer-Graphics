@@ -109,6 +109,11 @@ namespace Lab03___Rasterization
                     p.Y > Math.Min(vertex1.Y, vertex2.Y) - offSet &&
                     p.Y < Math.Max(vertex1.Y, vertex2.Y) + offSet);
         }
+
+        protected static double Determinant(Point a, Point b, Point c)
+        {
+            return a.X * b.Y - a.X * c.Y - a.Y * b.X + a.Y * c.X + b.X * c.Y - b.Y * c.X;
+        }
     }
 
     public class Line : Shape
@@ -221,12 +226,6 @@ namespace Lab03___Rasterization
             try
             {
                 wbm.Lock();
-
-                //wbm.SetPixelColor((int)Center.X + x, (int)Center.Y + y, Color);
-                //wbm.SetPixelColor((int)Center.X + x, (int)Center.Y - y, Color);
-
-                //wbm.SetPixelColor((int)Center.X + y, (int)Center.Y + x, Color);
-                //wbm.SetPixelColor((int)Center.X - y, (int)Center.Y + x, Color);
                 
                 wbm.ApplyBrush((int)Center.X + x, (int)Center.Y + y, Thickness, Color);
                 wbm.ApplyBrush((int)Center.X + x, (int)Center.Y - y, Thickness, Color);
@@ -246,18 +245,6 @@ namespace Lab03___Rasterization
                     }
 
                     ++x;
-                    
-                    //wbm.SetPixelColor((int)Center.X + x, (int)Center.Y + y, Color);
-                    //wbm.SetPixelColor((int)Center.X + x, (int)Center.Y - y, Color);
-                    
-                    //wbm.SetPixelColor((int)Center.X - x, (int)Center.Y + y, Color);
-                    //wbm.SetPixelColor((int)Center.X - x, (int)Center.Y - y, Color);
-
-                    //wbm.SetPixelColor((int)Center.X + y, (int)Center.Y + x, Color);
-                    //wbm.SetPixelColor((int)Center.X - y, (int)Center.Y + x, Color);
-                    
-                    //wbm.SetPixelColor((int)Center.X + y, (int)Center.Y - x, Color);
-                    //wbm.SetPixelColor((int)Center.X - y, (int)Center.Y - x, Color);
                     
                     wbm.ApplyBrush((int)Center.X + x, (int)Center.Y + y, Thickness, Color);
                     wbm.ApplyBrush((int)Center.X + x, (int)Center.Y - y, Thickness, Color);
@@ -308,6 +295,183 @@ namespace Lab03___Rasterization
         public override string ToString()
         {
             return $"Center:({Center.X}, {Center.Y}) - Radius:{Radius})";
+        }
+    }
+
+    public class CircleArc : Shape
+    {
+        public Point Center => Points[0];
+        public int Radius => (int)Math.Round(DistanceBetween(Points[0], Points[1]));
+        public CircleArc(List<Point> points, uint thickness, Color color) : base(points, thickness, color) {}
+        
+        public override void Draw(WriteableBitmap wbm)
+        {
+            int x = 0;
+            int y = Radius;
+            int d = 1-Radius;
+            Point p;
+
+            try
+            {
+                wbm.Lock();
+
+                if (Determinant(Center, Points[1], Points[2]) > 0)
+                {
+                    if (Determinant(Center, Points[1], new Point((int)Center.X + x, (int)Center.Y + y)) > 0 &&
+                        Determinant(Center, Points[2], new Point((int)Center.X + x, (int)Center.Y + y)) < 0)
+                        wbm.ApplyBrush((int)Center.X + x, (int)Center.Y + y, Thickness, Color);
+                    
+                    if (Determinant(Center, Points[1], new Point((int)Center.X + x, (int)Center.Y - y)) > 0 &&
+                        Determinant(Center, Points[2], new Point((int)Center.X + x, (int)Center.Y - y)) < 0)
+                        wbm.ApplyBrush((int)Center.X + x, (int)Center.Y - y, Thickness, Color);
+
+                    if (Determinant(Center, Points[1], new Point((int)Center.X + y, (int)Center.Y + x)) > 0 &&
+                        Determinant(Center, Points[2], new Point((int)Center.X + y, (int)Center.Y + x)) < 0)
+                        wbm.ApplyBrush((int)Center.X + y, (int)Center.Y + x, Thickness, Color);
+
+                    if (Determinant(Center, Points[1], new Point((int)Center.X - y, (int)Center.Y + x)) > 0 &&
+                        Determinant(Center, Points[2], new Point((int)Center.X - y, (int)Center.Y + x)) < 0)
+                        wbm.ApplyBrush((int)Center.X - y, (int)Center.Y + x, Thickness, Color);
+                }
+                else
+                {
+                    if (Determinant(Center, Points[1], new Point((int)Center.X + x, (int)Center.Y + y)) > 0 ||
+                        Determinant(Center, Points[2], new Point((int)Center.X + x, (int)Center.Y + y)) < 0)
+                        wbm.ApplyBrush((int)Center.X + x, (int)Center.Y + y, Thickness, Color);
+                    
+                    if (Determinant(Center, Points[1], new Point((int)Center.X + x, (int)Center.Y - y)) > 0 ||
+                        Determinant(Center, Points[2], new Point((int)Center.X + x, (int)Center.Y - y)) < 0)
+                        wbm.ApplyBrush((int)Center.X + x, (int)Center.Y - y, Thickness, Color);
+
+                    if (Determinant(Center, Points[1], new Point((int)Center.X + y, (int)Center.Y + x)) > 0 ||
+                        Determinant(Center, Points[2], new Point((int)Center.X + y, (int)Center.Y + x)) < 0)
+                        wbm.ApplyBrush((int)Center.X + y, (int)Center.Y + x, Thickness, Color);
+
+                    if (Determinant(Center, Points[1], new Point((int)Center.X - y, (int)Center.Y + x)) > 0 ||
+                        Determinant(Center, Points[2], new Point((int)Center.X - y, (int)Center.Y + x)) < 0)
+                        wbm.ApplyBrush((int)Center.X - y, (int)Center.Y + x, Thickness, Color);
+                }
+
+                while (y > x)
+                {
+                    if (d < 0)
+                        //move to E
+                        d += 2 * x + 3;
+                    else //move to NE
+                    {
+                        d += 2 * x - 2 * y + 5;
+                        --y;
+                    }
+
+                    ++x;
+
+                    if (Determinant(Center, Points[1], Points[2]) > 0)
+                    {
+                        if (Determinant(Center, Points[1], new Point((int)Center.X + x, (int)Center.Y + y)) > 0 &&
+                            Determinant(Center, Points[2], new Point((int)Center.X + x, (int)Center.Y + y)) < 0)
+                            wbm.ApplyBrush((int)Center.X + x, (int)Center.Y + y, Thickness, Color);
+                        
+                        if (Determinant(Center, Points[1], new Point((int)Center.X + x, (int)Center.Y - y)) > 0 &&
+                            Determinant(Center, Points[2], new Point((int)Center.X + x, (int)Center.Y - y)) < 0)
+                            wbm.ApplyBrush((int)Center.X + x, (int)Center.Y - y, Thickness, Color);
+
+                        if (Determinant(Center, Points[1], new Point((int)Center.X - x, (int)Center.Y + y)) > 0 &&
+                            Determinant(Center, Points[2], new Point((int)Center.X - x, (int)Center.Y + y)) < 0)
+                            wbm.ApplyBrush((int)Center.X - x, (int)Center.Y + y, Thickness, Color);
+                        
+                        if (Determinant(Center, Points[1], new Point((int)Center.X - x, (int)Center.Y - y)) > 0 &&
+                            Determinant(Center, Points[2], new Point((int)Center.X - x, (int)Center.Y - y)) < 0)
+                            wbm.ApplyBrush((int)Center.X - x, (int)Center.Y - y, Thickness, Color);
+
+                        if (Determinant(Center, Points[1], new Point((int)Center.X + y, (int)Center.Y + x)) > 0 &&
+                            Determinant(Center, Points[2], new Point((int)Center.X + y, (int)Center.Y + x)) < 0)
+                            wbm.ApplyBrush((int)Center.X + y, (int)Center.Y + x, Thickness, Color);
+
+                        if (Determinant(Center, Points[1], new Point((int)Center.X - y, (int)Center.Y + x)) > 0 &&
+                            Determinant(Center, Points[2], new Point((int)Center.X - y, (int)Center.Y + x)) < 0)
+                            wbm.ApplyBrush((int)Center.X - y, (int)Center.Y + x, Thickness, Color);
+
+                        if (Determinant(Center, Points[1], new Point((int)Center.X + y, (int)Center.Y - x)) > 0 &&
+                            Determinant(Center, Points[2], new Point((int)Center.X + y, (int)Center.Y - x)) < 0)
+                            wbm.ApplyBrush((int)Center.X + y, (int)Center.Y - x, Thickness, Color);
+
+                        if (Determinant(Center, Points[1], new Point((int)Center.X - y, (int)Center.Y - x)) > 0 &&
+                            Determinant(Center, Points[2], new Point((int)Center.X - y, (int)Center.Y - x)) < 0)
+                            wbm.ApplyBrush((int)Center.X - y, (int)Center.Y - x, Thickness, Color);
+                    }
+                    else
+                    {
+                        if (Determinant(Center, Points[1], new Point((int)Center.X + x, (int)Center.Y + y)) > 0 ||
+                            Determinant(Center, Points[2], new Point((int)Center.X + x, (int)Center.Y + y)) < 0)
+                            wbm.ApplyBrush((int)Center.X + x, (int)Center.Y + y, Thickness, Color);
+                        
+                        if (Determinant(Center, Points[1], new Point((int)Center.X + x, (int)Center.Y - y)) > 0 ||
+                            Determinant(Center, Points[2], new Point((int)Center.X + x, (int)Center.Y - y)) < 0)
+                            wbm.ApplyBrush((int)Center.X + x, (int)Center.Y - y, Thickness, Color);
+
+                        if (Determinant(Center, Points[1], new Point((int)Center.X - x, (int)Center.Y + y)) > 0 ||
+                            Determinant(Center, Points[2], new Point((int)Center.X - x, (int)Center.Y + y)) < 0)
+                            wbm.ApplyBrush((int)Center.X - x, (int)Center.Y + y, Thickness, Color);
+                        
+                        if (Determinant(Center, Points[1], new Point((int)Center.X - x, (int)Center.Y - y)) > 0 ||
+                            Determinant(Center, Points[2], new Point((int)Center.X - x, (int)Center.Y - y)) < 0)
+                            wbm.ApplyBrush((int)Center.X - x, (int)Center.Y - y, Thickness, Color);
+
+                        if (Determinant(Center, Points[1], new Point((int)Center.X + y, (int)Center.Y + x)) > 0 ||
+                            Determinant(Center, Points[2], new Point((int)Center.X + y, (int)Center.Y + x)) < 0)
+                            wbm.ApplyBrush((int)Center.X + y, (int)Center.Y + x, Thickness, Color);
+
+                        if (Determinant(Center, Points[1], new Point((int)Center.X - y, (int)Center.Y + x)) > 0 ||
+                            Determinant(Center, Points[2], new Point((int)Center.X - y, (int)Center.Y + x)) < 0)
+                            wbm.ApplyBrush((int)Center.X - y, (int)Center.Y + x, Thickness, Color);
+
+                        if (Determinant(Center, Points[1], new Point((int)Center.X + y, (int)Center.Y - x)) > 0 ||
+                            Determinant(Center, Points[2], new Point((int)Center.X + y, (int)Center.Y - x)) < 0)
+                            wbm.ApplyBrush((int)Center.X + y, (int)Center.Y - x, Thickness, Color);
+
+                        if (Determinant(Center, Points[1], new Point((int)Center.X - y, (int)Center.Y - x)) > 0 ||
+                            Determinant(Center, Points[2], new Point((int)Center.X - y, (int)Center.Y - x)) < 0)
+                            wbm.ApplyBrush((int)Center.X - y, (int)Center.Y - x, Thickness, Color);
+                        
+                    }
+                }
+            }
+            finally
+            {
+                wbm.Unlock();
+            }
+        }
+
+        public override int GetVertexIndexOf(Point point)
+        {
+            return -1; // circle has no vertices
+        }
+        
+        public override int GetEdgeIndexOf(Point point)
+        {
+            if (DistanceBetween(Center, point) < Radius + Thickness + GrabDistance &&
+                DistanceBetween(Center, point) > Radius - Thickness - GrabDistance)
+            {
+                // change edgePoint to -> the point on circle that is closest to the clicked point
+                var v = Point.Subtract(point, Points[0]); 
+                var vUnit = v / v.Length;
+                var newEdgePoint = Point.Add(Center, Radius * vUnit);
+                Points[1] = newEdgePoint;
+
+                return 1; // circle has only one edge with index 1
+            }
+
+            return -1;
+        }
+
+        public override void MoveEdge(int edgeIndex, Vector offSet)
+        {
+            Points[edgeIndex] = Point.Add(Points[edgeIndex], offSet);
+        }
+
+        public override string ToString()
+        {
+            return $"Center:({Center.X}, {Center.Y}) - Radius:{Radius} - P1:({Points[1].X}, {Points[1].Y} - P2: ({Points[2].X}, {Points[2].Y}))";
         }
     }
 }

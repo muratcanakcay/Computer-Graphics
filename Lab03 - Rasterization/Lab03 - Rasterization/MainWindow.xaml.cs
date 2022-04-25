@@ -1,22 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.Xml.Serialization;
 using Microsoft.Win32;
 using Brushes = System.Windows.Media.Brushes;
@@ -43,6 +33,7 @@ namespace Lab03___Rasterization
         private bool _isDrawingLine;
         private bool _isDrawingPolygon;
         private bool _isDrawingCircle;
+        private bool _isDrawingCircleArc;
         private bool _isMovingVertex;
         private bool _isMovingEdge;
         private bool _isMovingShape;
@@ -58,8 +49,6 @@ namespace Lab03___Rasterization
         private readonly List<IDrawable> _allShapes = new();
         private readonly WriteableBitmap _emptyWbm;
         private WriteableBitmap _wbm;
-        
-
 
         public MainWindow()
         {
@@ -93,6 +82,7 @@ namespace Lab03___Rasterization
             if (_isDrawingLine) ToggleIsDrawingLine();
             else if (_isDrawingPolygon) ToggleIsDrawingPolygon();
             else if (_isDrawingCircle) ToggleIsDrawingCircle();
+            else if (_isDrawingCircleArc) ToggleIsDrawingCircleArc();
 
             _currentPoints.Clear();
             RedrawCanvas();
@@ -141,6 +131,7 @@ namespace Lab03___Rasterization
             else if (_isDrawingLine) DrawLine(_currentCursorPosition);
             else if (_isDrawingPolygon) DrawPolygon(_currentCursorPosition);
             else if (_isDrawingCircle) DrawCircle(_currentCursorPosition);
+            else if (_isDrawingCircleArc) DrawCircleArc(_currentCursorPosition);
             else if (!_isMovingVertex || !_isMovingEdge)
             {
                 // for each shape, check if a vertex or edge is clicked
@@ -222,6 +213,14 @@ namespace Lab03___Rasterization
                 RedrawCanvas();
                 var currentCircle = new Circle(new List<Point> { _currentPoints[0], _currentCursorPosition }, _currentShapeThickness, _currentShapeColor);
                 currentCircle.Draw(_wbm);
+            }
+
+            // draw circle preview
+            if (_isDrawingCircleArc && _currentPoints.Count > 1)
+            {
+                RedrawCanvas();
+                var currentCircleArc = new CircleArc(new List<Point> { _currentPoints[0], _currentPoints[1], _currentCursorPosition }, _currentShapeThickness, _currentShapeColor);
+                currentCircleArc.Draw(_wbm);
             }
 
             if (_isMovingVertex)
@@ -345,6 +344,43 @@ namespace Lab03___Rasterization
             }
         }
         
+        //---------- CIRCLE ARC
+        private void CircleArcButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            ToggleAllOff();
+            ToggleIsDrawingCircleArc();
+        }
+        private void ToggleIsDrawingCircleArc()
+        {
+            _isDrawingCircleArc = !_isDrawingCircleArc;
+            CircleArcButton.Background = _isDrawingCircleArc ? Brushes.LightSalmon : Brushes.LightCyan;
+        }
+        private void DrawCircleArc(Point clickPosition)
+        {
+            if (_currentPoints.Count == 0) // add center
+            {
+                _currentPoints.Add(clickPosition);
+                Debug.WriteLine($"Center: {clickPosition.X}, {clickPosition.Y}");
+            }
+            else if (_currentPoints.Count == 1) // add starting point of arc
+            {
+                _currentPoints.Add(clickPosition);
+                Debug.WriteLine($"Arc Start: {clickPosition.X}, {clickPosition.Y}");
+            }
+            else // add edgePoint and add Circle to _allShapes
+            {
+                _currentPoints.Add(clickPosition);
+                Debug.WriteLine($"Arc End: {clickPosition.X}, {clickPosition.Y}");
+                _allShapes.Add(new CircleArc(new List<Point>(_currentPoints), _currentShapeThickness, _currentShapeColor));
+                
+                // clear the points
+                _currentPoints.Clear();
+                
+                ToggleIsDrawingCircleArc();
+                RedrawCanvas();
+            }
+        }
+
         //---------- THICKNESS AND COLOR
         private void ShapeThickness_OnPreviewTextInput(object sender, TextCompositionEventArgs e)
         {
@@ -402,10 +438,10 @@ namespace Lab03___Rasterization
             var s = new XmlSerializer(typeof(List<ShapeT>));
 
             List<ShapeT> shapesList = _allShapes
-                .Select(shape => new ShapeT() { 
-                    ClassName = shape.GetType().Name, 
-                    Points = shape.Points, 
-                    Thickness = shape.Thickness, 
+                .Select(shape => new ShapeT() {
+                    ClassName = shape.GetType().Name,
+                    Points = shape.Points,
+                    Thickness = shape.Thickness,
                     Color = shape.Color.ToArgb() })
                 .ToList();
 
@@ -457,10 +493,10 @@ namespace Lab03___Rasterization
         }
         
         //-----------
-        private void dummyCallBack(object sender, RoutedEventArgs e)
-        {
-            return;
-        }
+        private void DummyCallBack(object sender, RoutedEventArgs e)
+        { }
+
+        
     }
 
 }

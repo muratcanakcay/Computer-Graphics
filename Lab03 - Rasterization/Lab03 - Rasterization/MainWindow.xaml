@@ -32,7 +32,8 @@
                 <MenuItem Header="_Save Shapes" Click="OnClick_SaveShapes" InputGestureText="Alt+S"></MenuItem>
             </MenuItem>
 
-            <MenuItem HorizontalAlignment="Left" Header="E_xit" Click="dummyCallBack" InputGestureText="Alt+X"></MenuItem>
+            <MenuItem HorizontalAlignment="Left" Header="H_elp" Click="DummyCallBack" InputGestureText="Alt+H"></MenuItem>
+            <MenuItem HorizontalAlignment="Left" Header="E_xit" Click="DummyCallBack" InputGestureText="Alt+X"></MenuItem>
 
         </Menu>
         
@@ -87,7 +88,7 @@
                             IsEnabled="false"
                             ToolTip="Back"
                             Background="LightCyan"
-                            Click="dummyCallBack">
+                            Click="DummyCallBack">
                             <Image Source="icons/icons8-undo-64.png" Stretch="Uniform" />
                         </Button>
 
@@ -102,7 +103,7 @@
                             Name="FlattenButton"
                             IsEnabled="false"
                             Background="LightCyan"
-                            Click="dummyCallBack">
+                            Click="DummyCallBack">
                             <TextBlock Text="FLATTEN IMAGE" FontWeight="DemiBold"/>
                         </Button>
 
@@ -117,7 +118,7 @@
                             IsEnabled="false"
                             ToolTip="Forward"
                             Background="LightCyan"
-                            Click="dummyCallBack">
+                            Click="DummyCallBack">
                             <Image Source="icons/icons8-redo-64.png"/>
                         </Button>
 
@@ -246,6 +247,24 @@
                                 Background="LightCyan"
                                 Click="CircleButton_OnClick">
                                 Draw Circle
+                            </Button>
+
+                            <!--CIRCLE ARC-->
+                            <Button  
+                                Grid.Row="4"
+                                Grid.Column="0"
+                                Grid.ColumnSpan="2"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                Margin="1,0, 6, 0"
+                                Height="20"
+                                Width="100"
+                                Name="CircleArcButton"
+                                IsEnabled="true"
+                                ToolTip="Draw Circle Arc"
+                                Background="LightCyan"
+                                Click="CircleArcButton_OnClick">
+                                Draw Circle Arc
                             </Button>
 
                             
