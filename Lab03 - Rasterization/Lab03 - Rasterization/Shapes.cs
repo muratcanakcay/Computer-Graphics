@@ -298,7 +298,7 @@ namespace Lab03___Rasterization
         }
     }
 
-    public class CircleArc : Shape
+    public class CircleArc : Shape // TODO: correctly implement Edge and Vertex movement
     {
         public Point Center => Points[0];
         public int Radius => (int)Math.Round(DistanceBetween(Points[0], Points[1]));
@@ -309,13 +309,13 @@ namespace Lab03___Rasterization
             int x = 0;
             int y = Radius;
             int d = 1-Radius;
-            Point p;
+            double det = Determinant(Center, Points[1], Points[2]);
 
             try
             {
                 wbm.Lock();
 
-                if (Determinant(Center, Points[1], Points[2]) > 0)
+                if (det > 0)
                 {
                     if (Determinant(Center, Points[1], new Point((int)Center.X + x, (int)Center.Y + y)) > 0 &&
                         Determinant(Center, Points[2], new Point((int)Center.X + x, (int)Center.Y + y)) < 0)
@@ -365,7 +365,7 @@ namespace Lab03___Rasterization
 
                     ++x;
 
-                    if (Determinant(Center, Points[1], Points[2]) > 0)
+                    if (det > 0)
                     {
                         if (Determinant(Center, Points[1], new Point((int)Center.X + x, (int)Center.Y + y)) > 0 &&
                             Determinant(Center, Points[2], new Point((int)Center.X + x, (int)Center.Y + y)) < 0)
@@ -432,7 +432,6 @@ namespace Lab03___Rasterization
                         if (Determinant(Center, Points[1], new Point((int)Center.X - y, (int)Center.Y - x)) > 0 ||
                             Determinant(Center, Points[2], new Point((int)Center.X - y, (int)Center.Y - x)) < 0)
                             wbm.ApplyBrush((int)Center.X - y, (int)Center.Y - x, Thickness, Color);
-                        
                     }
                 }
             }
