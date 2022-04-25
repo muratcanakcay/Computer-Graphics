@@ -97,7 +97,7 @@ namespace Lab03___Rasterization
             return (int)Math.Round(Math.Sqrt(Math.Pow((p2.X - p1.X), 2) + Math.Pow((p2.Y - p1.Y), 2)));
         }
         
-        //---------- MOUSE ACTIONS
+        //---------- MOUSE EVENTS
         private void TheCanvas_OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             _isModifyingShape = false;
@@ -246,6 +246,18 @@ namespace Lab03___Rasterization
 
                 RedrawCanvas();
             }
+        }
+
+        //---------- KEYBOARD EVENTS
+        private void MainWindow_OnKeyDown(object sender, KeyEventArgs e)
+        {
+            if (_isModifyingShape && e.Key == Key.Delete)
+            {
+                _allShapes.RemoveAt(_currentShapeIndex);
+            }
+
+            ToggleAllOff();
+            RedrawCanvas();
         }
         
         //---------- LINE METHODS
@@ -496,7 +508,6 @@ namespace Lab03___Rasterization
         private void DummyCallBack(object sender, RoutedEventArgs e)
         { }
 
-        
     }
 
 }
