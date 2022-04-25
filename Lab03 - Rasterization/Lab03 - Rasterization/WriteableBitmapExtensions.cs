@@ -79,7 +79,7 @@ namespace Lab03___Rasterization
             }
         }
 
-        public static WriteableBitmap DownSample(this WriteableBitmap wbm, int scale)
+        public static WriteableBitmap DownSample(this WriteableBitmap wbm, int scale) // TODO: allow for more than 2x multipsampling
         {
             var downSampledWbm = new WriteableBitmap((int)wbm.PixelWidth / scale,
                                                     (int)wbm.PixelHeight / scale, 

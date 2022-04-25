@@ -81,11 +81,9 @@ namespace Lab03___Rasterization
 
             emptyWbm2.Clear();
             CanvasImage.Source = emptyWbm;
-            
-            //TheCanvas.RenderTransform.SetValue(ScaleTransform.ScaleXProperty, 10);
-            //TheCanvas.RenderTransform.SetValue(ScaleTransform.ScaleYProperty, 10);
 
-            
+            //TheCanvas.RenderTransform = new ScaleTransform(10, 10);
+
             return (emptyWbm, emptyWbm2, emptyWbm);
         }
         private void RedrawCanvas()
@@ -94,8 +92,8 @@ namespace Lab03___Rasterization
             {
                 _wbm = _emptyWbm2.Clone();
                 DrawAllShapes(_wbm);
-                var downsampledWbm = _wbm.DownSample(2);
-                CanvasImage.Source = downsampledWbm;
+                var downSampledWbm = _wbm.DownSample(2);
+                CanvasImage.Source = downSampledWbm;
             }
             else
             {
