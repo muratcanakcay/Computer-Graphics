@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
+using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Media.Imaging;
 using Point = System.Windows.Point;
@@ -14,7 +15,7 @@ namespace Lab03___Rasterization
         uint Thickness { get; set; }
         Color Color { get; set; }
         List<Point> Points { get; }
-        void Draw(WriteableBitmap wbm, bool isAntiAliased);
+        void Draw(WriteableBitmap wbm, bool isAntiAliased, bool isSuperSampled);
         int GetVertexIndexOf(Point point);
         void MoveVertex(int vertexIndex, Vector offSet);
         int GetEdgeIndexOf(Point point);
@@ -36,7 +37,7 @@ namespace Lab03___Rasterization
             Color = color;
         }
         
-        public abstract void Draw(WriteableBitmap wbm, bool isAntiAliased);
+        public abstract void Draw(WriteableBitmap wbm, bool isAntiAliased, bool isSuperSampled);
 
         public virtual int GetVertexIndexOf(Point point)
         {
@@ -120,11 +121,17 @@ namespace Lab03___Rasterization
     {
         public Line(List<Point> points, uint thickness, Color color) : base(points, thickness, color) {}
 
-        public override void Draw(WriteableBitmap wbm, bool isAntiAliased)
+        public override void Draw(WriteableBitmap wbm, bool isAntiAliased, bool isSuperSampled)
         {
             if (isAntiAliased)
             {
                 DrawAntiAliased(wbm);
+                return;
+            }
+
+            if (isSuperSampled)
+            {
+                DrawSuperSampled(wbm);
                 return;
             }
             
@@ -178,6 +185,73 @@ namespace Lab03___Rasterization
                         for (var y = (int)Points[0].Y; y >= Points[1].Y; --y)
                         {
                             wbm.ApplyBrush((int)Math.Round(x), y, Thickness, Color);
+                            //wbm.SetPixelColor((int)Math.Round(x), y, Color);
+                            x -= m;
+                        }
+                    }
+                }
+            }
+            finally
+            {
+                wbm.Unlock();
+            }
+        }
+
+        private void DrawSuperSampled(WriteableBitmap wbm)
+        {
+            double dy = 2 * (Points[1].Y - Points[0].Y);
+            double dx = 2 * (Points[1].X - Points[0].X);
+
+            try
+            {
+                wbm.Lock();
+                
+                if (dx != 0 && Math.Abs(dy/dx) < 1)
+                {
+                    double y = 2 * Points[0].Y;
+                    double m = dy/dx;
+
+                    if (dx > 0)
+                    {
+                        for (var x = (int) (2 * Points[0].X); x <= 2 * Points[1].X; ++x)
+                        {
+                            wbm.ApplyBrush(x, (int)Math.Round(y), Thickness, Color);
+                            wbm.ApplyBrush(x + (2*(int)Thickness - 1), (int)Math.Round(y), Thickness, Color);
+                            //wbm.SetPixelColor(x, (int)Math.Round(y), Color);
+                            y += m;
+                        }
+                    }
+                    else
+                    {
+                        for (var x = (int)(2 * Points[0].X); x >= 2*Points[1].X; --x)
+                        {
+                            wbm.ApplyBrush(x, (int)Math.Round(y), Thickness, Color);
+                            wbm.ApplyBrush(x + (2*(int)Thickness - 1), (int)Math.Round(y), Thickness, Color);
+                            //wbm.SetPixelColor(x, (int)Math.Round(y), Color);
+                            y -= m;
+                        }
+                    }
+                }
+                else if (dy != 0)
+                {
+                    double x = 2*Points[0].X;
+                    double m = dx/dy;
+
+                    if (dy > 0)
+                    {
+                        for (var y = (int)(2*Points[0].Y); y <= 2*Points[1].Y; ++y)
+                        {
+                            wbm.ApplyBrush((int)Math.Round(x), y, Thickness, Color);
+                            wbm.ApplyBrush((int)Math.Round(x), y+(2*(int)Thickness - 1), Thickness, Color);
+                            //wbm.SetPixelColor((int)Math.Round(x), y, Color);
+                            x += m;
+                        }
+                    }
+                    else
+                    {
+                        for (var y = (int)(2*Points[0].Y); y >= 2*Points[1].Y; --y)
+                        {
+                            wbm.ApplyBrush((int)Math.Round(x), y+(2*(int)Thickness - 1), Thickness, Color);
                             //wbm.SetPixelColor((int)Math.Round(x), y, Color);
                             x -= m;
                         }
@@ -302,13 +376,13 @@ namespace Lab03___Rasterization
     {
         public Polygon(List<Point> points, uint thickness, Color color) : base(points, thickness, color) {}
 
-        public override void Draw(WriteableBitmap wbm, bool isAntiAliased)
+        public override void Draw(WriteableBitmap wbm, bool isAntiAliased, bool isSuperSampled)
         {
             for (var i = 0; i < Points.Count; i++)
             {
                 var endPoint = i < Points.Count - 1 ? Points[i + 1] : Points[0];
                 var edge = new Line(new List<Point> {Points[i], endPoint}, Thickness, Color);
-                edge.Draw(wbm, isAntiAliased);
+                edge.Draw(wbm, isAntiAliased, isSuperSampled);
             }
         }
 
@@ -325,7 +399,7 @@ namespace Lab03___Rasterization
         public int Radius => (int)Math.Round(DistanceBetween(Points[0], Points[1]));
         public Circle(List<Point> points, uint thickness, Color color) : base(points, thickness, color) {}
         
-        public override void Draw(WriteableBitmap wbm, bool isAntiAliased)
+        public override void Draw(WriteableBitmap wbm, bool isAntiAliased, bool isSuperSampled)
         {
             int x = 0;
             int y = Radius;
@@ -412,7 +486,7 @@ namespace Lab03___Rasterization
         public int Radius => (int)Math.Round(DistanceBetween(Points[0], Points[1]));
         public CircleArc(List<Point> points, uint thickness, Color color) : base(points, thickness, color) {}
         
-        public override void Draw(WriteableBitmap wbm, bool isAntiAliased)
+        public override void Draw(WriteableBitmap wbm, bool isAntiAliased, bool isSuperSampled)
         {
             int x = 0;
             int y = Radius;

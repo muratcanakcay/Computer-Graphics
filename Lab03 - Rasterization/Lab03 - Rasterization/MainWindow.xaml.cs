@@ -49,17 +49,19 @@ namespace Lab03___Rasterization
         private readonly List<Point> _currentPoints = new();
         private readonly List<IDrawable> _allShapes = new();
         private readonly WriteableBitmap _emptyWbm;
+        private readonly WriteableBitmap _emptyWbm2;
         private WriteableBitmap _wbm;
-        
+        private bool _isSuperSampled;
+
 
         public MainWindow()
         {
             InitializeComponent();
-            (_emptyWbm, _wbm) = InitializeCanvas();
+            (_emptyWbm, _emptyWbm2, _wbm) = InitializeCanvas();
         }
 
         //---------- HELPER FUNCTIONS
-        private (WriteableBitmap, WriteableBitmap) InitializeCanvas()
+        private (WriteableBitmap, WriteableBitmap, WriteableBitmap) InitializeCanvas()
         {
             var emptyWbm = new WriteableBitmap((int)TheCanvas.Width,
                                                 (int)TheCanvas.Height, 
@@ -69,18 +71,39 @@ namespace Lab03___Rasterization
                                                 null);
 
             emptyWbm.Clear();
+
+            var emptyWbm2 = new WriteableBitmap((int)TheCanvas.Width * 2,
+                                                (int)TheCanvas.Height * 2, 
+                                                96, 
+                                                96, 
+                                                PixelFormats.Bgr32, 
+                                                null);
+
+            emptyWbm2.Clear();
             CanvasImage.Source = emptyWbm;
             //TheCanvas.Background = new ImageBrush { ImageSource = emptyWbm };
-            return (emptyWbm, emptyWbm);
+            //TheCanvas.RenderTransform.SetValue(ScaleTransform.ScaleXProperty, 10);
+            //TheCanvas.RenderTransform.SetValue(ScaleTransform.ScaleYProperty, 10);
+
+            
+            return (emptyWbm, emptyWbm2, emptyWbm);
         }
         private void RedrawCanvas()
         {
-            _wbm = _emptyWbm.Clone();
-            DrawAllShapes(_wbm);
-            //TheCanvas.Background = new ImageBrush { ImageSource = _wbm };
-            CanvasImage.Source = _wbm;
-
-            
+            if (_isSuperSampled)
+            {
+                _wbm = _emptyWbm2.Clone();
+                DrawAllShapes(_wbm);
+                var downsampledWbm = _wbm.DownSample(2);
+                CanvasImage.Source = downsampledWbm;
+            }
+            else
+            {
+                _wbm = _emptyWbm.Clone();
+                DrawAllShapes(_wbm);
+                //TheCanvas.Background = new ImageBrush { ImageSource = _wbm };
+                CanvasImage.Source = _wbm;
+            }
         }
         private void ToggleAllOff()
         {
@@ -95,7 +118,7 @@ namespace Lab03___Rasterization
         private void DrawAllShapes(WriteableBitmap wbm)
         {
             foreach (var shape in _allShapes)
-                shape.Draw(wbm, _isAntiAliased);
+                shape.Draw(wbm, _isAntiAliased, _isSuperSampled);
         }
         private static int DistanceBetween(Point p1, Point p2)
         {
@@ -191,11 +214,11 @@ namespace Lab03___Rasterization
             _currentCursorPosition = e.GetPosition(TheCanvas);
 
             // draw line preview
-            if (_isDrawingLine && _currentPoints.Count > 0)
+            if (!_isSuperSampled && _isDrawingLine && _currentPoints.Count > 0)
             {
                 RedrawCanvas();
                 currentLine = new Line(new List<Point> { _currentPoints[0], _currentCursorPosition }, _currentShapeThickness, _currentShapeColor);
-                currentLine.Draw(_wbm, _isAntiAliased);
+                currentLine.Draw(_wbm, _isAntiAliased, _isSuperSampled);
             }
             
             // draw polygon preview
@@ -205,11 +228,11 @@ namespace Lab03___Rasterization
                 for (var i = 0; i < _currentPoints.Count - 1; i++)
                 {
                     currentLine = new Line(new List<Point> { _currentPoints[i], _currentPoints[i+1] }, _currentShapeThickness, _currentShapeColor);
-                    currentLine.Draw(_wbm, _isAntiAliased);
+                    currentLine.Draw(_wbm, _isAntiAliased, _isSuperSampled);
                 }
 
                 currentLine = new Line(new List<Point> { _currentPoints[^1], _currentCursorPosition }, _currentShapeThickness, _currentShapeColor);
-                currentLine.Draw(_wbm, _isAntiAliased);
+                currentLine.Draw(_wbm, _isAntiAliased, _isSuperSampled);
             }
 
             // draw circle preview
@@ -217,7 +240,7 @@ namespace Lab03___Rasterization
             {
                 RedrawCanvas();
                 var currentCircle = new Circle(new List<Point> { _currentPoints[0], _currentCursorPosition }, _currentShapeThickness, _currentShapeColor);
-                currentCircle.Draw(_wbm, _isAntiAliased);
+                currentCircle.Draw(_wbm, _isAntiAliased, _isSuperSampled);
             }
 
             // draw circle preview
@@ -225,7 +248,7 @@ namespace Lab03___Rasterization
             {
                 RedrawCanvas();
                 var currentCircleArc = new CircleArc(new List<Point> { _currentPoints[0], _currentPoints[1], _currentCursorPosition }, _currentShapeThickness, _currentShapeColor);
-                currentCircleArc.Draw(_wbm, _isAntiAliased);
+                currentCircleArc.Draw(_wbm, _isAntiAliased, _isSuperSampled);
             }
 
             if (_isMovingVertex)
@@ -370,7 +393,7 @@ namespace Lab03___Rasterization
         private void ToggleIsDrawingCircleArc()
         {
             _isDrawingCircleArc = !_isDrawingCircleArc;
-            CircleArcButton.Background = _isDrawingCircleArc ? Brushes.LightSalmon : Brushes.LightCyan;
+            //CircleArcButton.Background = _isDrawingCircleArc ? Brushes.LightSalmon : Brushes.LightCyan;
         }
         private void DrawCircleArc(Point clickPosition)
         {
@@ -444,7 +467,17 @@ namespace Lab03___Rasterization
             _isAntiAliased = !_isAntiAliased;
             AntiAliasButton.Background = _isAntiAliased ? Brushes.LightSalmon : Brushes.LightCyan;
         }
-        
+        private void SuperSampleButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            ToggleIsSuperSampled();
+            //RedrawCanvas();
+        }
+        private void ToggleIsSuperSampled()
+        {
+            _isSuperSampled = !_isSuperSampled;
+            SuperSampleButton.Background = _isSuperSampled ? Brushes.LightSalmon : Brushes.LightCyan;
+        }
+
         //---------- MENU ITEMS
         private void OnClick_ResetCanvas(object sender, RoutedEventArgs e)
         {
@@ -528,6 +561,7 @@ namespace Lab03___Rasterization
         //-----------
         private void DummyCallBack(object sender, RoutedEventArgs e)
         { }
+
 
         
     }

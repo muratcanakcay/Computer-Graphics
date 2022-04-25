@@ -59,13 +59,10 @@
                     Cursor="Cross"
                     >
                     <Image
-                        Name="CanvasImage" RenderTransformOrigin="0.5,0.5">
+                        Name="CanvasImage" RenderTransformOrigin="0.5,0.5" Stretch="None">
                         <Image.RenderTransform>
                             <TransformGroup>
-                                <ScaleTransform ScaleX="10" ScaleY="10"/>
-                                <SkewTransform/>
-                                <RotateTransform/>
-                                <TranslateTransform/>
+                                <ScaleTransform ScaleX="1" ScaleY="1"/>
                             </TransformGroup>
                         </Image.RenderTransform>
                     </Image>
@@ -262,7 +259,7 @@
                             </Button>
 
                             <!--CIRCLE ARC-->
-                            <Button  
+                            <!--<Button  
                                 Grid.Row="4"
                                 Grid.Column="0"
                                 Grid.ColumnSpan="2"
@@ -277,7 +274,7 @@
                                 Background="LightCyan"
                                 Click="CircleArcButton_OnClick">
                                 Draw Circle Arc
-                            </Button>
+                            </Button>-->
 
                             <!--ANTIALIASING-->
                             <Button  
@@ -295,6 +292,24 @@
                                 Background="LightCyan"
                                 Click="AntiAliasButton_OnClick">
                                 Apply Anti-Aliasing
+                            </Button>
+
+                            <!--SUPERSAMPLING-->
+                            <Button  
+                                Grid.Row="7"
+                                Grid.Column="0"
+                                Grid.ColumnSpan="4"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                Margin="1,0, 6, 0"
+                                Height="20"
+                                Width="120"
+                                Name="SuperSampleButton"
+                                IsEnabled="true"
+                                ToolTip="Apply Anti-aliasing"
+                                Background="LightCyan"
+                                Click="SuperSampleButton_OnClick">
+                                Apply SuperSampling
                             </Button>
 
                             

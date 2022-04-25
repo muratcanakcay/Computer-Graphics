@@ -78,5 +78,45 @@ namespace Lab03___Rasterization
                 wbm.Unlock();
             }
         }
+
+        public static WriteableBitmap DownSample(this WriteableBitmap wbm, int scale)
+        {
+            var downSampledWbm = new WriteableBitmap((int)wbm.PixelWidth / scale,
+                                                    (int)wbm.PixelHeight / scale, 
+                                                    96, 
+                                                    96, 
+                                                    PixelFormats.Bgr32, 
+                                                    null);
+
+            downSampledWbm.Clear();
+
+            try
+            {
+                wbm.Lock();
+                downSampledWbm.Lock();
+                
+                for (int x = 0; x < downSampledWbm.Width; x++)
+                    for (int y = 0; y < downSampledWbm.Height; y++)
+                    {
+                        var col1 = wbm.GetPixelColor(2*x+0, 2*y+0);
+                        var col2 = wbm.GetPixelColor(2*x+1, 2*y+0);
+                        var col3 = wbm.GetPixelColor(2*x+0, 2*y+1);
+                        var col4 = wbm.GetPixelColor(2*x+1, 2*y+1);
+
+                        var avgR = (col1.R + col2.R + col3.R + col4.R) / 4;
+                        var avgG = (col1.R + col2.R + col3.R + col4.R) / 4;
+                        var avgB = (col1.R + col2.R + col3.R + col4.R) / 4;
+
+                        downSampledWbm.SetPixelColor(x, y, Color.FromArgb(255, avgR, avgG, avgB));
+                    }
+            }
+            finally
+            {
+                wbm.Unlock();
+                downSampledWbm.Unlock();
+            }
+
+            return downSampledWbm;
+        }
     }
 }
