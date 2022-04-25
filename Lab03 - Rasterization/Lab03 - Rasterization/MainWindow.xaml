@@ -259,7 +259,7 @@
                             </Button>
 
                             <!--CIRCLE ARC-->
-                            <!--<Button  
+                            <Button  
                                 Grid.Row="4"
                                 Grid.Column="0"
                                 Grid.ColumnSpan="2"
@@ -274,9 +274,9 @@
                                 Background="LightCyan"
                                 Click="CircleArcButton_OnClick">
                                 Draw Circle Arc
-                            </Button>-->
+                            </Button>
 
-                            <!--ANTIALIASING-->
+                            <!--ANTI-ALIASING-->
                             <Button  
                                 Grid.Row="6"
                                 Grid.Column="0"
@@ -294,7 +294,7 @@
                                 Apply Anti-Aliasing
                             </Button>
 
-                            <!--SUPERSAMPLING-->
+                            <!--SUPER SAMPLING-->
                             <Button  
                                 Grid.Row="7"
                                 Grid.Column="0"

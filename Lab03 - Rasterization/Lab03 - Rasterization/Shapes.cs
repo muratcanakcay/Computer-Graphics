@@ -215,8 +215,8 @@ namespace Lab03___Rasterization
                     {
                         for (var x = (int) (2 * Points[0].X); x <= 2 * Points[1].X; ++x)
                         {
-                            wbm.ApplyBrush(x, (int)Math.Round(y), Thickness, Color);
-                            wbm.ApplyBrush(x + (2*(int)Thickness - 1), (int)Math.Round(y), Thickness, Color);
+                            wbm.ApplyBrush(x, (int)Math.Round(y), Thickness*2, Color);
+                            
                             //wbm.SetPixelColor(x, (int)Math.Round(y), Color);
                             y += m;
                         }
@@ -225,8 +225,8 @@ namespace Lab03___Rasterization
                     {
                         for (var x = (int)(2 * Points[0].X); x >= 2*Points[1].X; --x)
                         {
-                            wbm.ApplyBrush(x, (int)Math.Round(y), Thickness, Color);
-                            wbm.ApplyBrush(x + (2*(int)Thickness - 1), (int)Math.Round(y), Thickness, Color);
+                            wbm.ApplyBrush(x, (int)Math.Round(y), Thickness*2, Color);
+                            
                             //wbm.SetPixelColor(x, (int)Math.Round(y), Color);
                             y -= m;
                         }
@@ -241,8 +241,8 @@ namespace Lab03___Rasterization
                     {
                         for (var y = (int)(2*Points[0].Y); y <= 2*Points[1].Y; ++y)
                         {
-                            wbm.ApplyBrush((int)Math.Round(x), y, Thickness, Color);
-                            wbm.ApplyBrush((int)Math.Round(x), y+(2*(int)Thickness - 1), Thickness, Color);
+                            wbm.ApplyBrush((int)Math.Round(x), y, Thickness*2, Color);
+                            
                             //wbm.SetPixelColor((int)Math.Round(x), y, Color);
                             x += m;
                         }
@@ -251,7 +251,7 @@ namespace Lab03___Rasterization
                     {
                         for (var y = (int)(2*Points[0].Y); y >= 2*Points[1].Y; --y)
                         {
-                            wbm.ApplyBrush((int)Math.Round(x), y+(2*(int)Thickness - 1), Thickness, Color);
+                            wbm.ApplyBrush((int)Math.Round(x), y, Thickness*2, Color);
                             //wbm.SetPixelColor((int)Math.Round(x), y, Color);
                             x -= m;
                         }

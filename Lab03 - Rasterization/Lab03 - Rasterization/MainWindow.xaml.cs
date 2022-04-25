@@ -81,7 +81,7 @@ namespace Lab03___Rasterization
 
             emptyWbm2.Clear();
             CanvasImage.Source = emptyWbm;
-            //TheCanvas.Background = new ImageBrush { ImageSource = emptyWbm };
+            
             //TheCanvas.RenderTransform.SetValue(ScaleTransform.ScaleXProperty, 10);
             //TheCanvas.RenderTransform.SetValue(ScaleTransform.ScaleYProperty, 10);
 
@@ -101,7 +101,6 @@ namespace Lab03___Rasterization
             {
                 _wbm = _emptyWbm.Clone();
                 DrawAllShapes(_wbm);
-                //TheCanvas.Background = new ImageBrush { ImageSource = _wbm };
                 CanvasImage.Source = _wbm;
             }
         }
@@ -393,7 +392,7 @@ namespace Lab03___Rasterization
         private void ToggleIsDrawingCircleArc()
         {
             _isDrawingCircleArc = !_isDrawingCircleArc;
-            //CircleArcButton.Background = _isDrawingCircleArc ? Brushes.LightSalmon : Brushes.LightCyan;
+            CircleArcButton.Background = _isDrawingCircleArc ? Brushes.LightSalmon : Brushes.LightCyan;
         }
         private void DrawCircleArc(Point clickPosition)
         {
