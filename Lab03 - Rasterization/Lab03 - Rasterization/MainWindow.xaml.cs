@@ -82,7 +82,7 @@ namespace Lab03___Rasterization
             emptyWbm2.Clear();
             CanvasImage.Source = emptyWbm;
 
-            //TheCanvas.RenderTransform = new ScaleTransform(10, 10);
+            TheCanvas.RenderTransform = new ScaleTransform(10, 10);
 
             return (emptyWbm, emptyWbm2, emptyWbm);
         }
@@ -467,7 +467,7 @@ namespace Lab03___Rasterization
         private void SuperSampleButton_OnClick(object sender, RoutedEventArgs e)
         {
             ToggleIsSuperSampled();
-            //RedrawCanvas();
+            RedrawCanvas();
         }
         private void ToggleIsSuperSampled()
         {

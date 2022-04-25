@@ -117,7 +117,7 @@ namespace Lab03___Rasterization
         }
     }
 
-    public class Line : Shape
+    public class Line : Shape // TODO: add supersampling to antialising
     {
         public Line(List<Point> points, uint thickness, Color color) : base(points, thickness, color) {}
 
@@ -129,14 +129,11 @@ namespace Lab03___Rasterization
                 return;
             }
 
-            if (isSuperSampled)
-            {
-                DrawSuperSampled(wbm);
-                return;
-            }
+            uint SSAA = 1;
+            if (isSuperSampled) { SSAA=2; }
             
-            double dy = Points[1].Y - Points[0].Y;
-            double dx = Points[1].X - Points[0].X;
+            double dy = SSAA * (Points[1].Y - Points[0].Y);
+            double dx = SSAA * (Points[1].X - Points[0].X);
 
             try
             {
@@ -144,115 +141,44 @@ namespace Lab03___Rasterization
                 
                 if (dx != 0 && Math.Abs(dy/dx) < 1)
                 {
-                    double y = Points[0].Y;
+                    double y = SSAA * Points[0].Y;
                     double m = dy/dx;
 
                     if (dx > 0)
                     {
-                        for (var x = (int)Points[0].X; x <= Points[1].X; ++x)
+                        for (var x = (int)(SSAA * Points[0].X); x <= SSAA * Points[1].X; ++x)
                         {
-                            wbm.ApplyBrush(x, (int)Math.Round(y), Thickness, Color);
-                            //wbm.SetPixelColor(x, (int)Math.Round(y), Color);
+                            wbm.ApplyBrush(x, (int)Math.Round(y), SSAA * Thickness, Color);
                             y += m;
                         }
                     }
                     else
                     {
-                        for (var x = (int)Points[0].X; x >= Points[1].X; --x)
+                        for (var x = (int)(SSAA * Points[0].X); x >= SSAA * Points[1].X; --x)
                         {
-                            wbm.ApplyBrush(x, (int)Math.Round(y), Thickness, Color);
-                            //wbm.SetPixelColor(x, (int)Math.Round(y), Color);
+                            wbm.ApplyBrush(x, (int)Math.Round(y), SSAA * Thickness, Color);
                             y -= m;
                         }
                     }
                 }
                 else if (dy != 0)
                 {
-                    double x = Points[0].X;
+                    double x = SSAA * Points[0].X;
                     double m = dx/dy;
 
                     if (dy > 0)
                     {
-                        for (var y = (int)Points[0].Y; y <= Points[1].Y; ++y)
+                        for (var y = (int)(SSAA * Points[0].Y); y <= SSAA * Points[1].Y; ++y)
                         {
-                            wbm.ApplyBrush((int)Math.Round(x), y, Thickness, Color);
-                            //wbm.SetPixelColor((int)Math.Round(x), y, Color);
+                            wbm.ApplyBrush((int)Math.Round(x), y, SSAA * Thickness, Color);
                             x += m;
                         }
                     }
                     else
                     {
-                        for (var y = (int)Points[0].Y; y >= Points[1].Y; --y)
+                        for (var y = (int)(SSAA * Points[0].Y); y >= SSAA * Points[1].Y; --y)
                         {
-                            wbm.ApplyBrush((int)Math.Round(x), y, Thickness, Color);
-                            //wbm.SetPixelColor((int)Math.Round(x), y, Color);
-                            x -= m;
-                        }
-                    }
-                }
-            }
-            finally
-            {
-                wbm.Unlock();
-            }
-        }
-
-        private void DrawSuperSampled(WriteableBitmap wbm)
-        {
-            double dy = 2 * (Points[1].Y - Points[0].Y);
-            double dx = 2 * (Points[1].X - Points[0].X);
-
-            try
-            {
-                wbm.Lock();
-                
-                if (dx != 0 && Math.Abs(dy/dx) < 1)
-                {
-                    double y = 2 * Points[0].Y;
-                    double m = dy/dx;
-
-                    if (dx > 0)
-                    {
-                        for (var x = (int) (2 * Points[0].X); x <= 2 * Points[1].X; ++x)
-                        {
-                            wbm.ApplyBrush(x, (int)Math.Round(y), Thickness*2, Color);
-                            
-                            //wbm.SetPixelColor(x, (int)Math.Round(y), Color);
-                            y += m;
-                        }
-                    }
-                    else
-                    {
-                        for (var x = (int)(2 * Points[0].X); x >= 2*Points[1].X; --x)
-                        {
-                            wbm.ApplyBrush(x, (int)Math.Round(y), Thickness*2, Color);
-                            
-                            //wbm.SetPixelColor(x, (int)Math.Round(y), Color);
-                            y -= m;
-                        }
-                    }
-                }
-                else if (dy != 0)
-                {
-                    double x = 2*Points[0].X;
-                    double m = dx/dy;
-
-                    if (dy > 0)
-                    {
-                        for (var y = (int)(2*Points[0].Y); y <= 2*Points[1].Y; ++y)
-                        {
-                            wbm.ApplyBrush((int)Math.Round(x), y, Thickness*2, Color);
-                            
-                            //wbm.SetPixelColor((int)Math.Round(x), y, Color);
-                            x += m;
-                        }
-                    }
-                    else
-                    {
-                        for (var y = (int)(2*Points[0].Y); y >= 2*Points[1].Y; --y)
-                        {
-                            wbm.ApplyBrush((int)Math.Round(x), y, Thickness*2, Color);
-                            //wbm.SetPixelColor((int)Math.Round(x), y, Color);
+                            wbm.ApplyBrush((int)Math.Round(x), y, SSAA * Thickness, Color);
                             x -= m;
                         }
                     }
@@ -362,10 +288,6 @@ namespace Lab03___Rasterization
             return ((1 / Math.PI) * Math.Acos(d / r)) - ((d / (Math.PI * r * r)) * Math.Sqrt((r * r) - (d * d)));
         }
 
-
-
-
-
         public override string ToString()
         {
             return $"({Points[0].X}, {Points[0].Y})-({Points[1].X}, {Points[1].Y})";
@@ -393,7 +315,7 @@ namespace Lab03___Rasterization
         }
     }
 
-    public class Circle : Shape
+    public class Circle : Shape // TODO: implement supersampling for Circle
     {
         public Point Center => Points[0];
         public int Radius => (int)Math.Round(DistanceBetween(Points[0], Points[1]));
@@ -480,7 +402,7 @@ namespace Lab03___Rasterization
         }
     }
 
-    public class CircleArc : Shape // TODO: correctly implement Edge and Vertex movement
+    public class CircleArc : Shape // TODO: correctly implement Edge and Vertex movement and implement supersampling
     {
         public Point Center => Points[0];
         public int Radius => (int)Math.Round(DistanceBetween(Points[0], Points[1]));
