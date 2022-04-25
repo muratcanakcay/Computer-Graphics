@@ -492,6 +492,9 @@ namespace Lab03___Rasterization
                             case "Circle":
                                 _allShapes.Add(new Circle(shape.Points, shape.Thickness, Color.FromArgb(shape.Color)));
                                 break;
+                            case "CircleArc":
+                                _allShapes.Add(new CircleArc(shape.Points, shape.Thickness, Color.FromArgb(shape.Color)));
+                                break;
                         }
                     }
                 }
