@@ -80,7 +80,6 @@ namespace Lab03___Rasterization
         }
         private void ToggleAllOff()
         {
-            _isModifyingShape = false;
             if (_isDrawingLine) ToggleIsDrawingLine();
             else if (_isDrawingPolygon) ToggleIsDrawingPolygon();
             else if (_isDrawingCircle) ToggleIsDrawingCircle();
@@ -256,16 +255,16 @@ namespace Lab03___Rasterization
             if (_isModifyingShape && e.Key == Key.Delete)
             {
                 _allShapes.RemoveAt(_currentShapeIndex);
+                _isModifyingShape = false;
+                ToggleAllOff();
+                RedrawCanvas();
             }
-
-            ToggleAllOff();
-            RedrawCanvas();
         }
         
         //---------- LINE METHODS
         private void LineButton_OnClick(object sender, RoutedEventArgs e)
         {
-            ToggleAllOff();
+            if(!_isDrawingLine) ToggleAllOff();
             ToggleIsDrawingLine();
         }
         private void ToggleIsDrawingLine()
@@ -296,7 +295,7 @@ namespace Lab03___Rasterization
         //---------- POLYGON METHODS
         private void PolygonButton_OnClick(object sender, RoutedEventArgs e)
         {
-            ToggleAllOff();
+            if(!_isDrawingPolygon) ToggleAllOff();
             ToggleIsDrawingPolygon();
         }
         private void ToggleIsDrawingPolygon()
@@ -329,7 +328,7 @@ namespace Lab03___Rasterization
         //---------- CIRCLE METHODS
         private void CircleButton_OnClick(object sender, RoutedEventArgs e)
         {
-            ToggleAllOff();
+            if(!_isDrawingCircle) ToggleAllOff();
             ToggleIsDrawingCircle();
         }
         private void ToggleIsDrawingCircle()
@@ -361,7 +360,7 @@ namespace Lab03___Rasterization
         //---------- CIRCLE ARC
         private void CircleArcButton_OnClick(object sender, RoutedEventArgs e)
         {
-            ToggleAllOff();
+            if(!_isDrawingCircleArc) ToggleAllOff();
             ToggleIsDrawingCircleArc();
         }
         private void ToggleIsDrawingCircleArc()
