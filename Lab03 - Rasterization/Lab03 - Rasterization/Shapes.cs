@@ -25,6 +25,7 @@ namespace Lab03___Rasterization
 
     public abstract class Shape : IDrawable
     {
+        protected uint SSAA = 1;  // supersampling coeff.
         public List<Point> Points { get; protected set; }
         public uint Thickness { get; set; }
         public Color Color { get; set; }
@@ -129,11 +130,15 @@ namespace Lab03___Rasterization
                 return;
             }
 
-            uint SSAA = 1;
-            if (isSuperSampled) { SSAA=2; }
-            
-            double dy = SSAA * (Points[1].Y - Points[0].Y);
-            double dx = SSAA * (Points[1].X - Points[0].X);
+            SSAA = (uint)(isSuperSampled ? 2 : 1);
+
+            var x0 = (int)(SSAA * Points[0].X);
+            var y0 = (int)(SSAA * Points[0].Y);
+            var x1 = (int)(SSAA * Points[1].X);
+            var y1 = (int)(SSAA * Points[1].Y);
+
+            double dy = y1 - y0;
+            double dx = x1 - x0;
 
             try
             {
@@ -141,12 +146,12 @@ namespace Lab03___Rasterization
                 
                 if (dx != 0 && Math.Abs(dy/dx) < 1)
                 {
-                    double y = SSAA * Points[0].Y;
+                    double y = y0;
                     double m = dy/dx;
 
                     if (dx > 0)
                     {
-                        for (var x = (int)(SSAA * Points[0].X); x <= SSAA * Points[1].X; ++x)
+                        for (var x = x0; x <= x1; ++x)
                         {
                             wbm.ApplyBrush(x, (int)Math.Round(y), SSAA * Thickness, Color);
                             y += m;
@@ -154,7 +159,7 @@ namespace Lab03___Rasterization
                     }
                     else
                     {
-                        for (var x = (int)(SSAA * Points[0].X); x >= SSAA * Points[1].X; --x)
+                        for (var x = x0; x >= x1; --x)
                         {
                             wbm.ApplyBrush(x, (int)Math.Round(y), SSAA * Thickness, Color);
                             y -= m;
@@ -163,12 +168,12 @@ namespace Lab03___Rasterization
                 }
                 else if (dy != 0)
                 {
-                    double x = SSAA * Points[0].X;
+                    double x = x0;
                     double m = dx/dy;
 
                     if (dy > 0)
                     {
-                        for (var y = (int)(SSAA * Points[0].Y); y <= SSAA * Points[1].Y; ++y)
+                        for (var y = y0; y <= y1; ++y)
                         {
                             wbm.ApplyBrush((int)Math.Round(x), y, SSAA * Thickness, Color);
                             x += m;
@@ -176,7 +181,7 @@ namespace Lab03___Rasterization
                     }
                     else
                     {
-                        for (var y = (int)(SSAA * Points[0].Y); y >= SSAA * Points[1].Y; --y)
+                        for (var y = y0; y >= y1; --y)
                         {
                             wbm.ApplyBrush((int)Math.Round(x), y, SSAA * Thickness, Color);
                             x -= m;
