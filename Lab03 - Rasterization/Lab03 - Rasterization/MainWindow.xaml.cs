@@ -20,7 +20,7 @@ namespace Lab03___Rasterization
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow
     {
         public struct ShapeT
         {
@@ -38,6 +38,7 @@ namespace Lab03___Rasterization
         private bool _isMovingEdge;
         private bool _isMovingShape;
         private bool _isModifyingShape;
+        private bool _isAntiAliased;
         private Point _initialCursorPosition;
         private Point _currentCursorPosition;
         private int _currentShapeIndex;
@@ -49,6 +50,7 @@ namespace Lab03___Rasterization
         private readonly List<IDrawable> _allShapes = new();
         private readonly WriteableBitmap _emptyWbm;
         private WriteableBitmap _wbm;
+        
 
         public MainWindow()
         {
@@ -90,7 +92,7 @@ namespace Lab03___Rasterization
         private void DrawAllShapes(WriteableBitmap wbm)
         {
             foreach (var shape in _allShapes)
-                shape.Draw(wbm);
+                shape.Draw(wbm, _isAntiAliased);
         }
         private static int DistanceBetween(Point p1, Point p2)
         {
@@ -190,7 +192,7 @@ namespace Lab03___Rasterization
             {
                 RedrawCanvas();
                 currentLine = new Line(new List<Point> { _currentPoints[0], _currentCursorPosition }, _currentShapeThickness, _currentShapeColor);
-                currentLine.Draw(_wbm);
+                currentLine.Draw(_wbm, _isAntiAliased);
             }
             
             // draw polygon preview
@@ -200,11 +202,11 @@ namespace Lab03___Rasterization
                 for (var i = 0; i < _currentPoints.Count - 1; i++)
                 {
                     currentLine = new Line(new List<Point> { _currentPoints[i], _currentPoints[i+1] }, _currentShapeThickness, _currentShapeColor);
-                    currentLine.Draw(_wbm);
+                    currentLine.Draw(_wbm, _isAntiAliased);
                 }
 
                 currentLine = new Line(new List<Point> { _currentPoints[^1], _currentCursorPosition }, _currentShapeThickness, _currentShapeColor);
-                currentLine.Draw(_wbm);
+                currentLine.Draw(_wbm, _isAntiAliased);
             }
 
             // draw circle preview
@@ -212,7 +214,7 @@ namespace Lab03___Rasterization
             {
                 RedrawCanvas();
                 var currentCircle = new Circle(new List<Point> { _currentPoints[0], _currentCursorPosition }, _currentShapeThickness, _currentShapeColor);
-                currentCircle.Draw(_wbm);
+                currentCircle.Draw(_wbm, _isAntiAliased);
             }
 
             // draw circle preview
@@ -220,7 +222,7 @@ namespace Lab03___Rasterization
             {
                 RedrawCanvas();
                 var currentCircleArc = new CircleArc(new List<Point> { _currentPoints[0], _currentPoints[1], _currentCursorPosition }, _currentShapeThickness, _currentShapeColor);
-                currentCircleArc.Draw(_wbm);
+                currentCircleArc.Draw(_wbm, _isAntiAliased);
             }
 
             if (_isMovingVertex)
@@ -393,7 +395,7 @@ namespace Lab03___Rasterization
             }
         }
 
-        //---------- THICKNESS AND COLOR
+        //---------- THICKNESS, COLOR, ANTIALIASING
         private void ShapeThickness_OnPreviewTextInput(object sender, TextCompositionEventArgs e)
         {
             if (int.TryParse(e.Text, out var inputNum) && inputNum is > 0 and < 9)
@@ -429,11 +431,23 @@ namespace Lab03___Rasterization
                 }
             }
         }
+        private void AntiAliasButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            ToggleIsAntiAliased();
+            RedrawCanvas();
+        }
+        private void ToggleIsAntiAliased()
+        {
+            _isAntiAliased = !_isAntiAliased;
+            AntiAliasButton.Background = _isAntiAliased ? Brushes.LightSalmon : Brushes.LightCyan;
+        }
         
         //---------- MENU ITEMS
         private void OnClick_ResetCanvas(object sender, RoutedEventArgs e)
         {
             _allShapes.Clear();
+            _isAntiAliased = true;
+            ToggleIsAntiAliased();
             RedrawCanvas();
         }
         private void OnClick_SaveShapes(object sender, RoutedEventArgs e)
@@ -446,9 +460,8 @@ namespace Lab03___Rasterization
 
             if (dlg.ShowDialog() != true || dlg.FileName == string.Empty) return;
         
-            using var fs = new FileStream(dlg.FileName, FileMode.Create);
             var s = new XmlSerializer(typeof(List<ShapeT>));
-
+            using var fs = new FileStream(dlg.FileName, FileMode.Create);
             List<ShapeT> shapesList = _allShapes
                 .Select(shape => new ShapeT() {
                     ClassName = shape.GetType().Name,
@@ -499,6 +512,8 @@ namespace Lab03___Rasterization
                     }
                 }
 
+                _isAntiAliased = true;
+                ToggleIsAntiAliased();
                 RedrawCanvas();
             }
             catch (InvalidOperationException)
@@ -511,6 +526,7 @@ namespace Lab03___Rasterization
         private void DummyCallBack(object sender, RoutedEventArgs e)
         { }
 
+        
     }
 
 }

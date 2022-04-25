@@ -14,7 +14,7 @@ namespace Lab03___Rasterization
         uint Thickness { get; set; }
         Color Color { get; set; }
         List<Point> Points { get; }
-        void Draw(WriteableBitmap wbm);
+        void Draw(WriteableBitmap wbm, bool isAntiAliased);
         int GetVertexIndexOf(Point point);
         void MoveVertex(int vertexIndex, Vector offSet);
         int GetEdgeIndexOf(Point point);
@@ -36,7 +36,7 @@ namespace Lab03___Rasterization
             Color = color;
         }
         
-        public abstract void Draw(WriteableBitmap wbm);
+        public abstract void Draw(WriteableBitmap wbm, bool isAntiAliased);
 
         public virtual int GetVertexIndexOf(Point point)
         {
@@ -120,8 +120,14 @@ namespace Lab03___Rasterization
     {
         public Line(List<Point> points, uint thickness, Color color) : base(points, thickness, color) {}
 
-        public override void Draw(WriteableBitmap wbm)
+        public override void Draw(WriteableBitmap wbm, bool isAntiAliased)
         {
+            if (isAntiAliased)
+            {
+                DrawAntiAliased(wbm);
+                return;
+            }
+            
             double dy = Points[1].Y - Points[0].Y;
             double dx = Points[1].X - Points[0].X;
 
@@ -184,6 +190,107 @@ namespace Lab03___Rasterization
             }
         }
 
+        private void DrawAntiAliased(WriteableBitmap wbm)
+        {
+            //initial values in Bresenham;s algorithm
+            int dx = (int)(Points[1].X - Points[0].X);
+            int dy = (int)(Points[1].Y - Points[0].Y);
+            int dE = 2 * dy;
+            int dNE = 2 * (dy - dx);
+            int d = 2*dy - dx;
+            int two_v_dx = 0; //numerator, v=0 for the first pixel
+            double invDenom = 1 / (2 * Math.Sqrt(dx*dx + dy*dy)); //inverted denominator
+            double two_dx_invDenom = 2 * dx * invDenom;
+            
+            //precomputed constant
+            int x = (int)Points[0].X;
+            int y = (int)Points[0].Y;
+            int i;
+            
+            IntensifyPixel(wbm, x, y, 0);
+            for (i = 1; IntensifyPixel(wbm, x, y+i, i*two_dx_invDenom); ++i);
+            for (i = 1; IntensifyPixel(wbm, x, y-i, i*two_dx_invDenom); ++i);
+
+
+            while (x < Points[1].X)
+            {
+                ++x;
+                if ( d < 0 ) // move to E
+                {
+                    two_v_dx = d + dx;
+                    d += dE;
+                }
+                else
+                // move to NE
+                {
+                    two_v_dx = d-dx;
+                    d += dNE;
+                    ++y;
+                }
+                // Now set the chosen pixel and its neighbors
+                IntensifyPixel(wbm, x, y, two_v_dx*invDenom);
+                for (i=1; IntensifyPixel(wbm, x, y+i,  i*two_dx_invDenom - two_v_dx*invDenom); ++i);
+                for (i=1; IntensifyPixel(wbm, x, y-i, i*two_dx_invDenom + two_v_dx*invDenom); ++i);
+            }
+            
+        }
+
+        private bool IntensifyPixel(WriteableBitmap wbm, int x, int y, double distance)
+        {
+            const double r = 0.5f;
+            var cov = Coverage(distance, r);
+            if (cov > 0)
+            {
+                try
+                {
+                    wbm.Lock();
+                    var newColor = Color.FromArgb(Color.A, (int)(Color.R * (1-cov)), (int)(Color.G * (1-cov)), (int)(Color.B * (1-cov)));
+                    wbm.SetPixelColor(x, y, newColor);
+                }
+                finally
+                {
+                    wbm.Unlock();
+                }
+            }
+
+            return cov>0;
+        }
+
+        private double Coverage(double D, double r)
+        {
+            var w = (double)Thickness / 2;
+
+            if (w >= r)
+            {
+                if (w <= D)
+                    return Cov(D - w, r);
+                if (D < w)
+                    return 1 - Cov(w - D, r);
+            }
+            else
+            {
+                if (D <= w)
+                    return 1 - Cov(w - D, r) - Cov(w + D, r);
+                if (w < D && D <= r-w)
+                    return Cov(D - w, r) - Cov(D + w, r);
+                if (r - w < D && D <= r + w)
+                    return Cov(D - w, r);
+            }
+
+            return 0;
+        }
+
+        private double Cov(double d, double r)
+        {
+            if (d >= r) return 0;
+
+            return ((1 / Math.PI) * Math.Acos(d / r)) - ((d / (Math.PI * r * r)) * Math.Sqrt((r * r) - (d * d)));
+        }
+
+
+
+
+
         public override string ToString()
         {
             return $"({Points[0].X}, {Points[0].Y})-({Points[1].X}, {Points[1].Y})";
@@ -194,13 +301,13 @@ namespace Lab03___Rasterization
     {
         public Polygon(List<Point> points, uint thickness, Color color) : base(points, thickness, color) {}
 
-        public override void Draw(WriteableBitmap wbm)
+        public override void Draw(WriteableBitmap wbm, bool isAntiAliased)
         {
             for (var i = 0; i < Points.Count; i++)
             {
                 var endPoint = i < Points.Count - 1 ? Points[i + 1] : Points[0];
                 var edge = new Line(new List<Point> {Points[i], endPoint}, Thickness, Color);
-                edge.Draw(wbm);
+                edge.Draw(wbm, isAntiAliased);
             }
         }
 
@@ -217,7 +324,7 @@ namespace Lab03___Rasterization
         public int Radius => (int)Math.Round(DistanceBetween(Points[0], Points[1]));
         public Circle(List<Point> points, uint thickness, Color color) : base(points, thickness, color) {}
         
-        public override void Draw(WriteableBitmap wbm)
+        public override void Draw(WriteableBitmap wbm, bool isAntiAliased)
         {
             int x = 0;
             int y = Radius;
@@ -304,7 +411,7 @@ namespace Lab03___Rasterization
         public int Radius => (int)Math.Round(DistanceBetween(Points[0], Points[1]));
         public CircleArc(List<Point> points, uint thickness, Color color) : base(points, thickness, color) {}
         
-        public override void Draw(WriteableBitmap wbm)
+        public override void Draw(WriteableBitmap wbm, bool isAntiAliased)
         {
             int x = 0;
             int y = Radius;
