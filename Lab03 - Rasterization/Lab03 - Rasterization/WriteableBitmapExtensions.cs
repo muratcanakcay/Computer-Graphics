@@ -56,7 +56,7 @@ namespace Lab03___Rasterization
         }
 
         public static void ApplyBrush(this WriteableBitmap wbm, int x, int y, uint thickness, Color color)
-        {
+        { // TODO: revise the brush/thickness implementation here. let thickness=2 be a brush with 2 pixel width. Take the thickness from GUI and use it as Thickness = thicknessFromGUI*2 - 1 in shape
             for (var i = (int)-thickness+1; i < thickness; i++)
                 for (var j = (int)-thickness + 1; j < thickness; j++)
                 {

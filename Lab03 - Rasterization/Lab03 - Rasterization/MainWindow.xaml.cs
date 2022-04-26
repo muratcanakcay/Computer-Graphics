@@ -39,11 +39,14 @@ namespace Lab03___Rasterization
         private bool _isMovingShape;
         private bool _isModifyingShape;
         private bool _isAntiAliased;
+        private bool _isSuperSampled;
+        private bool _isZooming;
         private Point _initialCursorPosition;
         private Point _currentCursorPosition;
         private int _currentShapeIndex;
         private int _currentEdgeIndex;
         private int _currentPointIndex;
+        private int _currentZoomLevel = 1;
         private uint _currentShapeThickness = 1;
         private Color _currentShapeColor = Color.FromArgb(255, 0, 0, 0);
         private readonly List<Point> _currentPoints = new();
@@ -51,7 +54,7 @@ namespace Lab03___Rasterization
         private readonly WriteableBitmap _emptyWbm;
         private readonly WriteableBitmap _emptyWbm2;
         private WriteableBitmap _wbm;
-        private bool _isSuperSampled;
+        
 
 
         public MainWindow()
@@ -81,8 +84,6 @@ namespace Lab03___Rasterization
 
             emptyWbm2.Clear();
             CanvasImage.Source = emptyWbm;
-
-            TheCanvas.RenderTransform = new ScaleTransform(10, 10);
 
             return (emptyWbm, emptyWbm2, emptyWbm);
         }
@@ -272,6 +273,16 @@ namespace Lab03___Rasterization
                 RedrawCanvas();
             }
         }
+        private void TheCanvas_OnMouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            if (_isZooming)
+            {
+                if (e.Delta > 0) _currentZoomLevel++;
+                else if (_currentZoomLevel > 1) _currentZoomLevel--;
+
+                TheCanvas.RenderTransform = new ScaleTransform(_currentZoomLevel, _currentZoomLevel, _currentCursorPosition.X, _currentCursorPosition.Y);
+            }
+        }
 
         //---------- KEYBOARD EVENTS
         private void MainWindow_OnKeyDown(object sender, KeyEventArgs e)
@@ -283,8 +294,22 @@ namespace Lab03___Rasterization
                 ToggleAllOff();
                 RedrawCanvas();
             }
+
+            if (!_isZooming && e.Key == Key.LeftCtrl)
+            {
+                _isZooming = true;
+                Debug.WriteLine("Start zooming");
+            }
         }
-        
+        private void MainWindow_OnKeyUp(object sender, KeyEventArgs e)
+        {
+            if (_isZooming && e.Key == Key.LeftCtrl)
+            {
+                _isZooming = false;
+                Debug.WriteLine("Stop zooming");
+            }
+        }
+
         //---------- LINE METHODS
         private void LineButton_OnClick(object sender, RoutedEventArgs e)
         {

@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Drawing;
-using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Media.Imaging;
+using Color = System.Drawing.Color;
 using Point = System.Windows.Point;
 
 namespace Lab03___Rasterization
@@ -320,7 +318,7 @@ namespace Lab03___Rasterization
         }
     }
 
-    public class Circle : Shape //
+    public class Circle : Shape
     {
         public Point Center => Points[0];
         public int Radius => (int)Math.Round(DistanceBetween(Points[0], Points[1]));
@@ -330,12 +328,11 @@ namespace Lab03___Rasterization
         {
             SSAA = (uint)(isSuperSampled ? 2 : 1);
             
-            var x = 0;
-            var y = (int)(SSAA * Radius);
-            var d = (int)(1 - (SSAA * Radius));
+            var x  = 0;
+            var y  = (int)(SSAA * Radius);
+            var d  = (int)(1 - (SSAA * Radius));
             var xC = (int)(SSAA * Center.X);
             var yC = (int)(SSAA * Center.Y);
-            
 
             try
             {
