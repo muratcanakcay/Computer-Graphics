@@ -414,9 +414,14 @@ namespace Lab03___Rasterization
         
         public override void Draw(WriteableBitmap wbm, bool isAntiAliased = false, bool isSuperSampled = false, int ssaa = 2)
         {
-            int x = 0;
-            int y = Radius;
-            int d = 1-Radius;
+            var SSAA = isSuperSampled ? ssaa : 1;
+            
+            var x  = 0;
+            var y  = SSAA * Radius;
+            var d  = 1 - (SSAA * Radius);
+            var xC = (int)(SSAA * Center.X);
+            var yC = (int)(SSAA * Center.Y);
+
             double det = Determinant(Center, Points[1], Points[2]);
 
             try
@@ -425,39 +430,39 @@ namespace Lab03___Rasterization
 
                 if (det > 0)
                 {
-                    if (Determinant(Center, Points[1], new Point((int)Center.X + x, (int)Center.Y + y)) > 0 &&
-                        Determinant(Center, Points[2], new Point((int)Center.X + x, (int)Center.Y + y)) < 0)
-                        wbm.ApplyBrush((int)Center.X + x, (int)Center.Y + y, Thickness, Color);
+                    if (Determinant(Center, Points[1], new Point(Center.X + x, Center.Y + y)) > 0 &&
+                        Determinant(Center, Points[2], new Point(Center.X + x, Center.Y + y)) < 0)
+                        wbm.ApplyBrush(xC + x, yC + y, SSAA * Thickness, Color);
                     
-                    if (Determinant(Center, Points[1], new Point((int)Center.X + x, (int)Center.Y - y)) > 0 &&
-                        Determinant(Center, Points[2], new Point((int)Center.X + x, (int)Center.Y - y)) < 0)
-                        wbm.ApplyBrush((int)Center.X + x, (int)Center.Y - y, Thickness, Color);
+                    if (Determinant(Center, Points[1], new Point(Center.X + x, Center.Y - y)) > 0 &&
+                        Determinant(Center, Points[2], new Point(Center.X + x, Center.Y - y)) < 0)
+                        wbm.ApplyBrush(xC + x, yC - y, SSAA * Thickness, Color);
 
-                    if (Determinant(Center, Points[1], new Point((int)Center.X + y, (int)Center.Y + x)) > 0 &&
-                        Determinant(Center, Points[2], new Point((int)Center.X + y, (int)Center.Y + x)) < 0)
-                        wbm.ApplyBrush((int)Center.X + y, (int)Center.Y + x, Thickness, Color);
+                    if (Determinant(Center, Points[1], new Point(Center.X + y, Center.Y + x)) > 0 &&
+                        Determinant(Center, Points[2], new Point(Center.X + y, Center.Y + x)) < 0)
+                        wbm.ApplyBrush(xC + y, yC + x, SSAA * Thickness, Color);
 
-                    if (Determinant(Center, Points[1], new Point((int)Center.X - y, (int)Center.Y + x)) > 0 &&
-                        Determinant(Center, Points[2], new Point((int)Center.X - y, (int)Center.Y + x)) < 0)
-                        wbm.ApplyBrush((int)Center.X - y, (int)Center.Y + x, Thickness, Color);
+                    if (Determinant(Center, Points[1], new Point(Center.X - y, Center.Y + x)) > 0 &&
+                        Determinant(Center, Points[2], new Point(Center.X - y, Center.Y + x)) < 0)
+                        wbm.ApplyBrush(xC - y, yC + x, SSAA * Thickness, Color);
                 }
                 else
                 {
-                    if (Determinant(Center, Points[1], new Point((int)Center.X + x, (int)Center.Y + y)) > 0 ||
-                        Determinant(Center, Points[2], new Point((int)Center.X + x, (int)Center.Y + y)) < 0)
-                        wbm.ApplyBrush((int)Center.X + x, (int)Center.Y + y, Thickness, Color);
+                    if (Determinant(Center, Points[1], new Point(Center.X + x, Center.Y + y)) > 0 ||
+                        Determinant(Center, Points[2], new Point(Center.X + x, Center.Y + y)) < 0)
+                        wbm.ApplyBrush(xC + x, yC + y, SSAA * Thickness, Color);
                     
-                    if (Determinant(Center, Points[1], new Point((int)Center.X + x, (int)Center.Y - y)) > 0 ||
-                        Determinant(Center, Points[2], new Point((int)Center.X + x, (int)Center.Y - y)) < 0)
-                        wbm.ApplyBrush((int)Center.X + x, (int)Center.Y - y, Thickness, Color);
+                    if (Determinant(Center, Points[1], new Point(Center.X + x, Center.Y - y)) > 0 ||
+                        Determinant(Center, Points[2], new Point(Center.X + x, Center.Y - y)) < 0)
+                        wbm.ApplyBrush(xC + x, yC - y, SSAA * Thickness, Color);
 
-                    if (Determinant(Center, Points[1], new Point((int)Center.X + y, (int)Center.Y + x)) > 0 ||
-                        Determinant(Center, Points[2], new Point((int)Center.X + y, (int)Center.Y + x)) < 0)
-                        wbm.ApplyBrush((int)Center.X + y, (int)Center.Y + x, Thickness, Color);
+                    if (Determinant(Center, Points[1], new Point(Center.X + y, Center.Y + x)) > 0 ||
+                        Determinant(Center, Points[2], new Point(Center.X + y, Center.Y + x)) < 0)
+                        wbm.ApplyBrush(xC + y, yC + x, SSAA * Thickness, Color);
 
-                    if (Determinant(Center, Points[1], new Point((int)Center.X - y, (int)Center.Y + x)) > 0 ||
-                        Determinant(Center, Points[2], new Point((int)Center.X - y, (int)Center.Y + x)) < 0)
-                        wbm.ApplyBrush((int)Center.X - y, (int)Center.Y + x, Thickness, Color);
+                    if (Determinant(Center, Points[1], new Point(Center.X - y, Center.Y + x)) > 0 ||
+                        Determinant(Center, Points[2], new Point(Center.X - y, Center.Y + x)) < 0)
+                        wbm.ApplyBrush(xC - y, yC + x, SSAA * Thickness, Color);
                 }
 
                 while (y > x)
@@ -475,71 +480,71 @@ namespace Lab03___Rasterization
 
                     if (det > 0)
                     {
-                        if (Determinant(Center, Points[1], new Point((int)Center.X + x, (int)Center.Y + y)) > 0 &&
-                            Determinant(Center, Points[2], new Point((int)Center.X + x, (int)Center.Y + y)) < 0)
-                            wbm.ApplyBrush((int)Center.X + x, (int)Center.Y + y, Thickness, Color);
+                        if (Determinant(Center, Points[1], new Point(Center.X + x, Center.Y + y)) > 0 &&
+                            Determinant(Center, Points[2], new Point(Center.X + x, Center.Y + y)) < 0)
+                            wbm.ApplyBrush(xC + x, yC + y, SSAA * Thickness, Color);
                         
-                        if (Determinant(Center, Points[1], new Point((int)Center.X + x, (int)Center.Y - y)) > 0 &&
-                            Determinant(Center, Points[2], new Point((int)Center.X + x, (int)Center.Y - y)) < 0)
-                            wbm.ApplyBrush((int)Center.X + x, (int)Center.Y - y, Thickness, Color);
+                        if (Determinant(Center, Points[1], new Point(Center.X + x, Center.Y - y)) > 0 &&
+                            Determinant(Center, Points[2], new Point(Center.X + x, Center.Y - y)) < 0)
+                            wbm.ApplyBrush(xC + x, yC - y, SSAA * Thickness, Color);
 
-                        if (Determinant(Center, Points[1], new Point((int)Center.X - x, (int)Center.Y + y)) > 0 &&
-                            Determinant(Center, Points[2], new Point((int)Center.X - x, (int)Center.Y + y)) < 0)
-                            wbm.ApplyBrush((int)Center.X - x, (int)Center.Y + y, Thickness, Color);
+                        if (Determinant(Center, Points[1], new Point(Center.X - x, Center.Y + y)) > 0 &&
+                            Determinant(Center, Points[2], new Point(Center.X - x, Center.Y + y)) < 0)
+                            wbm.ApplyBrush(xC - x, yC + y, SSAA * Thickness, Color);
                         
-                        if (Determinant(Center, Points[1], new Point((int)Center.X - x, (int)Center.Y - y)) > 0 &&
-                            Determinant(Center, Points[2], new Point((int)Center.X - x, (int)Center.Y - y)) < 0)
-                            wbm.ApplyBrush((int)Center.X - x, (int)Center.Y - y, Thickness, Color);
+                        if (Determinant(Center, Points[1], new Point(Center.X - x, Center.Y - y)) > 0 &&
+                            Determinant(Center, Points[2], new Point(Center.X - x, Center.Y - y)) < 0)
+                            wbm.ApplyBrush(xC - x, yC - y, SSAA * Thickness, Color);
 
-                        if (Determinant(Center, Points[1], new Point((int)Center.X + y, (int)Center.Y + x)) > 0 &&
-                            Determinant(Center, Points[2], new Point((int)Center.X + y, (int)Center.Y + x)) < 0)
-                            wbm.ApplyBrush((int)Center.X + y, (int)Center.Y + x, Thickness, Color);
+                        if (Determinant(Center, Points[1], new Point(Center.X + y, Center.Y + x)) > 0 &&
+                            Determinant(Center, Points[2], new Point(Center.X + y, Center.Y + x)) < 0)
+                            wbm.ApplyBrush(xC + y, yC + x, SSAA * Thickness, Color);
 
-                        if (Determinant(Center, Points[1], new Point((int)Center.X - y, (int)Center.Y + x)) > 0 &&
-                            Determinant(Center, Points[2], new Point((int)Center.X - y, (int)Center.Y + x)) < 0)
-                            wbm.ApplyBrush((int)Center.X - y, (int)Center.Y + x, Thickness, Color);
+                        if (Determinant(Center, Points[1], new Point(Center.X - y, Center.Y + x)) > 0 &&
+                            Determinant(Center, Points[2], new Point(Center.X - y, Center.Y + x)) < 0)
+                            wbm.ApplyBrush(xC - y, yC + x, SSAA * Thickness, Color);
 
-                        if (Determinant(Center, Points[1], new Point((int)Center.X + y, (int)Center.Y - x)) > 0 &&
-                            Determinant(Center, Points[2], new Point((int)Center.X + y, (int)Center.Y - x)) < 0)
-                            wbm.ApplyBrush((int)Center.X + y, (int)Center.Y - x, Thickness, Color);
+                        if (Determinant(Center, Points[1], new Point(Center.X + y, Center.Y - x)) > 0 &&
+                            Determinant(Center, Points[2], new Point(Center.X + y, Center.Y - x)) < 0)
+                            wbm.ApplyBrush(xC + y, yC - x, SSAA * Thickness, Color);
 
-                        if (Determinant(Center, Points[1], new Point((int)Center.X - y, (int)Center.Y - x)) > 0 &&
-                            Determinant(Center, Points[2], new Point((int)Center.X - y, (int)Center.Y - x)) < 0)
-                            wbm.ApplyBrush((int)Center.X - y, (int)Center.Y - x, Thickness, Color);
+                        if (Determinant(Center, Points[1], new Point(Center.X - y, Center.Y - x)) > 0 &&
+                            Determinant(Center, Points[2], new Point(Center.X - y, Center.Y - x)) < 0)
+                            wbm.ApplyBrush(xC - y, yC - x, SSAA * Thickness, Color);
                     }
                     else
                     {
-                        if (Determinant(Center, Points[1], new Point((int)Center.X + x, (int)Center.Y + y)) > 0 ||
-                            Determinant(Center, Points[2], new Point((int)Center.X + x, (int)Center.Y + y)) < 0)
-                            wbm.ApplyBrush((int)Center.X + x, (int)Center.Y + y, Thickness, Color);
+                        if (Determinant(Center, Points[1], new Point(Center.X + x, Center.Y + y)) > 0 ||
+                            Determinant(Center, Points[2], new Point(Center.X + x, Center.Y + y)) < 0)
+                            wbm.ApplyBrush(xC + x, yC + y, SSAA * Thickness, Color);
                         
-                        if (Determinant(Center, Points[1], new Point((int)Center.X + x, (int)Center.Y - y)) > 0 ||
-                            Determinant(Center, Points[2], new Point((int)Center.X + x, (int)Center.Y - y)) < 0)
-                            wbm.ApplyBrush((int)Center.X + x, (int)Center.Y - y, Thickness, Color);
+                        if (Determinant(Center, Points[1], new Point(Center.X + x, Center.Y - y)) > 0 ||
+                            Determinant(Center, Points[2], new Point(Center.X + x, Center.Y - y)) < 0)
+                            wbm.ApplyBrush(xC + x, yC - y, SSAA * Thickness, Color);
 
-                        if (Determinant(Center, Points[1], new Point((int)Center.X - x, (int)Center.Y + y)) > 0 ||
-                            Determinant(Center, Points[2], new Point((int)Center.X - x, (int)Center.Y + y)) < 0)
-                            wbm.ApplyBrush((int)Center.X - x, (int)Center.Y + y, Thickness, Color);
+                        if (Determinant(Center, Points[1], new Point(Center.X - x, Center.Y + y)) > 0 ||
+                            Determinant(Center, Points[2], new Point(Center.X - x, Center.Y + y)) < 0)
+                            wbm.ApplyBrush(xC - x, yC + y, SSAA * Thickness, Color);
                         
-                        if (Determinant(Center, Points[1], new Point((int)Center.X - x, (int)Center.Y - y)) > 0 ||
-                            Determinant(Center, Points[2], new Point((int)Center.X - x, (int)Center.Y - y)) < 0)
-                            wbm.ApplyBrush((int)Center.X - x, (int)Center.Y - y, Thickness, Color);
+                        if (Determinant(Center, Points[1], new Point(Center.X - x, Center.Y - y)) > 0 ||
+                            Determinant(Center, Points[2], new Point(Center.X - x, Center.Y - y)) < 0)
+                            wbm.ApplyBrush(xC - x, yC - y, SSAA * Thickness, Color);
 
-                        if (Determinant(Center, Points[1], new Point((int)Center.X + y, (int)Center.Y + x)) > 0 ||
-                            Determinant(Center, Points[2], new Point((int)Center.X + y, (int)Center.Y + x)) < 0)
-                            wbm.ApplyBrush((int)Center.X + y, (int)Center.Y + x, Thickness, Color);
+                        if (Determinant(Center, Points[1], new Point(Center.X + y, Center.Y + x)) > 0 ||
+                            Determinant(Center, Points[2], new Point(Center.X + y, Center.Y + x)) < 0)
+                            wbm.ApplyBrush(xC + y, yC + x, SSAA * Thickness, Color);
 
-                        if (Determinant(Center, Points[1], new Point((int)Center.X - y, (int)Center.Y + x)) > 0 ||
-                            Determinant(Center, Points[2], new Point((int)Center.X - y, (int)Center.Y + x)) < 0)
-                            wbm.ApplyBrush((int)Center.X - y, (int)Center.Y + x, Thickness, Color);
+                        if (Determinant(Center, Points[1], new Point(Center.X - y, Center.Y + x)) > 0 ||
+                            Determinant(Center, Points[2], new Point(Center.X - y, Center.Y + x)) < 0)
+                            wbm.ApplyBrush(xC - y, yC + x,SSAA * Thickness, Color);
 
-                        if (Determinant(Center, Points[1], new Point((int)Center.X + y, (int)Center.Y - x)) > 0 ||
-                            Determinant(Center, Points[2], new Point((int)Center.X + y, (int)Center.Y - x)) < 0)
-                            wbm.ApplyBrush((int)Center.X + y, (int)Center.Y - x, Thickness, Color);
+                        if (Determinant(Center, Points[1], new Point(Center.X + y, Center.Y - x)) > 0 ||
+                            Determinant(Center, Points[2], new Point(Center.X + y, Center.Y - x)) < 0)
+                            wbm.ApplyBrush(xC + y, yC - x, SSAA * Thickness, Color);
 
-                        if (Determinant(Center, Points[1], new Point((int)Center.X - y, (int)Center.Y - x)) > 0 ||
-                            Determinant(Center, Points[2], new Point((int)Center.X - y, (int)Center.Y - x)) < 0)
-                            wbm.ApplyBrush((int)Center.X - y, (int)Center.Y - x, Thickness, Color);
+                        if (Determinant(Center, Points[1], new Point(Center.X - y, Center.Y - x)) > 0 ||
+                            Determinant(Center, Points[2], new Point(Center.X - y, Center.Y - x)) < 0)
+                            wbm.ApplyBrush(xC - y, yC - x, SSAA * Thickness, Color);
                     }
                 }
             }
