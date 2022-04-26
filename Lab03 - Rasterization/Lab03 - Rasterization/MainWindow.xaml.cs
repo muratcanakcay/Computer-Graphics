@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -52,7 +51,7 @@ namespace Lab03___Rasterization
         private readonly List<Point> _currentPoints = new();
         private readonly List<IDrawable> _allShapes = new();
         private WriteableBitmap? _emptyWbm;
-        private WriteableBitmap? _emptyWbmSSAA;
+        private WriteableBitmap? _emptyWbmSsaa;
         private WriteableBitmap _wbm;
         
 
@@ -67,10 +66,10 @@ namespace Lab03___Rasterization
         }
 
         //---------- HELPER FUNCTIONS
-        private void InitializeWbm(out WriteableBitmap wbm, int SSAA = 1)
+        private void InitializeWbm(out WriteableBitmap wbm, int ssaa = 1)
         {
-            wbm = new WriteableBitmap((int)TheCanvas.Width * SSAA,
-                                    (int)TheCanvas.Height * SSAA, 
+            wbm = new WriteableBitmap((int)TheCanvas.Width * ssaa,
+                                    (int)TheCanvas.Height * ssaa, 
                                     96, 
                                     96, 
                                     PixelFormats.Bgr32, 
@@ -82,10 +81,10 @@ namespace Lab03___Rasterization
         {
             if (_isSuperSampled)
             {
-                if (_emptyWbmSSAA == null || _emptyWbmSSAA.PixelHeight != (int)TheCanvas.Height * SSAA)
-                    InitializeWbm(out _emptyWbmSSAA, SSAA);
+                if (_emptyWbmSsaa == null || _emptyWbmSsaa.PixelHeight != (int)TheCanvas.Height * SSAA)
+                    InitializeWbm(out _emptyWbmSsaa, SSAA);
                 
-                _wbm = _emptyWbmSSAA.Clone();
+                _wbm = _emptyWbmSsaa.Clone();
                 DrawAllShapes(_wbm);
                 _wbm = _wbm.DownSample(SSAA);
                 CanvasImage.Source = _wbm;
@@ -440,7 +439,7 @@ namespace Lab03___Rasterization
             }
         }
 
-        //---------- THICKNESS, COLOR, ANTIALIASING
+        //---------- THICKNESS, COLOR, ANTI-ALIASING
         private void ShapeThickness_OnPreviewTextInput(object sender, TextCompositionEventArgs e)
         {
             if (int.TryParse(e.Text, out var inputNum) && inputNum is >= 1 and <= 8)
@@ -492,7 +491,7 @@ namespace Lab03___Rasterization
             RedrawCanvas();
             
             // free the memory in wbm
-            if (!_isSuperSampled) _emptyWbmSSAA = null;
+            if (!_isSuperSampled) _emptyWbmSsaa = null;
             else _emptyWbm = null;
         }
         private void ToggleIsSuperSampled()

@@ -194,71 +194,104 @@ namespace Lab03___Rasterization
 
         private void DrawAntiAliased(WriteableBitmap wbm)
         {
-            //initial values in Bresenham;s algorithm
-            var dx = (int)(Points[1].X - Points[0].X);
-            var dy = (int)(Points[1].Y - Points[0].Y);
-            var dE = 2 * dy;
-            var dSE = 2 * (dy - dx);
-            var d = 2*dy - dx;
-            var two_v_dx = 0; // numerator, v=0 for the first pixel
-            var invDenom = 1 / (2 * Math.Sqrt(dx*dx + dy*dy)); //inverted denominator
-            var two_dx_invDenom = 2 * dx * invDenom;
+            var x0 = Points[0].X;
+            var y0 = Points[0].Y;
+            var x1 = Points[1].X;
+            var y1 = Points[1].Y;
+
             
-            var x = (int)Points[0].X;
-            var y = (int)Points[0].Y;
-
-            IntensifyPixel(wbm, x, y, 0);
-            for (var i = 1; IntensifyPixel(wbm, x, y+i, i*two_dx_invDenom); ++i) {}
-            for (var i = 1; IntensifyPixel(wbm, x, y-i, i*two_dx_invDenom); ++i) {}
-
-            if (dx > 0 )
+            
+            if (x1 < x0)
             {
-                while (x < Points[1].X)
+                x0 = x1;
+                y0 = y1;
+                x1 = Points[0].X;
+                y1 = Points[0].Y;
+            }
+            
+            if (true) // (y1 > y0)
+            {
+                var dx = (int)(x1 - x0);
+                var dy = (int)(y1 - y0);
+                var dE = 2 * dy;
+                var dXE = y1 > y0 ? 2 * (dy - dx) : 2 * (dy + dx);
+                var twoVDx = 0; 
+                var d = y1 > y0 ? 2*dy - dx : 2*dy + dx;
+                
+                var invDenom = 1 / (2 * Math.Sqrt(dx*dx + dy*dy));
+                
+                var x = (int)x0;
+                var y = (int)y0;
+
+                IntensifyPixel(wbm, x, y, 0);
+                for (var i = 1; IntensifyPixel(wbm, x, y+i, 2 * i * dx * invDenom); ++i) {}
+                for (var i = 1; IntensifyPixel(wbm, x, y-i, 2 * i * dx * invDenom); ++i) {}
+
+                while (x < x1)
                 {
                     ++x;
 
-                    if (d < 0) // move to E
+                    if (d < 0) // move to E or SE
                     {
-                        two_v_dx = d + dx;
-                        d += dE;
+                        twoVDx = d + dx;
+                        d += y1 > y0 ? dE : dXE;
+                        if (y1 < y0) --y;
                     }
-                    else // move to SE
+                    else // move to E or NE
                     {
-                        two_v_dx = d - dx;
-                        d += dSE;
-                        ++y;
+                        twoVDx = d - dx;
+                        d += y1 > y0 ? dXE : dE;
+                        if (y1 > y0) ++y;
                     }
-
-                    // Now set the chosen pixel and its neighbors
-                    IntensifyPixel(wbm, x, y, two_v_dx * invDenom);
-                    for (var i = 1; IntensifyPixel(wbm, x, y + i, i * two_dx_invDenom - two_v_dx * invDenom); ++i);
-                    for (var i = 1; IntensifyPixel(wbm, x, y - i, i * two_dx_invDenom + two_v_dx * invDenom); ++i);
+                    
+                    IntensifyPixel(wbm, x, y, twoVDx * invDenom);
+                    for (var i = 1; IntensifyPixel(wbm, x, y + i, ((2 * i * dx)  - twoVDx) * invDenom); ++i);
+                    for (var i = 1; IntensifyPixel(wbm, x, y - i, ((2 * i * dx)  + twoVDx) * invDenom); ++i);
                 }
             }
-            //else if (dx < 0 && dy > 0)
+            //else if (y1 < y0)
             //{
-            //    while (x > Points[1].X)
-            //    {
-            //        --x;
+            //    //initial values in Bresenham;s algorithm
+            //    var dx = (int)(x1 - x0);
+            //    var dy = (int)(y1 - y0);
+            //    var dE = 2 * dy;
+            //    var dSE = 2 * (dy + dx);
 
-            //        if (d < 0) // move to E
+            //    var d = 2*dy + dx;   
+                
+            //    var invDenom = 1 / (2 * Math.Sqrt(dx*dx + dy*dy)); // inverted denominator
+
+            //    var x = (int)x0;
+            //    var y = (int)y0;
+
+            //    IntensifyPixel(wbm, x, y, 0);
+            //    for (var i = 1; IntensifyPixel(wbm, x, y+i, 2 * i * dx * invDenom); ++i) {}
+            //    for (var i = 1; IntensifyPixel(wbm, x, y-i, 2 * i * dx * invDenom); ++i) {}
+
+            //    while (x < x1)
+            //    {
+            //        ++x;
+            //        var twoVDx = 0; // numerator, v=0 for the first pixel
+
+            //        if (d > 0) // move to E
             //        {
-            //            two_v_dx = d + dx;
+            //            twoVDx = d - dx;   // TODO: THE PROBLEM WAS HERE when I swapped the twoVDx'es it worked. check the math to see why this happened
             //            d += dE;
             //        }
-            //        else // move to NE
+            //        else // move to SE
             //        {
-            //            two_v_dx = d - dx;
-            //            d += dNE;
-            //            ++y;
+            //            twoVDx = d + dx;
+            //            d += dSE;
+            //            y--;
             //        }
-
+                    
             //        // Now set the chosen pixel and its neighbors
-            //        IntensifyPixel(wbm, x, y, two_v_dx * invDenom);
-            //        for (var i = 1; IntensifyPixel(wbm, x, y + i, i * two_dx_invDenom - two_v_dx * invDenom); ++i);
-            //        for (var i = 1; IntensifyPixel(wbm, x, y - i, i * two_dx_invDenom + two_v_dx * invDenom); ++i);
+            //        IntensifyPixel(wbm, x, y, twoVDx * invDenom);
+            //        for (var i = 1; IntensifyPixel(wbm, x, y + i, ((2 * i * dx) - twoVDx) * invDenom); ++i);
+            //        for (var i = 1; IntensifyPixel(wbm, x, y - i, ((2 * i * dx) + twoVDx) * invDenom); ++i);
             //    }
             //}
+            
 
         }
 
