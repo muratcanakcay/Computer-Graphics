@@ -79,10 +79,10 @@ namespace Lab03___Rasterization
             }
         }
 
-        public static WriteableBitmap DownSample(this WriteableBitmap wbm, int scale) // TODO: allow for more than 2x multipsampling
+        public static WriteableBitmap DownSample(this WriteableBitmap wbm, int SSAA)
         {
-            var downSampledWbm = new WriteableBitmap((int)wbm.PixelWidth / scale,
-                                                    (int)wbm.PixelHeight / scale, 
+            var downSampledWbm = new WriteableBitmap((int)wbm.PixelWidth / SSAA,
+                                                    (int)wbm.PixelHeight / SSAA, 
                                                     96, 
                                                     96, 
                                                     PixelFormats.Bgr32, 
@@ -94,21 +94,33 @@ namespace Lab03___Rasterization
             {
                 wbm.Lock();
                 downSampledWbm.Lock();
-                
+
                 for (var x = 0; x < downSampledWbm.Width; x++)
+                {
                     for (var y = 0; y < downSampledWbm.Height; y++)
                     {
-                        var col1 = wbm.GetPixelColor(2*x+0, 2*y+0);
-                        var col2 = wbm.GetPixelColor(2*x+1, 2*y+0);
-                        var col3 = wbm.GetPixelColor(2*x+0, 2*y+1);
-                        var col4 = wbm.GetPixelColor(2*x+1, 2*y+1);
+                        var sumR = 0;
+                        var sumG = 0;
+                        var sumB = 0;
 
-                        var avgR = (col1.R + col2.R + col3.R + col4.R) / 4;
-                        var avgG = (col1.R + col2.R + col3.R + col4.R) / 4;
-                        var avgB = (col1.R + col2.R + col3.R + col4.R) / 4;
+                        for (var i = 0; i < SSAA; i++)
+                        {
+                            for (var j = 0; j < SSAA; j++)
+                            {
+                                var color = wbm.GetPixelColor(SSAA * x + i, SSAA * y + j);
+                                sumR += color.R;
+                                sumG += color.G;
+                                sumB += color.B;
+                            }
+                        }
+
+                        var avgR = sumR / (SSAA * SSAA);
+                        var avgG = sumG / (SSAA * SSAA);
+                        var avgB = sumB / (SSAA * SSAA);
 
                         downSampledWbm.SetPixelColor(x, y, Color.FromArgb(255, avgR, avgG, avgB));
                     }
+                }
             }
             finally
             {

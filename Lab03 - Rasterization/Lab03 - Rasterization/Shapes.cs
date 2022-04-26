@@ -406,7 +406,7 @@ namespace Lab03___Rasterization
         }
     }
 
-    public class CircleArc : Shape // TODO: correctly implement Edge and Vertex movement and implement supersampling
+    public class CircleArc : Shape // TODO: correctly implement Edge and Vertex movement
     {
         public Point Center => Points[0];
         public int Radius => (int)Math.Round(DistanceBetween(Points[0], Points[1]));

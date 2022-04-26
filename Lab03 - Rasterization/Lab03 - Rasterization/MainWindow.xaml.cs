@@ -41,6 +41,7 @@ namespace Lab03___Rasterization
         private bool _isZooming;
         private Point _initialCursorPosition;
         private Point _currentCursorPosition;
+        private int SSAA = 8;
         private int _currentShapeIndex;
         private int _currentEdgeIndex;
         private int _currentPointIndex;
@@ -50,7 +51,7 @@ namespace Lab03___Rasterization
         private readonly List<Point> _currentPoints = new();
         private readonly List<IDrawable> _allShapes = new();
         private readonly WriteableBitmap _emptyWbm;
-        private readonly WriteableBitmap _emptyWbm2;
+        private WriteableBitmap _emptyWbmSSAA;
         private WriteableBitmap _wbm;
         
 
@@ -58,7 +59,7 @@ namespace Lab03___Rasterization
         public MainWindow()
         {
             InitializeComponent();
-            (_emptyWbm, _emptyWbm2, _wbm) = InitializeCanvas();
+            (_emptyWbm, _emptyWbmSSAA, _wbm) = InitializeCanvas();
         }
 
         //---------- HELPER FUNCTIONS
@@ -73,25 +74,35 @@ namespace Lab03___Rasterization
 
             emptyWbm.Clear();
 
-            var emptyWbm2 = new WriteableBitmap((int)TheCanvas.Width * 2,
-                                                (int)TheCanvas.Height * 2, 
-                                                96, 
-                                                96, 
-                                                PixelFormats.Bgr32, 
-                                                null);
+            var emptyWbmSSAA = new WriteableBitmap((int)TheCanvas.Width * SSAA,
+                                                    (int)TheCanvas.Height * SSAA, 
+                                                    96, 
+                                                    96, 
+                                                    PixelFormats.Bgr32, 
+                                                    null);
 
-            emptyWbm2.Clear();
+            emptyWbmSSAA.Clear();
             CanvasImage.Source = emptyWbm;
 
-            return (emptyWbm, emptyWbm2, emptyWbm);
+            return (emptyWbm, emptyWbmSSAA, emptyWbm);
         }
         private void RedrawCanvas()
         {
             if (_isSuperSampled)
             {
-                _wbm = _emptyWbm2.Clone();
+                if (_emptyWbmSSAA.PixelHeight != (int)TheCanvas.Height * SSAA)
+                {
+                    _emptyWbmSSAA = new WriteableBitmap((int)TheCanvas.Width * SSAA,
+                                                            (int)TheCanvas.Height * SSAA, 
+                                                            96, 
+                                                            96, 
+                                                            PixelFormats.Bgr32, 
+                                                            null);
+                }
+                
+                _wbm = _emptyWbmSSAA.Clone();
                 DrawAllShapes(_wbm);
-                var downSampledWbm = _wbm.DownSample(2);
+                var downSampledWbm = _wbm.DownSample(SSAA);
                 CanvasImage.Source = downSampledWbm;
             }
             else
@@ -114,7 +125,7 @@ namespace Lab03___Rasterization
         private void DrawAllShapes(WriteableBitmap wbm)
         {
             foreach (var shape in _allShapes)
-                shape.Draw(wbm, _isAntiAliased, _isSuperSampled);
+                shape.Draw(wbm, _isAntiAliased, _isSuperSampled, SSAA);
         }
         private static int DistanceBetween(Point p1, Point p2)
         {
