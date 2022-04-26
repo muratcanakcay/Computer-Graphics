@@ -482,6 +482,8 @@ namespace Lab03___Rasterization
         }
         private void ToggleIsAntiAliased()
         {
+            if (_isSuperSampled) ToggleIsSuperSampled();
+
             _isAntiAliased = !_isAntiAliased;
             AntiAliasButton.Background = _isAntiAliased ? Brushes.LightSalmon : Brushes.LightCyan;
         }
@@ -496,6 +498,8 @@ namespace Lab03___Rasterization
         }
         private void ToggleIsSuperSampled()
         {
+            if (_isAntiAliased) ToggleIsAntiAliased();
+            
             _isSuperSampled = !_isSuperSampled;
             SuperSampleButton.Background = _isSuperSampled ? Brushes.LightSalmon : Brushes.LightCyan;
         }

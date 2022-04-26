@@ -115,7 +115,7 @@ namespace Lab03___Rasterization
         }
     }
 
-    public class Line : Shape // TODO: add supersampling to antialising
+    public class Line : Shape 
     {
         public Line(List<Point> points, int thickness, Color color) : base(points, thickness, color) {}
 
@@ -411,7 +411,7 @@ namespace Lab03___Rasterization
             {
                 var endPoint = i < Points.Count - 1 ? Points[i + 1] : Points[0];
                 var edge = new Line(new List<Point> {Points[i], endPoint}, Thickness, Color);
-                edge.Draw(wbm, isAntiAliased, isSuperSampled);
+                edge.Draw(wbm, isAntiAliased, isSuperSampled, ssaa);
             }
         }
 
