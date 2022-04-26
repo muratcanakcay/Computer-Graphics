@@ -39,12 +39,12 @@ namespace Lab03___Rasterization
         private bool _isAntiAliased;
         private bool _isSuperSampled;
         private bool _isZooming;
-        private Point _initialCursorPosition;
+        private Point _previousCursorPosition;
         private Point _currentCursorPosition;
         private int SSAA = 2; // TODO: make this modifiable from GUI
         private int _currentShapeIndex;
         private int _currentEdgeIndex;
-        private int _currentPointIndex;
+        private int _currentVertexIndex;
         private int _currentZoomLevel = 1;
         private int _currentShapeThickness = 1;
         private Color _currentShapeColor = Color.FromArgb(255, 0, 0, 0);
@@ -159,16 +159,16 @@ namespace Lab03___Rasterization
                 // for each shape, check if a vertex or edge is clicked
                 foreach (var shape in _allShapes)
                 {
-                    _currentPointIndex = -1;
+                    _currentVertexIndex = -1;
                     _currentEdgeIndex = -1;
                     _currentShapeIndex = _allShapes.IndexOf(shape);
                     
                     // check for vertex
-                    _currentPointIndex = shape.GetVertexIndexOf(_currentCursorPosition);
-                    if (_currentPointIndex > -1)
+                    _currentVertexIndex = shape.GetVertexIndexOf(_currentCursorPosition);
+                    if (_currentVertexIndex > -1)
                     {
                         Debug.WriteLine("VERTEX!");
-                        _initialCursorPosition = _currentCursorPosition;
+                        _previousCursorPosition = _currentCursorPosition;
                         _isMovingVertex = true;
                         return;
                     }
@@ -178,7 +178,7 @@ namespace Lab03___Rasterization
                     if (_currentEdgeIndex > -1)
                     {
                         Debug.WriteLine($"EDGE! {_currentEdgeIndex}");
-                        _initialCursorPosition = _currentCursorPosition;
+                        _previousCursorPosition = _currentCursorPosition;
                         _isMovingEdge= true;
                         return;
                     }
@@ -247,24 +247,24 @@ namespace Lab03___Rasterization
 
             if (_isMovingVertex)
             {
-                _allShapes[_currentShapeIndex].MoveVertex(_currentPointIndex, Point.Subtract(_currentCursorPosition, _initialCursorPosition));
-                _initialCursorPosition = _currentCursorPosition;
+                _allShapes[_currentShapeIndex].MoveVertex(_currentVertexIndex, Point.Subtract(_currentCursorPosition, _previousCursorPosition));
+                _previousCursorPosition = _currentCursorPosition;
 
                 RedrawCanvas();
             }
 
             if (_isMovingEdge)
             {
-                _allShapes[_currentShapeIndex].MoveEdge(_currentEdgeIndex, Point.Subtract(_currentCursorPosition, _initialCursorPosition));
-                _initialCursorPosition = _currentCursorPosition;
+                _allShapes[_currentShapeIndex].MoveEdge(_currentEdgeIndex, Point.Subtract(_currentCursorPosition, _previousCursorPosition));
+                _previousCursorPosition = _currentCursorPosition;
 
                 RedrawCanvas();
             }
 
             if (_isMovingShape)
             {
-                _allShapes[_currentShapeIndex].MoveShape(Point.Subtract(_currentCursorPosition, _initialCursorPosition));
-                _initialCursorPosition = _currentCursorPosition;
+                _allShapes[_currentShapeIndex].MoveShape(Point.Subtract(_currentCursorPosition, _previousCursorPosition));
+                _previousCursorPosition = _currentCursorPosition;
 
                 RedrawCanvas();
             }
