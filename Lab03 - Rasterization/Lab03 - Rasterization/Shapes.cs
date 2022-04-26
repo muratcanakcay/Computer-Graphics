@@ -198,13 +198,12 @@ namespace Lab03___Rasterization
             var dx = (int)(Points[1].X - Points[0].X);
             var dy = (int)(Points[1].Y - Points[0].Y);
             var dE = 2 * dy;
-            var dNE = 2 * (dy - dx);
+            var dSE = 2 * (dy - dx);
             var d = 2*dy - dx;
-            var two_v_dx = 0; //numerator, v=0 for the first pixel
+            var two_v_dx = 0; // numerator, v=0 for the first pixel
             var invDenom = 1 / (2 * Math.Sqrt(dx*dx + dy*dy)); //inverted denominator
             var two_dx_invDenom = 2 * dx * invDenom;
             
-            //precomputed constant
             var x = (int)Points[0].X;
             var y = (int)Points[0].Y;
 
@@ -212,33 +211,62 @@ namespace Lab03___Rasterization
             for (var i = 1; IntensifyPixel(wbm, x, y+i, i*two_dx_invDenom); ++i) {}
             for (var i = 1; IntensifyPixel(wbm, x, y-i, i*two_dx_invDenom); ++i) {}
 
-            while (x < Points[1].X)
+            if (dx > 0 )
             {
-                ++x;
-                if ( d < 0 ) // move to E
+                while (x < Points[1].X)
                 {
-                    two_v_dx = d + dx;
-                    d += dE;
+                    ++x;
+
+                    if (d < 0) // move to E
+                    {
+                        two_v_dx = d + dx;
+                        d += dE;
+                    }
+                    else // move to SE
+                    {
+                        two_v_dx = d - dx;
+                        d += dSE;
+                        ++y;
+                    }
+
+                    // Now set the chosen pixel and its neighbors
+                    IntensifyPixel(wbm, x, y, two_v_dx * invDenom);
+                    for (var i = 1; IntensifyPixel(wbm, x, y + i, i * two_dx_invDenom - two_v_dx * invDenom); ++i);
+                    for (var i = 1; IntensifyPixel(wbm, x, y - i, i * two_dx_invDenom + two_v_dx * invDenom); ++i);
                 }
-                else
-                // move to NE
-                {
-                    two_v_dx = d - dx;
-                    d += dNE;
-                    ++y;
-                }
-                // Now set the chosen pixel and its neighbors
-                IntensifyPixel(wbm, x, y, two_v_dx*invDenom);
-                for (var i=1; IntensifyPixel(wbm, x, y+i,  i*two_dx_invDenom - two_v_dx*invDenom); ++i) {}
-                for (var i=1; IntensifyPixel(wbm, x, y-i, i*two_dx_invDenom + two_v_dx*invDenom); ++i) {}
             }
-            
+            //else if (dx < 0 && dy > 0)
+            //{
+            //    while (x > Points[1].X)
+            //    {
+            //        --x;
+
+            //        if (d < 0) // move to E
+            //        {
+            //            two_v_dx = d + dx;
+            //            d += dE;
+            //        }
+            //        else // move to NE
+            //        {
+            //            two_v_dx = d - dx;
+            //            d += dNE;
+            //            ++y;
+            //        }
+
+            //        // Now set the chosen pixel and its neighbors
+            //        IntensifyPixel(wbm, x, y, two_v_dx * invDenom);
+            //        for (var i = 1; IntensifyPixel(wbm, x, y + i, i * two_dx_invDenom - two_v_dx * invDenom); ++i);
+            //        for (var i = 1; IntensifyPixel(wbm, x, y - i, i * two_dx_invDenom + two_v_dx * invDenom); ++i);
+            //    }
+            //}
+
         }
 
         private bool IntensifyPixel(WriteableBitmap wbm, int x, int y, double distance)
         {
             const double r = 0.5f;
             var cov = Coverage(distance, r);
+
             if (cov > 0)
             {
                 try
@@ -259,7 +287,8 @@ namespace Lab03___Rasterization
 
         private double Coverage(double D, double r)
         {
-            var w = Thickness - 0.5d;
+            //var w = Thickness - 0.5d;
+            double w = (2 * Thickness - 1) / 2f;
 
             if (w >= r)
             {
