@@ -198,34 +198,33 @@ namespace Lab03___Rasterization
             var y0 = Points[0].Y;
             var x1 = Points[1].X;
             var y1 = Points[1].Y;
+            var dx = (int)(x1 - x0);
+            var dy = (int)(y1 - y0);
+            var invDenom = 1 / (2 * Math.Sqrt(dx * dx + dy * dy));
 
-            
-            
-            if (x1 < x0)
+            if (dx != 0 && Math.Abs(dy / dx) < 1)
             {
-                x0 = x1;
-                y0 = y1;
-                x1 = Points[0].X;
-                y1 = Points[0].Y;
-            }
-            
-            if (true) // (y1 > y0)
-            {
-                var dx = (int)(x1 - x0);
-                var dy = (int)(y1 - y0);
+                if (x1 < x0) // swap initial and endpoint for drawing
+                {
+                    x0 = x1;
+                    y0 = y1;
+                    x1 = Points[0].X;
+                    y1 = Points[0].Y;
+                    dx *= -1;
+                    dy *= -1;
+                }
+
                 var dE = 2 * dy;
                 var dXE = y1 > y0 ? 2 * (dy - dx) : 2 * (dy + dx);
-                var twoVDx = 0; 
-                var d = y1 > y0 ? 2*dy - dx : 2*dy + dx;
-                
-                var invDenom = 1 / (2 * Math.Sqrt(dx*dx + dy*dy));
-                
+                var twoVDx = 0;
+                var d = y1 > y0 ? 2 * dy - dx : 2 * dy + dx;
+
                 var x = (int)x0;
                 var y = (int)y0;
 
                 IntensifyPixel(wbm, x, y, 0);
-                for (var i = 1; IntensifyPixel(wbm, x, y+i, 2 * i * dx * invDenom); ++i) {}
-                for (var i = 1; IntensifyPixel(wbm, x, y-i, 2 * i * dx * invDenom); ++i) {}
+                for (var i = 1; IntensifyPixel(wbm, x, y + i, 2 * i * dx * invDenom); ++i);
+                for (var i = 1; IntensifyPixel(wbm, x, y - i, 2 * i * dx * invDenom); ++i);
 
                 while (x < x1)
                 {
@@ -243,13 +242,61 @@ namespace Lab03___Rasterization
                         d += y1 > y0 ? dXE : dE;
                         if (y1 > y0) ++y;
                     }
-                    
+
                     IntensifyPixel(wbm, x, y, twoVDx * invDenom);
-                    for (var i = 1; IntensifyPixel(wbm, x, y + i, ((2 * i * dx)  - twoVDx) * invDenom); ++i);
-                    for (var i = 1; IntensifyPixel(wbm, x, y - i, ((2 * i * dx)  + twoVDx) * invDenom); ++i);
+                    for (var i = 1; IntensifyPixel(wbm, x, y + i, ((2 * i * dx) - twoVDx) * invDenom); ++i);
+                    for (var i = 1; IntensifyPixel(wbm, x, y - i, ((2 * i * dx) + twoVDx) * invDenom); ++i);
                 }
             }
-            //else if (y1 < y0)
+            else if (dy != 0)
+            {
+                if (y1 < y0)  // swap initial and endpoint for drawing
+                {
+                    y0 = y1;
+                    x0 = x1;
+                    y1 = Points[0].Y;
+                    x1 = Points[0].X;
+                    dy *= -1;
+                    dx *= -1;
+                }
+
+                var dE = 2 * dx;
+                var dXE = x1 > x0 ? 2 * (dx - dy) : 2 * (dx + dy);
+                var twoVDx = 0;
+                var d = x1 > x0 ? 2 * dx - dy : 2 * dx + dy;
+
+                var y = (int)y0;
+                var x = (int)x0;
+
+                IntensifyPixel(wbm, x, y, 0);
+                for (var i = 1; IntensifyPixel(wbm, x + i, y, 2 * i * dy * invDenom); ++i);
+                for (var i = 1; IntensifyPixel(wbm, x - i, y, 2 * i * dy * invDenom); ++i);
+
+                while (y < y1)
+                {
+                    ++y;
+
+                    if (d < 0) // move to E or SE
+                    {
+                        twoVDx = d + dy;
+                        d += x1 > x0 ? dE : dXE;
+                        if (x1 < x0) --x;
+                    }
+                    else // move to E or NE
+                    {
+                        twoVDx = d - dy;
+                        d += x1 > x0 ? dXE : dE;
+                        if (x1 > x0) ++x;
+                    }
+
+                    IntensifyPixel(wbm, x, y, twoVDx * invDenom);
+                    for (var i = 1; IntensifyPixel(wbm, x + i, y, ((2 * i * dy) - twoVDx) * invDenom); ++i);
+                    for (var i = 1; IntensifyPixel(wbm, x - i, y, ((2 * i * dy) + twoVDx) * invDenom); ++i);
+                }
+
+            }
+
+        //else if (y1 < y0)
             //{
             //    //initial values in Bresenham;s algorithm
             //    var dx = (int)(x1 - x0);
