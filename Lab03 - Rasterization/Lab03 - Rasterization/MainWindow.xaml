@@ -34,8 +34,8 @@
                 <MenuItem Header="_Save Shapes" Click="OnClick_SaveShapes" InputGestureText="Alt+S"></MenuItem>
             </MenuItem>
 
-            <MenuItem HorizontalAlignment="Left" Header="H_elp" Click="DummyCallBack" InputGestureText="Alt+H"></MenuItem>
-            <MenuItem HorizontalAlignment="Left" Header="E_xit" Click="DummyCallBack" InputGestureText="Alt+X"></MenuItem>
+            <MenuItem HorizontalAlignment="Left" Header="H_elp" Click="OnClick_Help" InputGestureText="Alt+H"></MenuItem>
+            <MenuItem HorizontalAlignment="Left" Header="E_xit" Click="OnClick_Exit" InputGestureText="Alt+X"></MenuItem>
 
         </Menu>
         

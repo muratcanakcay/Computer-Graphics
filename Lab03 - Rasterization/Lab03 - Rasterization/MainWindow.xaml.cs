@@ -13,8 +13,6 @@ using Brushes = System.Windows.Media.Brushes;
 using Color = System.Drawing.Color;
 using Point = System.Windows.Point;
 
-// TODO check for out of bounds of canvas! maybe set canvas size to match panel size?
-
 namespace Lab03___Rasterization
 {
     /// <summary>
@@ -579,13 +577,18 @@ namespace Lab03___Rasterization
                 MessageBox.Show("Error in file!", "Error!");
             }
         }
+        private void OnClick_Exit(object sender, RoutedEventArgs e)
+        {
+            if (MessageBox.Show("Are you sure you want to leave?", "Exit", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+                Close();
+        }
+        private void OnClick_Help(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show("Click and hold on an edge or a vertex to move it.\nDouble-click and hold on a shape to move the entire shape\n" +
+                            "\nDouble-click on a shape to select it. If a shape is selected you can then change its color/thickness or delete it with del key\n" +
+                            "\nCtrl+Mouse Wheel to zoom in/out.", "Help", MessageBoxButton.OK);
+        }
         
         //-----------
-        private void DummyCallBack(object sender, RoutedEventArgs e)
-        { }
-
-
-        
     }
-
 }
