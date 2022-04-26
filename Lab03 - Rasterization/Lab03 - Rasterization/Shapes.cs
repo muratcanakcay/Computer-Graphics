@@ -216,7 +216,6 @@ namespace Lab03___Rasterization
 
                 var dE = 2 * dy;
                 var dXE = y1 > y0 ? 2 * (dy - dx) : 2 * (dy + dx);
-                var twoVDx = 0;
                 var d = y1 > y0 ? 2 * dy - dx : 2 * dy + dx;
 
                 var x = (int)x0;
@@ -229,8 +228,9 @@ namespace Lab03___Rasterization
                 while (x < x1)
                 {
                     ++x;
+                    var twoVDx = 0;
 
-                    if (d < 0) // move to E or SE
+                    if (d <= 0) // move to E or SE
                     {
                         twoVDx = d + dx;
                         d += y1 > y0 ? dE : dXE;
@@ -262,7 +262,6 @@ namespace Lab03___Rasterization
 
                 var dE = 2 * dx;
                 var dXE = x1 > x0 ? 2 * (dx - dy) : 2 * (dx + dy);
-                var twoVDx = 0;
                 var d = x1 > x0 ? 2 * dx - dy : 2 * dx + dy;
 
                 var y = (int)y0;
@@ -275,28 +274,29 @@ namespace Lab03___Rasterization
                 while (y < y1)
                 {
                     ++y;
+                    int twoVDy;
 
-                    if (d < 0) // move to E or SE
+                    if (d < 0) // move to N or NW
                     {
-                        twoVDx = d + dy;
+                        twoVDy = d + dy;
                         d += x1 > x0 ? dE : dXE;
                         if (x1 < x0) --x;
                     }
-                    else // move to E or NE
+                    else // move to N or NE
                     {
-                        twoVDx = d - dy;
+                        twoVDy = d - dy;
                         d += x1 > x0 ? dXE : dE;
                         if (x1 > x0) ++x;
                     }
 
-                    IntensifyPixel(wbm, x, y, twoVDx * invDenom);
-                    for (var i = 1; IntensifyPixel(wbm, x + i, y, ((2 * i * dy) - twoVDx) * invDenom); ++i);
-                    for (var i = 1; IntensifyPixel(wbm, x - i, y, ((2 * i * dy) + twoVDx) * invDenom); ++i);
+                    IntensifyPixel(wbm, x, y, twoVDy * invDenom);
+                    for (var i = 1; IntensifyPixel(wbm, x + i, y, ((2 * i * dy) - twoVDy) * invDenom); ++i);
+                    for (var i = 1; IntensifyPixel(wbm, x - i, y, ((2 * i * dy) + twoVDy) * invDenom); ++i);
                 }
 
             }
 
-        //else if (y1 < y0)
+            //else if (y1 < y0)
             //{
             //    //initial values in Bresenham;s algorithm
             //    var dx = (int)(x1 - x0);
@@ -352,8 +352,7 @@ namespace Lab03___Rasterization
                 try
                 {
                     wbm.Lock();
-                    //var newColor = Color.FromArgb(Color.A, (int)(Color.R * cov), (int)(Color.G * cov), (int)(Color.B * cov));
-                    var newColor = Color.FromArgb(Color.A, (int)(255 - (255-Color.R) * cov), (int)(255 - (255-Color.G) * cov), (int)(255 - (255-Color.B) * cov));
+                    var newColor = Color.FromArgb(0, (int)(255 - (255-Color.R) * cov), (int)(255 - (255-Color.G) * cov), (int)(255 - (255-Color.B) * cov));
                     wbm.SetPixelColor(x, y, newColor);
                 }
                 finally
@@ -367,8 +366,7 @@ namespace Lab03___Rasterization
 
         private double Coverage(double D, double r)
         {
-            //var w = Thickness - 0.5d;
-            double w = (2 * Thickness - 1) / 2f;
+            var w = Thickness - 0.5d;
 
             if (w >= r)
             {
