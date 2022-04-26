@@ -56,13 +56,11 @@ namespace Lab03___Rasterization
         }
 
         public static void ApplyBrush(this WriteableBitmap wbm, int x, int y, int thickness, Color color)
-        { // TODO: revise the brush/thickness implementation here. let thickness=2 be a brush with 2 pixel width. Take the thickness from GUI and use it as Thickness = thicknessFromGUI*2 - 1 in shape
+        {
             for (var i = 1-thickness; i < thickness; i++)
                 for (var j = 1-thickness; j < thickness; j++)
-                {
-                    if (Math.Abs(i) + Math.Abs(j) <= thickness)
+                    if (Math.Sqrt(i*i + j*j) <= thickness)
                         wbm.SetPixelColor(x+i, y+j, color);
-                }
         }
         public static void Clear(this WriteableBitmap wbm)
         {
