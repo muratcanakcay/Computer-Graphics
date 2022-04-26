@@ -10,10 +10,10 @@ namespace Lab03___Rasterization
     
     internal interface IDrawable
     {
-        uint Thickness { get; set; }
+        int Thickness { get; set; }
         Color Color { get; set; }
         List<Point> Points { get; }
-        void Draw(WriteableBitmap wbm, bool isAntiAliased, bool isSuperSampled);
+        void Draw(WriteableBitmap wbm, bool isAntiAliased = false, bool isSuperSampled = false, int ssaa = 2);
         int GetVertexIndexOf(Point point);
         void MoveVertex(int vertexIndex, Vector offSet);
         int GetEdgeIndexOf(Point point);
@@ -23,20 +23,19 @@ namespace Lab03___Rasterization
 
     public abstract class Shape : IDrawable
     {
-        protected uint SSAA = 1;  // supersampling coeff.
         public List<Point> Points { get; protected set; }
-        public uint Thickness { get; set; }
+        public int Thickness { get; set; }
         public Color Color { get; set; }
-        protected const uint GrabDistance = 10;
+        protected const int GrabDistance = 10;
 
-        protected Shape(List<Point> points, uint thickness, Color color)
+        protected Shape(List<Point> points, int thickness, Color color)
         {
             Points = points;
             Thickness = thickness;
             Color = color;
         }
         
-        public abstract void Draw(WriteableBitmap wbm, bool isAntiAliased, bool isSuperSampled);
+        public abstract void Draw(WriteableBitmap wbm, bool isAntiAliased = false, bool isSuperSampled = false, int ssaa = 2);
 
         public virtual int GetVertexIndexOf(Point point)
         {
@@ -101,7 +100,7 @@ namespace Lab03___Rasterization
             return numerator / denominator;
         }
 
-        protected static bool IsInsideRectangle(Point vertex1, Point vertex2, Point p, uint offSet = 0)
+        protected static bool IsInsideRectangle(Point vertex1, Point vertex2, Point p, int offSet = 0)
         {
             // offSet value is used to increase the rectangle size by 2*offSet on each edge
             return (p.X > Math.Min(vertex1.X, vertex2.X) - offSet &&
@@ -118,9 +117,9 @@ namespace Lab03___Rasterization
 
     public class Line : Shape // TODO: add supersampling to antialising
     {
-        public Line(List<Point> points, uint thickness, Color color) : base(points, thickness, color) {}
+        public Line(List<Point> points, int thickness, Color color) : base(points, thickness, color) {}
 
-        public override void Draw(WriteableBitmap wbm, bool isAntiAliased, bool isSuperSampled)
+        public override void Draw(WriteableBitmap wbm, bool isAntiAliased = false, bool isSuperSampled = false, int ssaa = 2)
         {
             if (isAntiAliased)
             {
@@ -128,7 +127,7 @@ namespace Lab03___Rasterization
                 return;
             }
 
-            SSAA = (uint)(isSuperSampled ? 2 : 1);
+            var SSAA = isSuperSampled ? ssaa : 1;
 
             var x0 = (int)(SSAA * Points[0].X);
             var y0 = (int)(SSAA * Points[0].Y);
@@ -196,24 +195,22 @@ namespace Lab03___Rasterization
         private void DrawAntiAliased(WriteableBitmap wbm)
         {
             //initial values in Bresenham;s algorithm
-            int dx = (int)(Points[1].X - Points[0].X);
-            int dy = (int)(Points[1].Y - Points[0].Y);
-            int dE = 2 * dy;
-            int dNE = 2 * (dy - dx);
-            int d = 2*dy - dx;
-            int two_v_dx = 0; //numerator, v=0 for the first pixel
-            double invDenom = 1 / (2 * Math.Sqrt(dx*dx + dy*dy)); //inverted denominator
-            double two_dx_invDenom = 2 * dx * invDenom;
+            var dx = (int)(Points[1].X - Points[0].X);
+            var dy = (int)(Points[1].Y - Points[0].Y);
+            var dE = 2 * dy;
+            var dNE = 2 * (dy - dx);
+            var d = 2*dy - dx;
+            var two_v_dx = 0; //numerator, v=0 for the first pixel
+            var invDenom = 1 / (2 * Math.Sqrt(dx*dx + dy*dy)); //inverted denominator
+            var two_dx_invDenom = 2 * dx * invDenom;
             
             //precomputed constant
-            int x = (int)Points[0].X;
-            int y = (int)Points[0].Y;
-            int i;
-            
-            IntensifyPixel(wbm, x, y, 0);
-            for (i = 1; IntensifyPixel(wbm, x, y+i, i*two_dx_invDenom); ++i);
-            for (i = 1; IntensifyPixel(wbm, x, y-i, i*two_dx_invDenom); ++i);
+            var x = (int)Points[0].X;
+            var y = (int)Points[0].Y;
 
+            IntensifyPixel(wbm, x, y, 0);
+            for (var i = 1; IntensifyPixel(wbm, x, y+i, i*two_dx_invDenom); ++i) {}
+            for (var i = 1; IntensifyPixel(wbm, x, y-i, i*two_dx_invDenom); ++i) {}
 
             while (x < Points[1].X)
             {
@@ -232,8 +229,8 @@ namespace Lab03___Rasterization
                 }
                 // Now set the chosen pixel and its neighbors
                 IntensifyPixel(wbm, x, y, two_v_dx*invDenom);
-                for (i=1; IntensifyPixel(wbm, x, y+i,  i*two_dx_invDenom - two_v_dx*invDenom); ++i);
-                for (i=1; IntensifyPixel(wbm, x, y-i, i*two_dx_invDenom + two_v_dx*invDenom); ++i);
+                for (var i=1; IntensifyPixel(wbm, x, y+i,  i*two_dx_invDenom - two_v_dx*invDenom); ++i) {}
+                for (var i=1; IntensifyPixel(wbm, x, y-i, i*two_dx_invDenom + two_v_dx*invDenom); ++i) {}
             }
             
         }
@@ -262,7 +259,7 @@ namespace Lab03___Rasterization
 
         private double Coverage(double D, double r)
         {
-            var w = (double)Thickness - 0.5d;
+            var w = Thickness - 0.5d;
 
             if (w >= r)
             {
@@ -284,7 +281,7 @@ namespace Lab03___Rasterization
             return 0;
         }
 
-        private double Cov(double d, double r)
+        private static double Cov(double d, double r)
         {
             if (d >= r) return 0;
 
@@ -299,9 +296,9 @@ namespace Lab03___Rasterization
 
     public class Polygon : Shape
     {
-        public Polygon(List<Point> points, uint thickness, Color color) : base(points, thickness, color) {}
+        public Polygon(List<Point> points, int thickness, Color color) : base(points, thickness, color) {}
 
-        public override void Draw(WriteableBitmap wbm, bool isAntiAliased, bool isSuperSampled)
+        public override void Draw(WriteableBitmap wbm, bool isAntiAliased = false, bool isSuperSampled = false, int ssaa = 2)
         {
             for (var i = 0; i < Points.Count; i++)
             {
@@ -322,15 +319,15 @@ namespace Lab03___Rasterization
     {
         public Point Center => Points[0];
         public int Radius => (int)Math.Round(DistanceBetween(Points[0], Points[1]));
-        public Circle(List<Point> points, uint thickness, Color color) : base(points, thickness, color) {}
+        public Circle(List<Point> points, int thickness, Color color) : base(points, thickness, color) {}
         
-        public override void Draw(WriteableBitmap wbm, bool isAntiAliased, bool isSuperSampled)
+        public override void Draw(WriteableBitmap wbm, bool isAntiAliased = false, bool isSuperSampled = false, int ssaa = 2)
         {
-            SSAA = (uint)(isSuperSampled ? 2 : 1);
+            var SSAA = isSuperSampled ? ssaa : 1;
             
             var x  = 0;
-            var y  = (int)(SSAA * Radius);
-            var d  = (int)(1 - (SSAA * Radius));
+            var y  = SSAA * Radius;
+            var d  = 1 - (SSAA * Radius);
             var xC = (int)(SSAA * Center.X);
             var yC = (int)(SSAA * Center.Y);
 
@@ -413,9 +410,9 @@ namespace Lab03___Rasterization
     {
         public Point Center => Points[0];
         public int Radius => (int)Math.Round(DistanceBetween(Points[0], Points[1]));
-        public CircleArc(List<Point> points, uint thickness, Color color) : base(points, thickness, color) {}
+        public CircleArc(List<Point> points, int thickness, Color color) : base(points, thickness, color) {}
         
-        public override void Draw(WriteableBitmap wbm, bool isAntiAliased, bool isSuperSampled)
+        public override void Draw(WriteableBitmap wbm, bool isAntiAliased = false, bool isSuperSampled = false, int ssaa = 2)
         {
             int x = 0;
             int y = Radius;

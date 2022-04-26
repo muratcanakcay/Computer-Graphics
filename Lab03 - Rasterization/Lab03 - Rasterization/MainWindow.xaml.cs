@@ -24,7 +24,7 @@ namespace Lab03___Rasterization
         {
             public string ClassName;
             public List<Point> Points;
-            public uint Thickness;
+            public int Thickness;
             public int Color;
         };
         
@@ -45,7 +45,7 @@ namespace Lab03___Rasterization
         private int _currentEdgeIndex;
         private int _currentPointIndex;
         private int _currentZoomLevel = 1;
-        private uint _currentShapeThickness = 1;
+        private int _currentShapeThickness = 1;
         private Color _currentShapeColor = Color.FromArgb(255, 0, 0, 0);
         private readonly List<Point> _currentPoints = new();
         private readonly List<IDrawable> _allShapes = new();
@@ -444,9 +444,9 @@ namespace Lab03___Rasterization
         //---------- THICKNESS, COLOR, ANTIALIASING
         private void ShapeThickness_OnPreviewTextInput(object sender, TextCompositionEventArgs e)
         {
-            if (int.TryParse(e.Text, out var inputNum) && inputNum is > 0 and < 9)
+            if (int.TryParse(e.Text, out var inputNum) && inputNum is >= 1 and <= 8)
             {
-                _currentShapeThickness = (uint)inputNum;
+                _currentShapeThickness = inputNum;
                 Debug.WriteLine($"thickness changed to {_currentShapeThickness}");
                 ShapeThicknessTextBox.Text = "";
                 e.Handled = false;

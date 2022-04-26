@@ -71,15 +71,15 @@
                 </Canvas>
             </Grid>
 
-            <!--C_PANEL-->
+            <!--CONTROL_PANEL-->
             <Grid Grid.Column="1">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
 
-                <TabControl Grid.Row="1">
+                <TabControl Grid.Row="0">
                     <!--SHAPES TAB-->
-                    <TabItem Header="Shapes">
+                    <TabItem Header="Drawing">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="2*"/>

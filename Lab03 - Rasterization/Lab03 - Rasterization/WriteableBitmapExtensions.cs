@@ -55,10 +55,10 @@ namespace Lab03___Rasterization
             return pixelColor;
         }
 
-        public static void ApplyBrush(this WriteableBitmap wbm, int x, int y, uint thickness, Color color)
+        public static void ApplyBrush(this WriteableBitmap wbm, int x, int y, int thickness, Color color)
         { // TODO: revise the brush/thickness implementation here. let thickness=2 be a brush with 2 pixel width. Take the thickness from GUI and use it as Thickness = thicknessFromGUI*2 - 1 in shape
-            for (var i = (int)-thickness+1; i < thickness; i++)
-                for (var j = (int)-thickness + 1; j < thickness; j++)
+            for (var i = 1-thickness; i < thickness; i++)
+                for (var j = 1-thickness; j < thickness; j++)
                 {
                     if (Math.Abs(i) + Math.Abs(j) <= thickness)
                         wbm.SetPixelColor(x+i, y+j, color);
@@ -69,8 +69,8 @@ namespace Lab03___Rasterization
             try
             {
                 wbm.Lock();
-                for (int x = 0; x < wbm.Width; x++)
-                    for (int y = 0; y < wbm.Height; y++)
+                for (var x = 0; x < wbm.Width; x++)
+                    for (var y = 0; y < wbm.Height; y++)
                         wbm.SetPixelColor(x, y, Color.FromArgb(255, 255, 255, 255));
             }
             finally
@@ -95,8 +95,8 @@ namespace Lab03___Rasterization
                 wbm.Lock();
                 downSampledWbm.Lock();
                 
-                for (int x = 0; x < downSampledWbm.Width; x++)
-                    for (int y = 0; y < downSampledWbm.Height; y++)
+                for (var x = 0; x < downSampledWbm.Width; x++)
+                    for (var y = 0; y < downSampledWbm.Height; y++)
                     {
                         var col1 = wbm.GetPixelColor(2*x+0, 2*y+0);
                         var col2 = wbm.GetPixelColor(2*x+1, 2*y+0);
