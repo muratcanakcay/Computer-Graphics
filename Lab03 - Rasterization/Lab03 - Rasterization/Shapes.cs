@@ -293,53 +293,7 @@ namespace Lab03___Rasterization
                     for (var i = 1; IntensifyPixel(wbm, x + i, y, ((2 * i * dy) - twoVDy) * invDenom); ++i);
                     for (var i = 1; IntensifyPixel(wbm, x - i, y, ((2 * i * dy) + twoVDy) * invDenom); ++i);
                 }
-
             }
-
-            //else if (y1 < y0)
-            //{
-            //    //initial values in Bresenham;s algorithm
-            //    var dx = (int)(x1 - x0);
-            //    var dy = (int)(y1 - y0);
-            //    var dE = 2 * dy;
-            //    var dSE = 2 * (dy + dx);
-
-            //    var d = 2*dy + dx;   
-                
-            //    var invDenom = 1 / (2 * Math.Sqrt(dx*dx + dy*dy)); // inverted denominator
-
-            //    var x = (int)x0;
-            //    var y = (int)y0;
-
-            //    IntensifyPixel(wbm, x, y, 0);
-            //    for (var i = 1; IntensifyPixel(wbm, x, y+i, 2 * i * dx * invDenom); ++i) {}
-            //    for (var i = 1; IntensifyPixel(wbm, x, y-i, 2 * i * dx * invDenom); ++i) {}
-
-            //    while (x < x1)
-            //    {
-            //        ++x;
-            //        var twoVDx = 0; // numerator, v=0 for the first pixel
-
-            //        if (d > 0) // move to E
-            //        {
-            //            twoVDx = d - dx;   // TODO: THE PROBLEM WAS HERE when I swapped the twoVDx'es it worked. check the math to see why this happened
-            //            d += dE;
-            //        }
-            //        else // move to SE
-            //        {
-            //            twoVDx = d + dx;
-            //            d += dSE;
-            //            y--;
-            //        }
-                    
-            //        // Now set the chosen pixel and its neighbors
-            //        IntensifyPixel(wbm, x, y, twoVDx * invDenom);
-            //        for (var i = 1; IntensifyPixel(wbm, x, y + i, ((2 * i * dx) - twoVDx) * invDenom); ++i);
-            //        for (var i = 1; IntensifyPixel(wbm, x, y - i, ((2 * i * dx) + twoVDx) * invDenom); ++i);
-            //    }
-            //}
-            
-
         }
 
         private bool IntensifyPixel(WriteableBitmap wbm, int x, int y, double distance)
@@ -352,7 +306,7 @@ namespace Lab03___Rasterization
                 try
                 {
                     wbm.Lock();
-                    var newColor = Color.FromArgb(0, (int)(255 - (255-Color.R) * cov), (int)(255 - (255-Color.G) * cov), (int)(255 - (255-Color.B) * cov));
+                    var newColor = Color.FromArgb(255, (int)(255 - (255-Color.R) * cov), (int)(255 - (255-Color.G) * cov), (int)(255 - (255-Color.B) * cov));
                     wbm.SetPixelColor(x, y, newColor);
                 }
                 finally
