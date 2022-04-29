@@ -57,7 +57,7 @@ namespace Lab03___Rasterization
             for (var i = 0; i < Points.Count - 1; i++)
             {
                 if (DistanceFromLine(Points[i], Points[i+1], point) < Thickness + GrabDistance &&
-                    IsInsideRectangle(Points[i], Points[i + 1], point, Thickness + GrabDistance))
+                    IsInsideRectangle(Points[i], Points[i+1], point, Thickness + GrabDistance))
                     return i;
             }
 
@@ -112,7 +112,7 @@ namespace Lab03___Rasterization
 
         protected static double Determinant(Point a, Point b, Point c)
         {
-            return a.X * b.Y - a.X * c.Y - a.Y * b.X + a.Y * c.X + b.X * c.Y - b.Y * c.X;
+            return a.X*b.Y - a.X*c.Y - a.Y*b.X + a.Y*c.X + b.X*c.Y - b.Y*c.X;
         }
     }
 
@@ -201,7 +201,7 @@ namespace Lab03___Rasterization
             var y1 = Points[1].Y;
             var dx = (int)(x1 - x0);
             var dy = (int)(y1 - y0);
-            var invDenom = 1 / (2 * Math.Sqrt(dx * dx + dy * dy));
+            var invDenom = 1 / (2 * Math.Sqrt(dx*dx + dy*dy));
 
             if (dx != 0 && Math.Abs(dy/dx) < 1)
             {
@@ -216,15 +216,15 @@ namespace Lab03___Rasterization
                 }
 
                 var dE = 2 * dy;
-                var dXE = y1 > y0 ? 2 * (dy - dx) : 2 * (dy + dx);
-                var d = y1 > y0 ? 2 * dy - dx : 2 * dy + dx;
+                var dXE = y1 > y0 ? 2*(dy - dx) : 2*(dy + dx);
+                var d = y1 > y0 ? 2*dy - dx : 2*dy + dx;
 
                 var x = (int)x0;
                 var y = (int)y0;
 
                 IntensifyPixel(wbm, x, y, 0);
-                for (var i = 1; IntensifyPixel(wbm, x, y + i, 2 * i * dx * invDenom); ++i);
-                for (var i = 1; IntensifyPixel(wbm, x, y - i, 2 * i * dx * invDenom); ++i);
+                for (var i = 1; IntensifyPixel(wbm, x, y + i, 2*i*dx*invDenom); ++i);
+                for (var i = 1; IntensifyPixel(wbm, x, y - i, 2*i*dx*invDenom); ++i);
 
                 while (x < x1)
                 {
@@ -245,8 +245,8 @@ namespace Lab03___Rasterization
                     }
 
                     IntensifyPixel(wbm, x, y, twoVDx * invDenom);
-                    for (var i = 1; IntensifyPixel(wbm, x, y + i, ((2 * i * dx) - twoVDx) * invDenom); ++i);
-                    for (var i = 1; IntensifyPixel(wbm, x, y - i, ((2 * i * dx) + twoVDx) * invDenom); ++i);
+                    for (var i = 1; IntensifyPixel(wbm, x, y + i, ((2*i*dx) - twoVDx) * invDenom); ++i);
+                    for (var i = 1; IntensifyPixel(wbm, x, y - i, ((2*i*dx) + twoVDx) * invDenom); ++i);
                 }
             }
             else if (dy != 0)
@@ -262,15 +262,15 @@ namespace Lab03___Rasterization
                 }
 
                 var dE = 2 * dx;
-                var dXE = x1 > x0 ? 2 * (dx - dy) : 2 * (dx + dy);
-                var d = x1 > x0 ? 2 * dx - dy : 2 * dx + dy;
+                var dXE = x1 > x0 ? 2*(dx - dy) : 2*(dx + dy);
+                var d = x1 > x0 ? 2*dx - dy : 2*dx + dy;
 
                 var y = (int)y0;
                 var x = (int)x0;
 
                 IntensifyPixel(wbm, x, y, 0);
-                for (var i = 1; IntensifyPixel(wbm, x + i, y, 2 * i * dy * invDenom); ++i);
-                for (var i = 1; IntensifyPixel(wbm, x - i, y, 2 * i * dy * invDenom); ++i);
+                for (var i = 1; IntensifyPixel(wbm, x + i, y, 2*i*dy*invDenom); ++i);
+                for (var i = 1; IntensifyPixel(wbm, x - i, y, 2*i*dy*invDenom); ++i);
 
                 while (y < y1)
                 {
@@ -291,8 +291,8 @@ namespace Lab03___Rasterization
                     }
 
                     IntensifyPixel(wbm, x, y, twoVDy * invDenom);
-                    for (var i = 1; IntensifyPixel(wbm, x + i, y, ((2 * i * dy) - twoVDy) * invDenom); ++i);
-                    for (var i = 1; IntensifyPixel(wbm, x - i, y, ((2 * i * dy) + twoVDy) * invDenom); ++i);
+                    for (var i = 1; IntensifyPixel(wbm, x + i, y, ((2*i*dy) - twoVDy) * invDenom); ++i);
+                    for (var i = 1; IntensifyPixel(wbm, x - i, y, ((2*i*dy) + twoVDy) * invDenom); ++i);
                 }
             }
         }
@@ -347,7 +347,7 @@ namespace Lab03___Rasterization
         {
             if (d >= r) return 0;
 
-            return ((1 / Math.PI) * Math.Acos(d / r)) - ((d / (Math.PI * r * r)) * Math.Sqrt((r * r) - (d * d)));
+            return ((1/Math.PI) * Math.Acos(d/r)) - ((d / (Math.PI*r*r)) * Math.Sqrt((r*r) - (d*d)));
         }
 
         public override string ToString()
@@ -364,7 +364,7 @@ namespace Lab03___Rasterization
         {
             for (var i = 0; i < Points.Count; i++)
             {
-                var endPoint = i < Points.Count - 1 ? Points[i + 1] : Points[0];
+                var endPoint = i < Points.Count-1 ? Points[i+1] : Points[0];
                 var edge = new Line(new List<Point> {Points[i], endPoint}, Thickness, Color);
                 edge.Draw(wbm, isAntiAliased, isSuperSampled, ssaa);
             }
@@ -409,10 +409,10 @@ namespace Lab03___Rasterization
                 {
                     if (d < 0)
                         //move to E
-                        d += 2 * x + 3;
+                        d += 2*x + 3;
                     else //move to NE
                     {
-                        d += 2 * x - 2 * y + 5;
+                        d += 2*x - 2*y + 5;
                         --y;
                     }
 
