@@ -392,17 +392,19 @@ namespace Lab03___Rasterization
             var d  = 1 - (SSAA * Radius);
             var xC = (int)(SSAA * Center.X);
             var yC = (int)(SSAA * Center.Y);
+            
+            var plusMinus = new[] { -1, 1 };
 
             try
             {
                 wbm.Lock();
-                
-                wbm.ApplyBrush(xC + x, yC + y, SSAA * Thickness, Color);
-                wbm.ApplyBrush(xC + x, yC - y, SSAA * Thickness, Color);
 
-                wbm.ApplyBrush(xC + y, yC + x, SSAA * Thickness, Color);
-                wbm.ApplyBrush(xC - y, yC + x, SSAA * Thickness, Color);
-                
+                foreach (var i in plusMinus)
+                {
+                    wbm.ApplyBrush(xC + x, yC + i*y, SSAA * Thickness, Color);
+                    wbm.ApplyBrush(xC + i*y, yC + x, SSAA * Thickness, Color);
+                }
+
                 while (y > x)
                 {
                     if (d < 0)
@@ -415,18 +417,13 @@ namespace Lab03___Rasterization
                     }
 
                     ++x;
-                    
-                    wbm.ApplyBrush(xC + x, yC + y, SSAA * Thickness, Color);
-                    wbm.ApplyBrush(xC + x, yC - y, SSAA * Thickness, Color);
-                    
-                    wbm.ApplyBrush(xC - x, yC + y, SSAA * Thickness, Color);
-                    wbm.ApplyBrush(xC - x, yC - y, SSAA * Thickness, Color);
-                    
-                    wbm.ApplyBrush(xC + y, yC + x, SSAA * Thickness, Color);
-                    wbm.ApplyBrush(xC - y, yC + x, SSAA * Thickness, Color);
-                    
-                    wbm.ApplyBrush(xC + y, yC - x, SSAA * Thickness, Color);
-                    wbm.ApplyBrush(xC - y, yC - x, SSAA * Thickness, Color);
+
+                    foreach (var i in plusMinus)
+                        foreach (var j in plusMinus)
+                        {
+                            wbm.ApplyBrush(xC + i*x, yC + j*y, SSAA*Thickness, Color);
+                            wbm.ApplyBrush(xC + i*y, yC + j*x, SSAA*Thickness, Color);
+                        }
                 }
             }
             finally
@@ -531,7 +528,6 @@ namespace Lab03___Rasterization
                     ++x;
 
                     foreach(var i in plusMinus)
-                    {
                         foreach(var j in plusMinus)
                         {
                             if (det > 0)
@@ -556,14 +552,12 @@ namespace Lab03___Rasterization
                                     wbm.ApplyBrush(xC + i*y, yC + j*x, SSAA*Thickness, Color);
                             }
                         }
-                    }
                 }
             }
             finally
             {
                 wbm.Unlock();
             }
-                
         }
 
         public override int GetVertexIndexOf(Point point)
