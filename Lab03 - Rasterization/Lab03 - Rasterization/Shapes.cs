@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Text;
 using System.Windows;
 using System.Windows.Media.Imaging;
 using Color = System.Drawing.Color;
@@ -193,7 +193,7 @@ namespace Lab03___Rasterization
             }
         }
 
-        private void DrawAntiAliased(WriteableBitmap wbm)
+        private void DrawAntiAliased(WriteableBitmap wbm) // using Gupta-Sproull algorithm for lines
         {
             var x0 = Points[0].X;
             var y0 = Points[0].Y;
@@ -261,8 +261,8 @@ namespace Lab03___Rasterization
                     dx *= -1;
                 }
 
-                var dE = 2 * dx;
-                var dXE = x1 > x0 ? 2*(dx - dy) : 2*(dx + dy);
+                var dN = 2 * dx;
+                var dNX = x1 > x0 ? 2*(dx - dy) : 2*(dx + dy);
                 var d = x1 > x0 ? 2*dx - dy : 2*dx + dy;
 
                 var y = (int)y0;
@@ -280,13 +280,13 @@ namespace Lab03___Rasterization
                     if (d < 0) // move to N or NW
                     {
                         twoVDy = d + dy;
-                        d += x1 > x0 ? dE : dXE;
+                        d += x1 > x0 ? dN : dNX;
                         if (x1 < x0) --x;
                     }
                     else // move to N or NE
                     {
                         twoVDy = d - dy;
-                        d += x1 > x0 ? dXE : dE;
+                        d += x1 > x0 ? dNX : dN;
                         if (x1 > x0) ++x;
                     }
 
@@ -372,8 +372,12 @@ namespace Lab03___Rasterization
 
         public override string ToString()
         {
+            var sb = new StringBuilder();
+            
+            for (int i = 0; i < Points.Count; i++)
+                sb.Append($"P{i}: ({Points[i].X}, {Points[i].Y})\n");
 
-            return $"POLYGON.TOSTRING NOT IMPLEMENTED YET"; // ({Points[0].X}, {Points[0].Y})-({Points[1].X}, {Points[1].Y})";
+            return sb.ToString();
         }
     }
 

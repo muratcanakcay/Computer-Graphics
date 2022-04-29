@@ -53,7 +53,12 @@ namespace Lab03___Rasterization
         private WriteableBitmap? _emptyWbm;
         private WriteableBitmap? _emptyWbmSsaa;
         private WriteableBitmap _wbm;
+        private readonly SolidColorBrush _activeButtonColor = Brushes.LightSalmon;
+        private readonly SolidColorBrush _inactiveButtonColor = Brushes.LightCyan;
         
+
+
+
 
 
         public MainWindow()
@@ -149,6 +154,7 @@ namespace Lab03___Rasterization
                 ShapeThicknessTextBox.Text = _allShapes[_currentShapeIndex].Thickness.ToString();
                 var shapeColor = _allShapes[_currentShapeIndex].Color;
                 ShapeColorButton.Fill = new SolidColorBrush(System.Windows.Media.Color.FromArgb(shapeColor.A, shapeColor.R, shapeColor.G, shapeColor.B));
+                Debug.WriteLine(_allShapes[_currentShapeIndex]);
             }
             else if (_isDrawingLine) DrawLine(_currentCursorPosition);
             else if (_isDrawingPolygon) DrawPolygon(_currentCursorPosition);
@@ -167,7 +173,7 @@ namespace Lab03___Rasterization
                     _currentVertexIndex = shape.GetVertexIndexOf(_currentCursorPosition);
                     if (_currentVertexIndex > -1)
                     {
-                        Debug.WriteLine("VERTEX!");
+                        Debug.WriteLine($"VERTEX#{_currentVertexIndex}");
                         _previousCursorPosition = _currentCursorPosition;
                         _isMovingVertex = true;
                         return;
@@ -177,7 +183,7 @@ namespace Lab03___Rasterization
                     _currentEdgeIndex = shape.GetEdgeIndexOf(_currentCursorPosition);
                     if (_currentEdgeIndex > -1)
                     {
-                        Debug.WriteLine($"EDGE! {_currentEdgeIndex}");
+                        Debug.WriteLine($"EDGE#{_currentEdgeIndex}");
                         _previousCursorPosition = _currentCursorPosition;
                         _isMovingEdge= true;
                         return;
@@ -309,13 +315,13 @@ namespace Lab03___Rasterization
         //---------- LINE METHODS
         private void LineButton_OnClick(object sender, RoutedEventArgs e)
         {
-            if(!_isDrawingLine) ToggleAllOff();
+            if (!_isDrawingLine) ToggleAllOff();
             ToggleIsDrawingLine();
         }
         private void ToggleIsDrawingLine()
         {
             _isDrawingLine = !_isDrawingLine;
-            LineButton.Background = _isDrawingLine ? Brushes.LightSalmon : Brushes.LightCyan;
+            LineButton.Background = _isDrawingLine ? _activeButtonColor : _inactiveButtonColor;
         }
         private void DrawLine(Point clickPosition)
         {
@@ -346,7 +352,7 @@ namespace Lab03___Rasterization
         private void ToggleIsDrawingPolygon()
         {
             _isDrawingPolygon = !_isDrawingPolygon;
-            PolygonButton.Background = _isDrawingPolygon ? Brushes.LightSalmon : Brushes.LightCyan;
+            PolygonButton.Background = _isDrawingPolygon ? _activeButtonColor : _inactiveButtonColor;
         }
         private void DrawPolygon(Point clickPosition)
         {
@@ -379,7 +385,7 @@ namespace Lab03___Rasterization
         private void ToggleIsDrawingCircle()
         {
             _isDrawingCircle = !_isDrawingCircle;
-            CircleButton.Background = _isDrawingCircle ? Brushes.LightSalmon : Brushes.LightCyan;
+            CircleButton.Background = _isDrawingCircle ? _activeButtonColor : _inactiveButtonColor;
         }
         private void DrawCircle(Point clickPosition)
         {
@@ -411,7 +417,7 @@ namespace Lab03___Rasterization
         private void ToggleIsDrawingCircleArc()
         {
             _isDrawingCircleArc = !_isDrawingCircleArc;
-            CircleArcButton.Background = _isDrawingCircleArc ? Brushes.LightSalmon : Brushes.LightCyan;
+            CircleArcButton.Background = _isDrawingCircleArc ? _activeButtonColor : _inactiveButtonColor;
         }
         private void DrawCircleArc(Point clickPosition)
         {
@@ -485,7 +491,7 @@ namespace Lab03___Rasterization
             if (_isSuperSampled) ToggleIsSuperSampled();
 
             _isAntiAliased = !_isAntiAliased;
-            AntiAliasButton.Background = _isAntiAliased ? Brushes.LightSalmon : Brushes.LightCyan;
+            AntiAliasButton.Background = _isAntiAliased ? _activeButtonColor : _inactiveButtonColor;
         }
         private void SuperSampleButton_OnClick(object sender, RoutedEventArgs e)
         {
@@ -501,7 +507,7 @@ namespace Lab03___Rasterization
             if (_isAntiAliased) ToggleIsAntiAliased();
             
             _isSuperSampled = !_isSuperSampled;
-            SuperSampleButton.Background = _isSuperSampled ? Brushes.LightSalmon : Brushes.LightCyan;
+            SuperSampleButton.Background = _isSuperSampled ? _activeButtonColor : _inactiveButtonColor;
         }
 
         //---------- MENU ITEMS
@@ -521,17 +527,17 @@ namespace Lab03___Rasterization
             };
 
             if (dlg.ShowDialog() != true || dlg.FileName == string.Empty) return;
-        
+
+            List<ShapeT> shapesList = _allShapes
+                                        .Select(shape => new ShapeT() {
+                                            ClassName = shape.GetType().Name,
+                                            Points = shape.Points,
+                                            Thickness = shape.Thickness,
+                                            Color = shape.Color.ToArgb() })
+                                        .ToList();
+
             var s = new XmlSerializer(typeof(List<ShapeT>));
             using var fs = new FileStream(dlg.FileName, FileMode.Create);
-            List<ShapeT> shapesList = _allShapes
-                .Select(shape => new ShapeT() {
-                    ClassName = shape.GetType().Name,
-                    Points = shape.Points,
-                    Thickness = shape.Thickness,
-                    Color = shape.Color.ToArgb() })
-                .ToList();
-
             s.Serialize(fs, shapesList);
         }
         private void OnClick_LoadShapes(object sender, RoutedEventArgs e)
@@ -545,7 +551,7 @@ namespace Lab03___Rasterization
             if (dlg.ShowDialog() != true || dlg.FileName.Equals("")) return;
 
             var s = new XmlSerializer(typeof(List<ShapeT>));
-            using var fs = new FileStream($"{dlg.FileName}", FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+            using var fs = new FileStream($"{dlg.FileName}", FileMode.Open, FileAccess.Read);
             try
             {
                 var loadedObject = s.Deserialize(fs);
@@ -591,9 +597,9 @@ namespace Lab03___Rasterization
         private void OnClick_Help(object sender, RoutedEventArgs e)
         {
             MessageBox.Show("Click and hold on an edge or a vertex to move it.\n" +
-                            "Double-click and hold on a shape to move the entire shape\n" +
-                            "\nDouble-click on a shape to select it. If a shape is selected you can then change its color/thickness or delete it with del key\n" +
-                            "\nCtrl+Mouse wheel to zoom in/out.", "Help", 
+                            "Double-click and hold on a shape to move the entire shape\n\n" +
+                            "Double-click on a shape to select it. If a shape is selected you can then change its color/thickness or delete it with del key\n\n" +
+                            "Ctrl+Mouse wheel to zoom in/out.", "Help", 
                             MessageBoxButton.OK);
         }
         

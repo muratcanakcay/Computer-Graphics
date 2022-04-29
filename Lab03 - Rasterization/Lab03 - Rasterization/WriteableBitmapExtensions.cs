@@ -20,7 +20,7 @@ namespace Lab03___Rasterization
             unsafe
             {
                 var pBuffer = (byte*)pBackBuffer.ToPointer();
-                int index = y * stride + x * 4;
+                int index = stride*y + 4*x;
 
                 pBuffer[index + 0] = color.B;
                 pBuffer[index + 1] = color.G;
@@ -44,7 +44,7 @@ namespace Lab03___Rasterization
             unsafe
             {
                 var pBuffer = (byte*)pBackBuffer.ToPointer();
-                int index = y * stride + x * 4;
+                int index = stride*y + 4*x;
 
                 pixelColor = Color.FromArgb(pBuffer[index + 3], 
                                               pBuffer[index + 2], 
