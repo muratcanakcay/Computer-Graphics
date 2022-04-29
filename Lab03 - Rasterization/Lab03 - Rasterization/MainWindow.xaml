@@ -249,7 +249,7 @@
                                 Width="120"
                                 Name="SuperSampleButton"
                                 IsEnabled="true"
-                                ToolTip="Apply Anti-aliasing"
+                                ToolTip="Apply SuperSampling"
                                 Background="LightCyan"
                                 Click="SuperSampleButton_OnClick">
                                 Apply SuperSampling

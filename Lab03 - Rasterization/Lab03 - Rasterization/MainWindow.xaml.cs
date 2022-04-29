@@ -335,9 +335,7 @@ namespace Lab03___Rasterization
                 Debug.WriteLine($"Ending: {clickPosition.X}, {clickPosition.Y}");
                 _allShapes.Add(new Line(new List<Point> { _currentPoints[0], clickPosition }, _currentShapeThickness, _currentShapeColor));
                 
-                // clear the points
                 _currentPoints.Clear();
-                
                 ToggleIsDrawingLine();
                 RedrawCanvas();
             }
@@ -468,7 +466,7 @@ namespace Lab03___Rasterization
         }
         private void ShapeColorButton_OnClick(object sender, RoutedEventArgs e)
         {
-            using System.Windows.Forms.ColorDialog colorDialog = new System.Windows.Forms.ColorDialog();
+            using var colorDialog = new System.Windows.Forms.ColorDialog();
             if (colorDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 ShapeColorButton.Fill = new SolidColorBrush(System.Windows.Media.Color.FromArgb(colorDialog.Color.A, colorDialog.Color.R, colorDialog.Color.G, colorDialog.Color.B));

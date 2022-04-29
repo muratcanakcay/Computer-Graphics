@@ -70,26 +70,23 @@ namespace Lab03___Rasterization
         
         public virtual void MoveEdge(int edgeIndex, Vector offSet)
         {
-            var newP1 = Point.Add(Points[edgeIndex], offSet);
             var nextIndex = edgeIndex == Points.Count - 1 ? 0 : edgeIndex + 1;
-            var newP2 = Point.Add(Points[nextIndex], offSet);
 
-            Points[edgeIndex] = newP1;
-            Points[nextIndex] = newP2;
+            Points[edgeIndex] = Point.Add(Points[edgeIndex], offSet);
+            Points[nextIndex] = Point.Add(Points[nextIndex], offSet);
         }
 
         public void MoveShape(Vector offset)
         {
-            for (int i = 0; i < Points.Count; i++)
-            {
-                var newP = Point.Add(Points[i], offset);
-                Points[i] = newP;
-            }
+            for (var i = 0; i < Points.Count; i++)
+                Points[i] = Point.Add(Points[i], offset);
         }
 
         protected static double DistanceBetween(Point p1, Point p2)
         {
-            return Math.Round(Math.Sqrt(Math.Pow((p2.X - p1.X), 2) + Math.Pow((p2.Y - p1.Y), 2)));
+            var dx = p2.X - p1.X;
+            var dy = p2.Y - p1.Y;
+            return Math.Round(Math.Sqrt(dx*dx + dy*dy));
         }
 
         protected static double DistanceFromLine(Point onLine1, Point onLine2, Point exterior)
@@ -211,8 +208,8 @@ namespace Lab03___Rasterization
                     y0 = y1;
                     x1 = Points[0].X;
                     y1 = Points[0].Y;
-                    dx *= -1;
-                    dy *= -1;
+                    dx = -dx;
+                    dy = -dy;
                 }
 
                 var dE = 2 * dy;
@@ -257,8 +254,8 @@ namespace Lab03___Rasterization
                     x0 = x1;
                     y1 = Points[0].Y;
                     x1 = Points[0].X;
-                    dy *= -1;
-                    dx *= -1;
+                    dy = -dy;
+                    dx = -dx;
                 }
 
                 var dN = 2 * dx;
@@ -374,8 +371,8 @@ namespace Lab03___Rasterization
         {
             var sb = new StringBuilder();
             
-            for (int i = 0; i < Points.Count; i++)
-                sb.Append($"P{i}: ({Points[i].X}, {Points[i].Y})\n");
+            for (var i = 0; i < Points.Count; i++)
+                sb.Append($"P{i}: ({Points[i].X}, {Points[i].Y})\n");            
 
             return sb.ToString();
         }
@@ -443,19 +440,17 @@ namespace Lab03___Rasterization
         
         public override int GetEdgeIndexOf(Point point)
         {
-            if (DistanceBetween(Center, point) < Radius + Thickness + GrabDistance &&
-                DistanceBetween(Center, point) > Radius - Thickness - GrabDistance)
-            {
-                // change edgePoint to the closest point on circle to the clicked point
-                var v = Point.Subtract(point, Points[0]); 
-                var vUnit = v / v.Length;
-                var newEdgePoint = Point.Add(Center, Radius * vUnit);
-                Points[1] = newEdgePoint;
+            if (DistanceBetween(Center, point) < Radius - Thickness - GrabDistance || 
+                DistanceBetween(Center, point) > Radius + Thickness + GrabDistance)
+                return -1;
+            
+            // change edgePoint to the closest point on circle to the clicked point
+            var v = Point.Subtract(point, Points[0]); 
+            var vUnit = v / v.Length;
+            var newEdgePoint = Point.Add(Center, Radius * vUnit);
+            Points[1] = newEdgePoint;
 
-                return 1; // circle has only one edge with index 1
-            }
-
-            return -1;
+            return 1; // circle has only one edge with index 1
         }
 
         public override void MoveEdge(int edgeIndex, Vector offSet)
@@ -485,9 +480,8 @@ namespace Lab03___Rasterization
             var xC = (int)(SSAA * Center.X);
             var yC = (int)(SSAA * Center.Y);
 
-            double det = Determinant(Center, Points[1], Points[2]);
+            var det = Determinant(Center, Points[1], Points[2]);
 
-            
             try
             {
                 wbm.Lock();
@@ -495,7 +489,6 @@ namespace Lab03___Rasterization
                 var plusMinus = new[] { -1, 1 };
 
                 foreach(var i in plusMinus)
-                {
                     if (det > 0)
                     {
                         if (Determinant(Center, Points[1], new Point(Center.X + x, Center.Y + i*y)) > 0 &&
@@ -516,7 +509,6 @@ namespace Lab03___Rasterization
                             Determinant(Center, Points[2], new Point(Center.X + i*y, Center.Y + x)) < 0)
                             wbm.ApplyBrush(xC + i*y, yC + x, SSAA*Thickness, Color);
                     }
-                }
 
                 while (y > x)
                 {
@@ -533,7 +525,6 @@ namespace Lab03___Rasterization
 
                     foreach(var i in plusMinus)
                         foreach(var j in plusMinus)
-                        {
                             if (det > 0)
                             {
 
@@ -555,7 +546,6 @@ namespace Lab03___Rasterization
                                     Determinant(Center, Points[2], new Point(Center.X + i*y, Center.Y + j*x)) < 0)
                                     wbm.ApplyBrush(xC + i*y, yC + j*x, SSAA*Thickness, Color);
                             }
-                        }
                 }
             }
             finally
@@ -571,19 +561,17 @@ namespace Lab03___Rasterization
         
         public override int GetEdgeIndexOf(Point point)
         {
-            if (DistanceBetween(Center, point) < Radius + Thickness + GrabDistance &&
-                DistanceBetween(Center, point) > Radius - Thickness - GrabDistance)
-            {
-                // change edgePoint to -> the point on circle that is closest to the clicked point
-                var v = Point.Subtract(point, Points[0]); 
-                var vUnit = v / v.Length;
-                var newEdgePoint = Point.Add(Center, Radius * vUnit);
-                Points[1] = newEdgePoint;
+            if (DistanceBetween(Center, point) < Radius - Thickness - GrabDistance || 
+                DistanceBetween(Center, point) > Radius + Thickness + GrabDistance)
+                return -1;
+            
+            // change edgePoint to -> the point on circle that is closest to the clicked point
+            var v = Point.Subtract(point, Points[0]); 
+            var vUnit = v / v.Length;
+            var newEdgePoint = Point.Add(Center, Radius * vUnit);
+            Points[1] = newEdgePoint;
 
-                return 1; // circle has only one edge with index 1
-            }
-
-            return -1;
+            return 1; // circle has only one edge with index 1
         }
 
         public override void MoveEdge(int edgeIndex, Vector offSet)
