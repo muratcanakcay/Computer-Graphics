@@ -493,8 +493,8 @@ namespace Lab03___Rasterization
             RedrawCanvas();
             
             // free the memory in wbm
-            if (!_isSuperSampled) _emptyWbmSsaa = null;
-            else _emptyWbm = null;
+            if (_isSuperSampled) _emptyWbm = null;
+            else _emptyWbmSsaa = null;
         }
         private void ToggleIsSuperSampled()
         {
