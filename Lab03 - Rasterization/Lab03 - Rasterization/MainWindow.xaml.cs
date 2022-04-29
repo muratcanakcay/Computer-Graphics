@@ -590,9 +590,11 @@ namespace Lab03___Rasterization
         }
         private void OnClick_Help(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("Click and hold on an edge or a vertex to move it.\nDouble-click and hold on a shape to move the entire shape\n" +
+            MessageBox.Show("Click and hold on an edge or a vertex to move it.\n" +
+                            "Double-click and hold on a shape to move the entire shape\n" +
                             "\nDouble-click on a shape to select it. If a shape is selected you can then change its color/thickness or delete it with del key\n" +
-                            "\nCtrl+Mouse wheel to zoom in/out.", "Help", MessageBoxButton.OK);
+                            "\nCtrl+Mouse wheel to zoom in/out.", "Help", 
+                            MessageBoxButton.OK);
         }
         
         //-----------

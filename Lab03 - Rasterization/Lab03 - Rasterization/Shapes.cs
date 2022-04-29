@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Media.Imaging;
 using Color = System.Drawing.Color;
@@ -202,7 +203,7 @@ namespace Lab03___Rasterization
             var dy = (int)(y1 - y0);
             var invDenom = 1 / (2 * Math.Sqrt(dx * dx + dy * dy));
 
-            if (dx != 0 && Math.Abs(dy / dx) < 1)
+            if (dx != 0 && Math.Abs(dy/dx) < 1)
             {
                 if (x1 < x0) // swap initial and endpoint for drawing
                 {
@@ -228,7 +229,7 @@ namespace Lab03___Rasterization
                 while (x < x1)
                 {
                     ++x;
-                    var twoVDx = 0;
+                    int twoVDx;
 
                     if (d <= 0) // move to E or SE
                     {
