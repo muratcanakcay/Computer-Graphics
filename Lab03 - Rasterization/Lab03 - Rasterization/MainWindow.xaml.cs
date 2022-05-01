@@ -140,7 +140,8 @@ namespace Lab03___Rasterization
                 foreach (var shape in _allShapes)
                 {
                     _currentShapeIndex = -1;
-                    if (shape.GetVertexIndexOf(_currentCursorPosition) > -1 || shape.GetEdgeIndexOf(_currentCursorPosition) > -1)
+                    if (shape.GetVertexIndexOf(_currentCursorPosition) > -1 ||
+                        shape.GetEdgeIndexOf(_currentCursorPosition) > -1)
                     {
                         _currentShapeIndex = _allShapes.IndexOf(shape);
                         break;
@@ -153,7 +154,8 @@ namespace Lab03___Rasterization
                 _isMovingShape = true;
                 ShapeThicknessTextBox.Text = _allShapes[_currentShapeIndex].Thickness.ToString();
                 var shapeColor = _allShapes[_currentShapeIndex].Color;
-                ShapeColorButton.Fill = new SolidColorBrush(System.Windows.Media.Color.FromArgb(shapeColor.A, shapeColor.R, shapeColor.G, shapeColor.B));
+                ShapeColorButton.Fill = new SolidColorBrush(
+                    System.Windows.Media.Color.FromArgb(shapeColor.A, shapeColor.R, shapeColor.G, shapeColor.B));
                 Debug.WriteLine(_allShapes[_currentShapeIndex]);
             }
             else if (_isDrawingLine) DrawLine(_currentCursorPosition);
@@ -217,7 +219,14 @@ namespace Lab03___Rasterization
             if (!_isSuperSampled && _isDrawingLine && _currentPoints.Count > 0)
             {
                 RedrawCanvas();
-                currentLine = new Line(new List<Point> { _currentPoints[0], _currentCursorPosition }, _currentShapeThickness, _currentShapeColor);
+                currentLine = new Line(
+                    new List<Point>
+                    {
+                        _currentPoints[0],
+                        _currentCursorPosition
+                    },
+                    _currentShapeThickness,
+                    _currentShapeColor);
                 currentLine.Draw(_wbm, _isAntiAliased, _isSuperSampled);
             }
             
@@ -227,7 +236,14 @@ namespace Lab03___Rasterization
                 RedrawCanvas();
                 for (var i = 0; i < _currentPoints.Count - 1; i++)
                 {
-                    currentLine = new Line(new List<Point> { _currentPoints[i], _currentPoints[i+1] }, _currentShapeThickness, _currentShapeColor);
+                    currentLine = new Line(
+                        new List<Point>
+                        {
+                            _currentPoints[i],
+                            _currentPoints[i+1]
+                        },
+                        _currentShapeThickness,
+                        _currentShapeColor);
                     currentLine.Draw(_wbm, _isAntiAliased, _isSuperSampled);
                 }
 
@@ -239,7 +255,14 @@ namespace Lab03___Rasterization
             if (_isDrawingCircle && _currentPoints.Count > 0)
             {
                 RedrawCanvas();
-                var currentCircle = new Circle(new List<Point> { _currentPoints[0], _currentCursorPosition }, _currentShapeThickness, _currentShapeColor);
+                var currentCircle = new Circle(
+                    new List<Point>
+                    {
+                        _currentPoints[0],
+                        _currentCursorPosition
+                    },
+                    _currentShapeThickness,
+                    _currentShapeColor);
                 currentCircle.Draw(_wbm, _isAntiAliased, _isSuperSampled);
             }
 
@@ -247,13 +270,22 @@ namespace Lab03___Rasterization
             if (_isDrawingCircleArc && _currentPoints.Count > 1)
             {
                 RedrawCanvas();
-                var currentCircleArc = new CircleArc(new List<Point> { _currentPoints[0], _currentPoints[1], _currentCursorPosition }, _currentShapeThickness, _currentShapeColor);
+                var currentCircleArc = new CircleArc(
+                    new List<Point>
+                    {
+                        _currentPoints[0],
+                        _currentPoints[1],
+                        _currentCursorPosition 
+                    },
+                    _currentShapeThickness,
+                    _currentShapeColor);
                 currentCircleArc.Draw(_wbm, _isAntiAliased, _isSuperSampled);
             }
 
             if (_isMovingVertex)
             {
-                _allShapes[_currentShapeIndex].MoveVertex(_currentVertexIndex, Point.Subtract(_currentCursorPosition, _previousCursorPosition));
+                _allShapes[_currentShapeIndex].MoveVertex(
+                    _currentVertexIndex, Point.Subtract(_currentCursorPosition, _previousCursorPosition));
                 _previousCursorPosition = _currentCursorPosition;
 
                 RedrawCanvas();
@@ -261,7 +293,8 @@ namespace Lab03___Rasterization
 
             if (_isMovingEdge)
             {
-                _allShapes[_currentShapeIndex].MoveEdge(_currentEdgeIndex, Point.Subtract(_currentCursorPosition, _previousCursorPosition));
+                _allShapes[_currentShapeIndex].MoveEdge(
+                    _currentEdgeIndex, Point.Subtract(_currentCursorPosition, _previousCursorPosition));
                 _previousCursorPosition = _currentCursorPosition;
 
                 RedrawCanvas();
@@ -269,7 +302,8 @@ namespace Lab03___Rasterization
 
             if (_isMovingShape)
             {
-                _allShapes[_currentShapeIndex].MoveShape(Point.Subtract(_currentCursorPosition, _previousCursorPosition));
+                _allShapes[_currentShapeIndex].MoveShape(
+                    Point.Subtract(_currentCursorPosition, _previousCursorPosition));
                 _previousCursorPosition = _currentCursorPosition;
 
                 RedrawCanvas();
@@ -282,7 +316,11 @@ namespace Lab03___Rasterization
                 if (e.Delta > 0) _currentZoomLevel++;
                 else if (_currentZoomLevel > 1) _currentZoomLevel--;
 
-                TheCanvas.RenderTransform = new ScaleTransform(_currentZoomLevel, _currentZoomLevel, _currentCursorPosition.X, _currentCursorPosition.Y);
+                TheCanvas.RenderTransform = new ScaleTransform(
+                    _currentZoomLevel,
+                    _currentZoomLevel,
+                    _currentCursorPosition.X,
+                    _currentCursorPosition.Y);
             }
         }
 
@@ -333,7 +371,8 @@ namespace Lab03___Rasterization
             else // add endPoint and add Line to _allShapes
             {
                 Debug.WriteLine($"Ending: {clickPosition.X}, {clickPosition.Y}");
-                _allShapes.Add(new Line(new List<Point> { _currentPoints[0], clickPosition }, _currentShapeThickness, _currentShapeColor));
+                _allShapes.Add(new Line(
+                    new List<Point>{ _currentPoints[0], clickPosition }, _currentShapeThickness, _currentShapeColor));
                 
                 _currentPoints.Clear();
                 ToggleIsDrawingLine();
@@ -367,7 +406,8 @@ namespace Lab03___Rasterization
             else
             {
                 Debug.WriteLine($"Ending: {clickPosition.X}, {clickPosition.Y}");
-                _allShapes.Add(new Polygon(new List<Point>(_currentPoints), _currentShapeThickness, _currentShapeColor));
+                _allShapes.Add(new Polygon(
+                    new List<Point>(_currentPoints), _currentShapeThickness, _currentShapeColor));
                 _currentPoints.Clear();
                 ToggleIsDrawingPolygon();
                 RedrawCanvas();
@@ -396,7 +436,8 @@ namespace Lab03___Rasterization
             {
                 _currentPoints.Add(clickPosition);
                 Debug.WriteLine($"Edge: {clickPosition.X}, {clickPosition.Y}");
-                _allShapes.Add(new Circle(new List<Point>(_currentPoints), _currentShapeThickness, _currentShapeColor));
+                _allShapes.Add(new Circle(
+                    new List<Point>(_currentPoints), _currentShapeThickness, _currentShapeColor));
                 
                 // clear the points
                 _currentPoints.Clear();
@@ -433,7 +474,8 @@ namespace Lab03___Rasterization
             {
                 _currentPoints.Add(clickPosition);
                 Debug.WriteLine($"Arc End: {clickPosition.X}, {clickPosition.Y}");
-                _allShapes.Add(new CircleArc(new List<Point>(_currentPoints), _currentShapeThickness, _currentShapeColor));
+                _allShapes.Add(new CircleArc(
+                    new List<Point>(_currentPoints), _currentShapeThickness, _currentShapeColor));
                 
                 // clear the points
                 _currentPoints.Clear();
@@ -469,8 +511,17 @@ namespace Lab03___Rasterization
             using var colorDialog = new System.Windows.Forms.ColorDialog();
             if (colorDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                ShapeColorButton.Fill = new SolidColorBrush(System.Windows.Media.Color.FromArgb(colorDialog.Color.A, colorDialog.Color.R, colorDialog.Color.G, colorDialog.Color.B));
-                _currentShapeColor = Color.FromArgb(colorDialog.Color.A, colorDialog.Color.R, colorDialog.Color.G, colorDialog.Color.B);
+                ShapeColorButton.Fill = new SolidColorBrush(
+                    System.Windows.Media.Color.FromArgb(
+                        colorDialog.Color.A,
+                        colorDialog.Color.R,
+                        colorDialog.Color.G,
+                        colorDialog.Color.B));
+                _currentShapeColor = Color.FromArgb(
+                    colorDialog.Color.A,
+                    colorDialog.Color.R,
+                    colorDialog.Color.G,
+                    colorDialog.Color.B);
 
                 if (_isModifyingShape)
                 {
@@ -563,16 +614,28 @@ namespace Lab03___Rasterization
                         switch(shape.ClassName)
                         {
                             case "Line":
-                                _allShapes.Add(new Line(shape.Points, shape.Thickness, Color.FromArgb(shape.Color)));
+                                _allShapes.Add(new Line(
+                                    shape.Points, 
+                                    shape.Thickness, 
+                                    Color.FromArgb(shape.Color)));
                                 break;
                             case "Polygon":
-                                _allShapes.Add(new Polygon(shape.Points, shape.Thickness, Color.FromArgb(shape.Color)));
+                                _allShapes.Add(new Polygon(
+                                    shape.Points, 
+                                    shape.Thickness, 
+                                    Color.FromArgb(shape.Color)));
                                 break;
                             case "Circle":
-                                _allShapes.Add(new Circle(shape.Points, shape.Thickness, Color.FromArgb(shape.Color)));
+                                _allShapes.Add(new Circle(
+                                    shape.Points,
+                                    shape.Thickness,
+                                    Color.FromArgb(shape.Color)));
                                 break;
                             case "CircleArc":
-                                _allShapes.Add(new CircleArc(shape.Points, shape.Thickness, Color.FromArgb(shape.Color)));
+                                _allShapes.Add(new CircleArc(
+                                    shape.Points,
+                                    shape.Thickness,
+                                    Color.FromArgb(shape.Color)));
                                 break;
                         }
                     }
@@ -589,14 +652,17 @@ namespace Lab03___Rasterization
         }
         private void OnClick_Exit(object sender, RoutedEventArgs e)
         {
-            if (MessageBox.Show("Are you sure you want to leave?", "Exit", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+            if (MessageBox.Show(
+                    "Are you sure you want to leave?", "Exit", MessageBoxButton.YesNo)
+                == MessageBoxResult.Yes)
                 Close();
         }
         private void OnClick_Help(object sender, RoutedEventArgs e)
         {
             MessageBox.Show("Click and hold on an edge or a vertex to move it.\n" +
                             "Double-click and hold on a shape to move the entire shape\n\n" +
-                            "Double-click on a shape to select it. If a shape is selected you can then change its color/thickness or delete it with del key\n\n" +
+                            "Double-click on a shape to select it. If a shape is selected you can then change " +
+                            "its color/thickness or delete it with del key\n\n" +
                             "Ctrl+Mouse wheel to zoom in/out.", "Help", 
                             MessageBoxButton.OK);
         }

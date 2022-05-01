@@ -89,7 +89,7 @@ namespace Lab03___Rasterization
             return Math.Round(Math.Sqrt(dx*dx + dy*dy));
         }
 
-        protected static double DistanceFromLine(Point onLine1, Point onLine2, Point exterior)
+        private static double DistanceFromLine(Point onLine1, Point onLine2, Point exterior)
         {
             var denominator = DistanceBetween(onLine1, onLine2);
             var numerator = Math.Abs((onLine2.X - onLine1.X) * (onLine1.Y - exterior.Y) -
@@ -98,7 +98,7 @@ namespace Lab03___Rasterization
             return numerator / denominator;
         }
 
-        protected static bool IsInsideRectangle(Point vertex1, Point vertex2, Point p, int offSet = 0)
+        private static bool IsInsideRectangle(Point vertex1, Point vertex2, Point p, int offSet = 0)
         {
             // offSet value is used to increase the rectangle size by 2*offSet on each edge
             return (p.X > Math.Min(vertex1.X, vertex2.X) - offSet &&
@@ -304,7 +304,11 @@ namespace Lab03___Rasterization
                 try
                 {
                     wbm.Lock();
-                    var newColor = Color.FromArgb(255, (int)(255 - (255-Color.R) * cov), (int)(255 - (255-Color.G) * cov), (int)(255 - (255-Color.B) * cov));
+                    var newColor = Color.FromArgb(
+                        255,
+                        (int)(255 - (255-Color.R) * cov),
+                        (int)(255 - (255-Color.G) * cov),
+                        (int)(255 - (255-Color.B) * cov));
                     wbm.SetPixelColor(x, y, newColor);
                 }
                 finally
@@ -380,8 +384,8 @@ namespace Lab03___Rasterization
 
     public class Circle : Shape
     {
-        public Point Center => Points[0];
-        public int Radius => (int)Math.Round(DistanceBetween(Points[0], Points[1]));
+        private Point Center => Points[0];
+        private int Radius => (int)Math.Round(DistanceBetween(Points[0], Points[1]));
         public Circle(List<Point> points, int thickness, Color color) : base(points, thickness, color) {}
         
         public override void Draw(WriteableBitmap wbm, bool isAntiAliased = false, bool isSuperSampled = false, int ssaa = 2)
@@ -466,8 +470,8 @@ namespace Lab03___Rasterization
 
     public class CircleArc : Shape // TODO: correctly implement Edge and Vertex movement
     {
-        public Point Center => Points[0];
-        public int Radius => (int)Math.Round(DistanceBetween(Points[0], Points[1]));
+        private Point Center => Points[0];
+        private int Radius => (int)Math.Round(DistanceBetween(Points[0], Points[1]));
         public CircleArc(List<Point> points, int thickness, Color color) : base(points, thickness, color) {}
         
         public override void Draw(WriteableBitmap wbm, bool isAntiAliased = false, bool isSuperSampled = false, int ssaa = 2)
