@@ -41,7 +41,7 @@ namespace Lab03___Rasterization
         public virtual int GetVertexIndexOf(Point point)
         {
             foreach (var vertex in Points)
-                if (DistanceBetween(vertex, point) < Thickness + GrabDistance)
+                if (point.DistanceFrom(vertex) < Thickness + GrabDistance)
                     return Points.IndexOf(vertex);
 
             return -1;
@@ -56,13 +56,13 @@ namespace Lab03___Rasterization
         {
             for (var i = 0; i < Points.Count - 1; i++)
             {
-                if (DistanceFromLine(Points[i], Points[i+1], point) < Thickness + GrabDistance &&
-                    IsInsideRectangle(Points[i], Points[i+1], point, Thickness + GrabDistance))
+                if (point.DistanceFromLine(Points[i], Points[i+1]) < Thickness + GrabDistance &&
+                    point.IsInsideRectangle(Points[i], Points[i+1], Thickness + GrabDistance))
                     return i;
             }
 
-            if (DistanceFromLine(Points[^1], Points[0], point) < Thickness + GrabDistance &&
-                IsInsideRectangle(Points[^1], Points[0], point, Thickness + GrabDistance))
+            if (point.DistanceFromLine(Points[^1], Points[0]) < Thickness + GrabDistance &&
+                point.IsInsideRectangle(Points[^1], Points[0], Thickness + GrabDistance))
                 return Points.Count - 1;
 
             return -1;
@@ -82,30 +82,30 @@ namespace Lab03___Rasterization
                 Points[i] = Point.Add(Points[i], offset);
         }
 
-        protected static double DistanceBetween(Point p1, Point p2)
-        {
-            var dx = p2.X - p1.X;
-            var dy = p2.Y - p1.Y;
-            return Math.Round(Math.Sqrt(dx*dx + dy*dy));
-        }
-
-        private static double DistanceFromLine(Point onLine1, Point onLine2, Point exterior)
-        {
-            var denominator = DistanceBetween(onLine1, onLine2);
-            var numerator = Math.Abs((onLine2.X - onLine1.X) * (onLine1.Y - exterior.Y) -
-                                       (onLine1.X - exterior.X) * (onLine2.Y - onLine1.Y));
-
-            return numerator / denominator;
-        }
-
-        private static bool IsInsideRectangle(Point vertex1, Point vertex2, Point p, int offSet = 0)
-        {
-            // offSet value is used to increase the rectangle size by 2*offSet on each edge
-            return (p.X > Math.Min(vertex1.X, vertex2.X) - offSet &&
-                    p.X < Math.Max(vertex1.X, vertex2.X) + offSet &&
-                    p.Y > Math.Min(vertex1.Y, vertex2.Y) - offSet &&
-                    p.Y < Math.Max(vertex1.Y, vertex2.Y) + offSet);
-        }
+        // protected static double DistanceBetween(Point p1, Point p2)
+        // {
+        //     var dx = p2.X - p1.X;
+        //     var dy = p2.Y - p1.Y;
+        //     return Math.Round(Math.Sqrt(dx*dx + dy*dy));
+        // }
+        //
+        // private static double DistanceFromLine(Point onLine1, Point onLine2, Point exterior)
+        // {
+        //     var denominator = DistanceBetween(onLine1, onLine2);
+        //     var numerator = Math.Abs((onLine2.X - onLine1.X) * (onLine1.Y - exterior.Y) -
+        //                                (onLine1.X - exterior.X) * (onLine2.Y - onLine1.Y));
+        //
+        //     return numerator / denominator;
+        // }
+        //
+        // private static bool IsInsideRectangle(Point vertex1, Point vertex2, Point p, int offSet = 0)
+        // {
+        //     // offSet value is used to increase the rectangle size by 2*offSet on each edge
+        //     return (p.X > Math.Min(vertex1.X, vertex2.X) - offSet &&
+        //             p.X < Math.Max(vertex1.X, vertex2.X) + offSet &&
+        //             p.Y > Math.Min(vertex1.Y, vertex2.Y) - offSet &&
+        //             p.Y < Math.Max(vertex1.Y, vertex2.Y) + offSet);
+        // }
 
         protected static double Determinant(Point a, Point b, Point c)
         {
@@ -385,7 +385,7 @@ namespace Lab03___Rasterization
     public class Circle : Shape
     {
         private Point Center => Points[0];
-        private int Radius => (int)Math.Round(DistanceBetween(Points[0], Points[1]));
+        private int Radius => (int)Math.Round(Points[0].DistanceFrom(Points[1]));
         public Circle(List<Point> points, int thickness, Color color) : base(points, thickness, color) {}
         
         public override void Draw(WriteableBitmap wbm, bool isAntiAliased = false, bool isSuperSampled = false, int ssaa = 2)
@@ -444,8 +444,8 @@ namespace Lab03___Rasterization
         
         public override int GetEdgeIndexOf(Point point)
         {
-            if (DistanceBetween(Center, point) < Radius - Thickness - GrabDistance || 
-                DistanceBetween(Center, point) > Radius + Thickness + GrabDistance)
+            if (point.DistanceFrom(Center) < Radius - Thickness - GrabDistance || 
+                point.DistanceFrom(Center) > Radius + Thickness + GrabDistance)
                 return -1;
             
             // change edgePoint to the closest point on circle to the clicked point
@@ -471,7 +471,7 @@ namespace Lab03___Rasterization
     public class CircleArc : Shape // TODO: correctly implement Edge and Vertex movement
     {
         private Point Center => Points[0];
-        private int Radius => (int)Math.Round(DistanceBetween(Points[0], Points[1]));
+        private int Radius => (int)Math.Round(Points[0].DistanceFrom(Points[1]));
         public CircleArc(List<Point> points, int thickness, Color color) : base(points, thickness, color) {}
         
         public override void Draw(WriteableBitmap wbm, bool isAntiAliased = false, bool isSuperSampled = false, int ssaa = 2)
@@ -565,8 +565,8 @@ namespace Lab03___Rasterization
         
         public override int GetEdgeIndexOf(Point point)
         {
-            if (DistanceBetween(Center, point) < Radius - Thickness - GrabDistance || 
-                DistanceBetween(Center, point) > Radius + Thickness + GrabDistance)
+            if (point.DistanceFrom(Center) < Radius - Thickness - GrabDistance || 
+                point.DistanceFrom(Center) > Radius + Thickness + GrabDistance)
                 return -1;
             
             // change edgePoint to -> the point on circle that is closest to the clicked point
