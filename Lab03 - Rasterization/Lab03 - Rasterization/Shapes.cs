@@ -41,7 +41,7 @@ namespace Lab03___Rasterization
         public virtual int GetVertexIndexOf(Point point)
         {
             foreach (var vertex in Points)
-                if (point.DistanceFrom(vertex) < Thickness + GrabDistance)
+                if (point.DistanceFromPoint(vertex) < Thickness + GrabDistance)
                     return Points.IndexOf(vertex);
 
             return -1;
@@ -360,7 +360,7 @@ namespace Lab03___Rasterization
     public class Circle : Shape
     {
         private Point Center => Points[0];
-        private int Radius => (int)Math.Round(Points[0].DistanceFrom(Points[1]));
+        private int Radius => (int)Math.Round(Points[0].DistanceFromPoint(Points[1]));
         public Circle(List<Point> points, int thickness, Color color) : base(points, thickness, color) {}
         
         public override void Draw(WriteableBitmap wbm, bool isAntiAliased = false, bool isSuperSampled = false, int ssaa = 2)
@@ -419,8 +419,8 @@ namespace Lab03___Rasterization
         
         public override int GetEdgeIndexOf(Point point)
         {
-            if (point.DistanceFrom(Center) < Radius - Thickness - GrabDistance || 
-                point.DistanceFrom(Center) > Radius + Thickness + GrabDistance)
+            if (point.DistanceFromPoint(Center) < Radius - Thickness - GrabDistance || 
+                point.DistanceFromPoint(Center) > Radius + Thickness + GrabDistance)
                 return -1;
             
             // change edgePoint to the closest point on circle to the clicked point
@@ -446,7 +446,7 @@ namespace Lab03___Rasterization
     public class CircleArc : Shape // TODO: correctly implement Edge and Vertex movement
     {
         private Point Center => Points[0];
-        private int Radius => (int)Math.Round(Points[0].DistanceFrom(Points[1]));
+        private int Radius => (int)Math.Round(Points[0].DistanceFromPoint(Points[1]));
         public CircleArc(List<Point> points, int thickness, Color color) : base(points, thickness, color) {}
         
         public override void Draw(WriteableBitmap wbm, bool isAntiAliased = false, bool isSuperSampled = false, int ssaa = 2)
@@ -540,8 +540,8 @@ namespace Lab03___Rasterization
         
         public override int GetEdgeIndexOf(Point point)
         {
-            if (point.DistanceFrom(Center) < Radius - Thickness - GrabDistance || 
-                point.DistanceFrom(Center) > Radius + Thickness + GrabDistance)
+            if (point.DistanceFromPoint(Center) < Radius - Thickness - GrabDistance || 
+                point.DistanceFromPoint(Center) > Radius + Thickness + GrabDistance)
                 return -1;
             
             // change edgePoint to -> the point on circle that is closest to the clicked point

@@ -5,7 +5,7 @@ namespace Lab03___Rasterization
 {
     public static class PointExtensions
     {
-        public static double DistanceFrom(this Point point, Point otherPoint)
+        public static double DistanceFromPoint(this Point point, Point otherPoint)
         {
             var dx = otherPoint.X - point.X;
             var dy = otherPoint.Y - point.Y;
@@ -14,7 +14,7 @@ namespace Lab03___Rasterization
 
         public static double DistanceFromLine(this Point point,  Point pointOnLine1, Point pointOnLine2)
         {
-            var denominator = pointOnLine1.DistanceFrom(pointOnLine2);
+            var denominator = pointOnLine1.DistanceFromPoint(pointOnLine2);
             var numerator = Math.Abs((pointOnLine2.X - pointOnLine1.X) * (pointOnLine1.Y - point.Y) -
                                      (pointOnLine1.X - point.X) * (pointOnLine2.Y - pointOnLine1.Y));
 
