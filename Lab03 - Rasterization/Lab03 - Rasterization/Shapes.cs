@@ -24,7 +24,7 @@ namespace Lab03___Rasterization
 
     public abstract class Shape : IDrawable
     {
-        public List<Point> Points { get; protected set; }
+        public List<Point> Points { get; }
         public int Thickness { get; set; }
         public Color Color { get; set; }
         protected const int GrabDistance = 10;
