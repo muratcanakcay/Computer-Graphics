@@ -82,31 +82,6 @@ namespace Lab03___Rasterization
                 Points[i] = Point.Add(Points[i], offset);
         }
 
-        // protected static double DistanceBetween(Point p1, Point p2)
-        // {
-        //     var dx = p2.X - p1.X;
-        //     var dy = p2.Y - p1.Y;
-        //     return Math.Round(Math.Sqrt(dx*dx + dy*dy));
-        // }
-        //
-        // private static double DistanceFromLine(Point onLine1, Point onLine2, Point exterior)
-        // {
-        //     var denominator = DistanceBetween(onLine1, onLine2);
-        //     var numerator = Math.Abs((onLine2.X - onLine1.X) * (onLine1.Y - exterior.Y) -
-        //                                (onLine1.X - exterior.X) * (onLine2.Y - onLine1.Y));
-        //
-        //     return numerator / denominator;
-        // }
-        //
-        // private static bool IsInsideRectangle(Point vertex1, Point vertex2, Point p, int offSet = 0)
-        // {
-        //     // offSet value is used to increase the rectangle size by 2*offSet on each edge
-        //     return (p.X > Math.Min(vertex1.X, vertex2.X) - offSet &&
-        //             p.X < Math.Max(vertex1.X, vertex2.X) + offSet &&
-        //             p.Y > Math.Min(vertex1.Y, vertex2.Y) - offSet &&
-        //             p.Y < Math.Max(vertex1.Y, vertex2.Y) + offSet);
-        // }
-
         protected static double Determinant(Point a, Point b, Point c)
         {
             return a.X*b.Y - a.X*c.Y - a.Y*b.X + a.Y*c.X + b.X*c.Y - b.Y*c.X;
