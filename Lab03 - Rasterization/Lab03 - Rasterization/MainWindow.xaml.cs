@@ -55,11 +55,6 @@ namespace Lab03___Rasterization
         private WriteableBitmap _wbm;
         private readonly SolidColorBrush _activeButtonColor = Brushes.LightSalmon;
         private readonly SolidColorBrush _inactiveButtonColor = Brushes.LightCyan;
-        
-
-
-
-
 
         public MainWindow()
         {

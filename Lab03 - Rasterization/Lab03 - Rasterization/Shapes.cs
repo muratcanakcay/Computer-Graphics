@@ -9,11 +9,11 @@ using Point = System.Windows.Point;
 namespace Lab03___Rasterization
 {
     
-    internal interface IDrawable
+    internal interface IDrawable 
     {
+        List<Point> Points { get; }
         int Thickness { get; set; }
         Color Color { get; set; }
-        List<Point> Points { get; }
         void Draw(WriteableBitmap wbm, bool isAntiAliased = false, bool isSuperSampled = false, int ssaa = 2);
         int GetVertexIndexOf(Point point);
         void MoveVertex(int vertexIndex, Vector offSet);
@@ -24,10 +24,10 @@ namespace Lab03___Rasterization
 
     public abstract class Shape : IDrawable
     {
+        protected const int GrabDistance = 10;
         public List<Point> Points { get; }
         public int Thickness { get; set; }
         public Color Color { get; set; }
-        protected const int GrabDistance = 10;
 
         protected Shape(List<Point> points, int thickness, Color color)
         {
@@ -188,8 +188,8 @@ namespace Lab03___Rasterization
                 }
 
                 var dE = 2 * dy;
-                var dXE = y1 > y0 ? 2*(dy - dx) : 2*(dy + dx);
-                var d = y1 > y0 ? 2*dy - dx : 2*dy + dx;
+                var dXE = dy > 0 ? 2*(dy - dx) : 2*(dy + dx);
+                var d = dy > 0 ? 2*dy - dx : 2*dy + dx;
 
                 var x = (int)x0;
                 var y = (int)y0;
@@ -206,14 +206,14 @@ namespace Lab03___Rasterization
                     if (d <= 0) // move to E or SE
                     {
                         twoVDx = d + dx;
-                        d += y1 > y0 ? dE : dXE;
-                        if (y1 < y0) --y;
+                        d += dy > 0 ? dE : dXE;
+                        if (dy < 0) --y;
                     }
                     else // move to E or NE
                     {
                         twoVDx = d - dx;
-                        d += y1 > y0 ? dXE : dE;
-                        if (y1 > y0) ++y;
+                        d += dy > 0 ? dXE : dE;
+                        if (dy > 0) ++y;
                     }
 
                     IntensifyPixel(wbm, x, y, twoVDx * invDenom);
@@ -234,8 +234,8 @@ namespace Lab03___Rasterization
                 }
 
                 var dN = 2 * dx;
-                var dNX = x1 > x0 ? 2*(dx - dy) : 2*(dx + dy);
-                var d = x1 > x0 ? 2*dx - dy : 2*dx + dy;
+                var dNX = dx > 0 ? 2*(dx - dy) : 2*(dx + dy);
+                var d = dx > 0 ? 2*dx - dy : 2*dx + dy;
 
                 var y = (int)y0;
                 var x = (int)x0;
@@ -252,14 +252,14 @@ namespace Lab03___Rasterization
                     if (d < 0) // move to N or NW
                     {
                         twoVDy = d + dy;
-                        d += x1 > x0 ? dN : dNX;
-                        if (x1 < x0) --x;
+                        d += dx > 0 ? dN : dNX;
+                        if (dx < 0) --x;
                     }
                     else // move to N or NE
                     {
                         twoVDy = d - dy;
-                        d += x1 > x0 ? dNX : dN;
-                        if (x1 > x0) ++x;
+                        d += dx > 0 ? dNX : dN;
+                        if (dx > 0) ++x;
                     }
 
                     IntensifyPixel(wbm, x, y, twoVDy * invDenom);
@@ -328,7 +328,7 @@ namespace Lab03___Rasterization
 
         public override string ToString()
         {
-            return $"({Points[0].X}, {Points[0].Y})-({Points[1].X}, {Points[1].Y})";
+            return $"({Points[0].X}, {Points[0].Y})-({Points[1].X}, {Points[1].Y})\n";
         }
     }
 
@@ -439,7 +439,7 @@ namespace Lab03___Rasterization
 
         public override string ToString()
         {
-            return $"Center:({Center.X}, {Center.Y}) - Radius:{Radius})";
+            return $"Center:({Center.X}, {Center.Y}) - Radius:{Radius})\n";
         }
     }
 
@@ -560,7 +560,7 @@ namespace Lab03___Rasterization
 
         public override string ToString()
         {
-            return $"Center:({Center.X}, {Center.Y}) - Radius:{Radius} - P1:({Points[1].X}, {Points[1].Y} - P2: ({Points[2].X}, {Points[2].Y}))";
+            return $"Center:({Center.X}, {Center.Y}) - Radius:{Radius} - P1:({Points[1].X}, {Points[1].Y}) - P2: ({Points[2].X}, {Points[2].Y})\n";
         }
     }
 }
