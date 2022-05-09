@@ -279,11 +279,13 @@ namespace Lab03___Rasterization
                 try
                 {
                     wbm.Lock();
+                    var backgroundColor = wbm.GetPixelColor(x, y);
                     var newColor = Color.FromArgb(
                         255,
-                        (int)(255 - (255-Color.R) * cov),
-                        (int)(255 - (255-Color.G) * cov),
-                        (int)(255 - (255-Color.B) * cov));
+                        (int)(backgroundColor.R*(1-cov) + Color.R*cov),
+                        (int)(backgroundColor.G*(1-cov) + Color.G*cov),
+                        (int)(backgroundColor.B*(1-cov) + Color.B*cov));
+                    
                     wbm.SetPixelColor(x, y, newColor);
                 }
                 finally
