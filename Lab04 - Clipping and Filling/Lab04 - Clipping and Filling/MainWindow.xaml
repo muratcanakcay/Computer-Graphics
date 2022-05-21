@@ -1,0 +1,274 @@
+﻿<Window x:Class="Lab04___Clipping_and_Filling.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Title="Rasterization" 
+        Height="720" 
+        MinHeight="720"
+        Width="1200"
+        MinWidth="800"
+        WindowStartupLocation="CenterScreen"
+        KeyDown="MainWindow_OnKeyDown"
+        KeyUp="MainWindow_OnKeyUp"
+        >
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        
+        <Menu Grid.Row="0">
+
+            <Menu.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <DockPanel  HorizontalAlignment="Stretch"/>
+                </ItemsPanelTemplate>
+            </Menu.ItemsPanel>
+
+            <MenuItem HorizontalAlignment="Left" Header="_File">
+                <MenuItem Header="_Reset Canvas" Click="OnClick_ResetCanvas" ></MenuItem>
+                <MenuItem Header="_Load Shapes" Click="OnClick_LoadShapes" InputGestureText="Alt+O"></MenuItem>
+                <MenuItem Header="_Save Shapes" Click="OnClick_SaveShapes" InputGestureText="Alt+S"></MenuItem>
+            </MenuItem>
+
+            <MenuItem HorizontalAlignment="Left" Header="H_elp" Click="OnClick_Help" InputGestureText="Alt+H"></MenuItem>
+            <MenuItem HorizontalAlignment="Left" Header="E_xit" Click="OnClick_Exit" InputGestureText="Alt+X"></MenuItem>
+
+        </Menu>
+        
+
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="280px"/>
+            </Grid.ColumnDefinitions>
+
+            <!--CANVAS-->
+            <Grid Grid.Column="0"> 
+                <Canvas
+                    Name="TheCanvas"
+                    Height="680" 
+                    Width="900"
+                    Background="Transparent"
+                    MouseLeftButtonDown="TheCanvas_OnMouseLeftButtonDown"
+                    MouseLeftButtonUp="TheCanvas_OnMouseLeftButtonUp"
+                    MouseMove="TheCanvas_OnMouseMove"
+                    MouseRightButtonUp="TheCanvas_OnMouseRightButtonUp"
+                    MouseWheel="TheCanvas_OnMouseWheel"
+                    Cursor="Cross"
+                    >
+                    <Image
+                        Name="CanvasImage" RenderTransformOrigin="0.5,0.5" Stretch="None">
+                        <Image.RenderTransform>
+                            <TransformGroup>
+                                <ScaleTransform ScaleX="1" ScaleY="1"/>
+                            </TransformGroup>
+                        </Image.RenderTransform>
+                    </Image>
+                </Canvas>
+            </Grid>
+
+            <!--CONTROL_PANEL-->
+            <Grid Grid.Column="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <TabControl Grid.Row="0">
+                    <!--SHAPES TAB-->
+                    <TabItem Header="Drawing">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="2*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="24"/>
+                                <RowDefinition Height="24"/>
+                                <RowDefinition Height="24"/>
+                                <RowDefinition Height="24"/>
+                                <RowDefinition Height="24"/>
+                                <RowDefinition Height="24"/>
+                                <RowDefinition Height="24"/>
+                                <RowDefinition Height="24"/>
+                                <RowDefinition Height="24"/>
+                                <RowDefinition Height="24"/>
+                                <RowDefinition Height="24"/>
+                                <RowDefinition/>
+                            </Grid.RowDefinitions>
+
+                            
+                            <!--THICKNESS & COLOR--> 
+                            <TextBlock Grid.Row="0"
+                                       Grid.Column="0"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"
+                                       Text="Thickness"
+                            />
+
+                            <TextBox
+                                Grid.Row="0"
+                                Grid.Column="1"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Width="25"
+                                Name="ShapeThicknessTextBox"
+                                PreviewTextInput="ShapeThickness_OnPreviewTextInput"
+                                Text="1"
+                                TextAlignment="Center"
+                            />
+
+                            <TextBlock Grid.Row="0"
+                                       Grid.Column="2"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"
+                                       Text="Color"
+                            />
+
+                            <Rectangle  
+                                Grid.Row="0"
+                                Grid.Column="3"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Margin="1,0, 1, 0"
+                                Height="15"
+                                Width="30"
+                                Name="ShapeColorButton"
+                                IsEnabled="true"
+                                ToolTip="Select Color"
+                                Fill="Black"
+                                Stroke="Black"
+                                MouseLeftButtonUp="ShapeColorButton_OnClick"
+                            />
+                            
+                            <!--LINE-->
+                            <Button  
+                                Grid.Row="1"
+                                Grid.Column="0"
+                                Grid.ColumnSpan="2"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                Margin="1,0, 6, 0"
+                                Height="20"
+                                Width="100"
+                                Name="LineButton"
+                                IsEnabled="true"
+                                ToolTip="Draw Line"
+                                Background="LightCyan"
+                                Click="LineButton_OnClick">
+                                Draw Line
+                            </Button>
+
+                            <!--POLYGON-->
+                            <Button  
+                                Grid.Row="2"
+                                Grid.Column="0"
+                                Grid.ColumnSpan="2"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                Margin="1,0, 6, 0"
+                                Height="20"
+                                Width="100"
+                                Name="PolygonButton"
+                                IsEnabled="true"
+                                ToolTip="Draw Polygon"
+                                Background="LightCyan"
+                                Click="PolygonButton_OnClick">
+                                Draw Polygon
+                            </Button>
+
+                            <!--CIRCLE-->
+                            <Button  
+                                Grid.Row="3"
+                                Grid.Column="0"
+                                Grid.ColumnSpan="2"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                Margin="1,0, 6, 0"
+                                Height="20"
+                                Width="100"
+                                Name="CircleButton"
+                                IsEnabled="true"
+                                ToolTip="Draw Circle"
+                                Background="LightCyan"
+                                Click="CircleButton_OnClick">
+                                Draw Circle
+                            </Button>
+
+                            <!--CIRCLE ARC-->
+                            <Button  
+                                Grid.Row="4"
+                                Grid.Column="0"
+                                Grid.ColumnSpan="2"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                Margin="1,0, 6, 0"
+                                Height="20"
+                                Width="100"
+                                Name="CircleArcButton"
+                                IsEnabled="true"
+                                ToolTip="Draw Circle Arc"
+                                Background="LightCyan"
+                                Click="CircleArcButton_OnClick">
+                                Draw Circle Arc
+                            </Button>
+
+                            <!--ANTI-ALIASING-->
+                            <Button  
+                                Grid.Row="6"
+                                Grid.Column="0"
+                                Grid.ColumnSpan="4"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                Margin="1,0, 6, 0"
+                                Height="20"
+                                Width="120"
+                                Name="AntiAliasButton"
+                                IsEnabled="true"
+                                ToolTip="Apply Anti-aliasing"
+                                Background="LightCyan"
+                                Click="AntiAliasButton_OnClick">
+                                Apply Anti-Aliasing
+                            </Button>
+
+                            <!--SUPER SAMPLING-->
+                            <Button  
+                                Grid.Row="7"
+                                Grid.Column="0"
+                                Grid.ColumnSpan="4"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                Margin="1,0, 6, 0"
+                                Height="20"
+                                Width="120"
+                                Name="SuperSampleButton"
+                                IsEnabled="true"
+                                ToolTip="Apply SuperSampling"
+                                Background="LightCyan"
+                                Click="SuperSampleButton_OnClick">
+                                Apply SuperSampling
+                            </Button>
+
+                            
+
+
+                        </Grid>
+                        
+                    </TabItem>
+
+                    <!--<TabItem Header="Anti-Aliasing">-->
+                    <!--</TabItem>-->
+
+                </TabControl>
+
+            </Grid>
+
+        </Grid>
+    </Grid>
+</Window>
