@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Windows;
@@ -361,16 +362,15 @@ namespace Lab04___Clipping_and_Filling
 
         public override void Draw(WriteableBitmap wbm, bool isAntiAliased = false, bool isSuperSampled = false, int ssaa = 2)
         {
+            if (FillColor != null) FillWithSolidColor(wbm);
+            
             for (var i = 0; i < Points.Count; i++)
             {
                 var endPoint = i < Points.Count-1 ? Points[i+1] : Points[0];
                 var edge = new Line(new List<Point> { Points[i], endPoint }, Thickness, Color);
                 edge.Draw(wbm, isAntiAliased, isSuperSampled, ssaa);
             }
-
-            if (FillColor != null) FillWithSolidColor(wbm);
         }
-
         private class EdgeData
         {
             public int YMax;
@@ -421,6 +421,8 @@ namespace Lab04___Clipping_and_Filling
         private void FillWithSolidColor(WriteableBitmap wbm)
         {
             var et = CreateEdgeTable();
+            if (et.Count == 0) return;
+
             var y = et.Keys.First();
             List<EdgeData> aet = new();
 
@@ -432,12 +434,21 @@ namespace Lab04___Clipping_and_Filling
                     et.Remove(y);
                 }
 
-                aet = aet.OrderBy(edge => (int)Math.Round(edge.X)).ToList();
+                // check for self-intersecting polygon issues
+                if (aet.Count%2 == 1)
+                {
+                    if (et.Count == 0) return;
+                    ++y;
+                    continue;
+                }
+
+                aet = aet.OrderBy(edge => edge.X).ToList();
 
                 for (var i = 0; i < aet.Count; i+=2)
                 {
                     var x1 = (int)Math.Round(aet[i].X);
                     var x2 = (int)Math.Round(aet[i+1].X);
+                    if (x1 < 0 || x2 < 0) continue;
                     
                     FillBetweenEdges(wbm, x1, x2, y);
                 }
@@ -456,15 +467,8 @@ namespace Lab04___Clipping_and_Filling
             
             wbm.Lock();
 
-            if (FillColor == null) throw new ArgumentNullException();
-            
-            if (wbm.GetPixelColor(x1, y) == Color) x1++;
-            
             for (var x = x1; x < x2; x++)
-            {
-                
-                wbm.SetPixelColor(x, y, (Color)FillColor);
-            }
+                wbm.SetPixelColor(x, y, (Color)(FillColor!));
 
             wbm.Unlock();
         }
