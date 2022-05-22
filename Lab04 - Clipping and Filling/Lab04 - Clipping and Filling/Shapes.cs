@@ -366,6 +366,13 @@ namespace Lab04___Clipping_and_Filling
                 var edge = new Line(new List<Point> { Points[i], endPoint }, Thickness, Color);
                 edge.Draw(wbm, isAntiAliased, isSuperSampled, ssaa);
             }
+
+            if (FillColor != null) FillWithSolidColor();
+        }
+
+        private void FillWithSolidColor()
+        {
+            throw new NotImplementedException();
         }
 
         public override string ToString()

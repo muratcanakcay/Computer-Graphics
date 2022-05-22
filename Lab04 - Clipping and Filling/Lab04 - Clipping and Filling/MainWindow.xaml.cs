@@ -44,6 +44,7 @@ namespace Lab04___Clipping_and_Filling
         private bool _isZooming;
         private Point _previousCursorPosition;
         private Point _currentCursorPosition;
+        private Polygon _selectedPolygon;
         private int SSAA = 2; // TODO: make this modifiable from GUI
         private int _currentShapeIndex;
         private int _currentEdgeIndex;
@@ -113,7 +114,8 @@ namespace Lab04___Clipping_and_Filling
             else if (_isDrawingCircle) ToggleIsDrawingCircle();
             else if (_isDrawingCircleArc) ToggleIsDrawingCircleArc();
 
-            if (_isPolygonSelected) ToggleFillButtonsOff();
+            //if (_isPolygonSelected) ToggleFillButtonsOff();
+            ToggleFillButtonsOff();
         
 
             _currentPoints.Clear();
@@ -166,7 +168,20 @@ namespace Lab04___Clipping_and_Filling
 
                 if (_allShapes[_currentShapeIndex] is Polygon selectedPolygon)
                 {
+                    _selectedPolygon = selectedPolygon;
                     ToggleFillButtonsOn();
+                    
+                    FillSolidButton.Background = _selectedPolygon.FillColor is not null
+                        ? _activeButtonColor
+                        : _inactiveButtonColor;
+                    
+                    var fillColor = _selectedPolygon.FillColor;
+                    if (fillColor is not null)
+                        FillColorButton.Fill = new SolidColorBrush(
+                            System.Windows.Media.Color.FromArgb(((Color)fillColor).A, ((Color)fillColor).R, ((Color)fillColor).G, ((Color)fillColor).B));
+                    else
+                        FillColorButton.Fill = new SolidColorBrush(Colors.Transparent);
+                    
                 }
                 
                 
@@ -439,7 +454,7 @@ namespace Lab04___Clipping_and_Filling
             {
                 Debug.WriteLine($"Ending: {clickPosition.X}, {clickPosition.Y}");
                 _allShapes.Add(new Polygon(
-                    new List<Point>(_currentPoints), _currentShapeThickness, _currentShapeColor, _currentFillColor));
+                    new List<Point>(_currentPoints), _currentShapeThickness, _currentShapeColor, null));
                 _currentPoints.Clear();
                 ToggleIsDrawingPolygon();
                 RedrawCanvas();
@@ -479,7 +494,7 @@ namespace Lab04___Clipping_and_Filling
                 };
 
                 _allShapes.Add(new Rectangle(
-                    rectangleVertices, _currentShapeThickness, _currentShapeColor, _currentFillColor));
+                    rectangleVertices, _currentShapeThickness, _currentShapeColor, null));
                 _currentPoints.Clear();
                 ToggleIsDrawingRectangle();
                 RedrawCanvas();
@@ -641,11 +656,25 @@ namespace Lab04___Clipping_and_Filling
 
         private void ToggleFillSolid()
         {
-            // FillSolidButton.Background = 
+            switch (_selectedPolygon.FillColor)
+            {
+                case null:
+                    _selectedPolygon.FillColor = _currentFillColor;
+                    break;
+                default:
+                    _selectedPolygon.FillColor = null;
+                    break;
+            }
+
+            FillSolidButton.Background = _selectedPolygon.FillColor is not null
+                ? _activeButtonColor
+                : _inactiveButtonColor;
+
+                
         }
         private void FillColorButton_OnClick(object sender, MouseButtonEventArgs e)
         {
-            if(!_isPolygonSelected) return;
+            //if(!_isPolygonSelected) return;
             
             using var colorDialog = new System.Windows.Forms.ColorDialog();
             if (colorDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
@@ -663,9 +692,9 @@ namespace Lab04___Clipping_and_Filling
                     colorDialog.Color.G,
                     colorDialog.Color.B);
 
-                if (_isModifyingShape)
+                if (_selectedPolygon?.FillColor != null) // (_selectedPolygon != null && _selectedPolygon.FillColor != null)
                 {
-                    _allShapes[_currentShapeIndex].FillColor = _currentFillColor;
+                    _selectedPolygon.FillColor = _currentFillColor;
                     RedrawCanvas();
                 }
             }
