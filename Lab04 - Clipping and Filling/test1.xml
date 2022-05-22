@@ -1,23 +1,23 @@
 <?xml version="1.0"?>
 <ArrayOfShapeT xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <ShapeT>
-    <ClassName>Rectangle</ClassName>
+    <ClassName>Polygon</ClassName>
     <Points>
       <Point>
-        <X>609</X>
-        <Y>178.04</Y>
+        <X>302</X>
+        <Y>226.04</Y>
       </Point>
       <Point>
-        <X>379</X>
-        <Y>178.04</Y>
+        <X>436</X>
+        <Y>462.04</Y>
       </Point>
       <Point>
-        <X>379</X>
-        <Y>293.04</Y>
+        <X>536</X>
+        <Y>228.04</Y>
       </Point>
       <Point>
-        <X>609</X>
-        <Y>293.04</Y>
+        <X>433</X>
+        <Y>341.04</Y>
       </Point>
     </Points>
     <Thickness>1</Thickness>

@@ -378,25 +378,6 @@ namespace Lab04___Clipping_and_Filling
             public double InvM;
         }
 
-        private class EdgeDataComparer : IComparer<EdgeData>
-        {
-            public int Compare(EdgeData? a, EdgeData? b)
-            {
-                if (a == null || b == null) return 0;
-                
-                var aXMin = a.X;
-                var bXMin = b.X;
-
-                if (Math.Abs(aXMin - bXMin) <= 0.5) // check tolerance
-                    return 0;
-            
-                if (aXMin < bXMin)
-                    return 1;
-
-                return -1;
-            }
-        }
-
         private SortedDictionary<int, List<EdgeData>> CreateEdgeTable()
         {
             SortedDictionary<int, List<EdgeData>> et = new();
@@ -412,7 +393,7 @@ namespace Lab04___Clipping_and_Filling
 
                 if (dy == 0) continue; // horizontal edge
 
-                var xMin = Math.Min(x1, x2);
+                var xMin = y1 < y2 ? x1 : x2;
                 var yMin = (int)Math.Round(Math.Min(y1, y2));
                 var yMax = (int)Math.Round(Math.Max(y1, y2));
 
@@ -423,10 +404,9 @@ namespace Lab04___Clipping_and_Filling
                     InvM = dx/dy
                 };
 
-                if (et.ContainsKey(yMin))
+                if (et.ContainsKey(yMin)) 
                 {
                     et[yMin].Add(edge);
-                    et[yMin].Sort(new EdgeDataComparer()); // sort the edge bucket w.r.t. x
                 }
                 else
                 {
@@ -449,9 +429,10 @@ namespace Lab04___Clipping_and_Filling
                 if (et.ContainsKey(y))
                 {
                     aet.AddRange(et[y]);
-                    aet.Sort(new EdgeDataComparer());
                     et.Remove(y);
                 }
+
+                aet = aet.OrderBy(edge => (int)Math.Round(edge.X)).ToList();
 
                 for (var i = 0; i < aet.Count; i+=2)
                 {
@@ -476,9 +457,12 @@ namespace Lab04___Clipping_and_Filling
             wbm.Lock();
 
             if (FillColor == null) throw new ArgumentNullException();
-
+            
+            if (wbm.GetPixelColor(x1, y) == Color) x1++;
+            
             for (var x = x1; x < x2; x++)
             {
+                
                 wbm.SetPixelColor(x, y, (Color)FillColor);
             }
 
