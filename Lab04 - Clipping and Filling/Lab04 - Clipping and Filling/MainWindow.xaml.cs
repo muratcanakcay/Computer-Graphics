@@ -26,6 +26,7 @@ namespace Lab04___Clipping_and_Filling
             public List<Point> Points;
             public int Thickness;
             public int Color;
+            public int? FillColor;
         };
         
         private bool _isDrawingLine;
@@ -37,6 +38,7 @@ namespace Lab04___Clipping_and_Filling
         private bool _isMovingEdge;
         private bool _isMovingShape;
         private bool _isModifyingShape;
+        private bool _isPolygonSelected;
         private bool _isAntiAliased;
         private bool _isSuperSampled;
         private bool _isZooming;
@@ -49,6 +51,7 @@ namespace Lab04___Clipping_and_Filling
         private int _currentZoomLevel = 1;
         private int _currentShapeThickness = 1;
         private Color _currentShapeColor = Color.FromArgb(255, 0, 0, 0);
+        private Color? _currentFillColor = null;
         private readonly List<Point> _currentPoints = new();
         private readonly List<IDrawable> _allShapes = new();
         private WriteableBitmap? _emptyWbm;
@@ -57,6 +60,7 @@ namespace Lab04___Clipping_and_Filling
         private readonly SolidColorBrush _activeButtonColor = Brushes.LightSalmon;
         private readonly SolidColorBrush _inactiveButtonColor = Brushes.LightCyan;
         
+
 
         public MainWindow()
         {
@@ -109,9 +113,13 @@ namespace Lab04___Clipping_and_Filling
             else if (_isDrawingCircle) ToggleIsDrawingCircle();
             else if (_isDrawingCircleArc) ToggleIsDrawingCircleArc();
 
+            if (_isPolygonSelected) ToggleFillButtonsOff();
+        
+
             _currentPoints.Clear();
             RedrawCanvas();
         }
+
         private void DrawAllShapes(WriteableBitmap wbm)
         {
             foreach (var shape in _allShapes)
@@ -126,6 +134,7 @@ namespace Lab04___Clipping_and_Filling
         private void TheCanvas_OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             _isModifyingShape = false;
+            ToggleFillButtonsOff();
             _currentCursorPosition = e.GetPosition(TheCanvas);
             Debug.WriteLine($"CLICKED ({_currentCursorPosition.X}, {_currentCursorPosition.Y})");
 
@@ -154,6 +163,16 @@ namespace Lab04___Clipping_and_Filling
                 var shapeColor = _allShapes[_currentShapeIndex].Color;
                 ShapeColorButton.Fill = new SolidColorBrush(
                     System.Windows.Media.Color.FromArgb(shapeColor.A, shapeColor.R, shapeColor.G, shapeColor.B));
+
+                if (_allShapes[_currentShapeIndex] is Polygon selectedPolygon)
+                {
+                    ToggleFillButtonsOn();
+                }
+                
+                
+                
+                
+                
                 Debug.WriteLine(_allShapes[_currentShapeIndex]);
             }
             else if (_isDrawingLine) DrawLine(_currentCursorPosition);
@@ -420,7 +439,7 @@ namespace Lab04___Clipping_and_Filling
             {
                 Debug.WriteLine($"Ending: {clickPosition.X}, {clickPosition.Y}");
                 _allShapes.Add(new Polygon(
-                    new List<Point>(_currentPoints), _currentShapeThickness, _currentShapeColor));
+                    new List<Point>(_currentPoints), _currentShapeThickness, _currentShapeColor, _currentFillColor));
                 _currentPoints.Clear();
                 ToggleIsDrawingPolygon();
                 RedrawCanvas();
@@ -450,8 +469,17 @@ namespace Lab04___Clipping_and_Filling
                 Debug.WriteLine($"Ending: {clickPosition.X}, {clickPosition.Y}");
                 
                 _currentPoints.Add(clickPosition);
+
+                var rectangleVertices = new List<Point>
+                {
+                    _currentPoints[0],
+                    new Point(_currentPoints[1].X, _currentPoints[0].Y),
+                    _currentPoints[1],
+                    new Point(_currentPoints[0].X, _currentPoints[1].Y),
+                };
+
                 _allShapes.Add(new Rectangle(
-                    _currentPoints, _currentShapeThickness, _currentShapeColor));
+                    rectangleVertices, _currentShapeThickness, _currentShapeColor, _currentFillColor));
                 _currentPoints.Clear();
                 ToggleIsDrawingRectangle();
                 RedrawCanvas();
@@ -529,7 +557,7 @@ namespace Lab04___Clipping_and_Filling
             }
         }
 
-        //---------- THICKNESS, COLOR, ANTI-ALIASING
+        //---------- THICKNESS, EDGE COLOR, ANTI-ALIASING
         private void ShapeThickness_OnPreviewTextInput(object sender, TextCompositionEventArgs e)
         {
             if (int.TryParse(e.Text, out var inputNum) && inputNum is >= 1 and <= 8)
@@ -561,6 +589,7 @@ namespace Lab04___Clipping_and_Filling
                         colorDialog.Color.R,
                         colorDialog.Color.G,
                         colorDialog.Color.B));
+
                 _currentShapeColor = Color.FromArgb(
                     colorDialog.Color.A,
                     colorDialog.Color.R,
@@ -602,6 +631,55 @@ namespace Lab04___Clipping_and_Filling
             _isSuperSampled = !_isSuperSampled;
             SuperSampleButton.Background = _isSuperSampled ? _activeButtonColor : _inactiveButtonColor;
         }
+        
+        //---------- FILLING
+        private void FillSolidButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            ToggleFillSolid();
+            RedrawCanvas();
+        }
+
+        private void ToggleFillSolid()
+        {
+            // FillSolidButton.Background = 
+        }
+        private void FillColorButton_OnClick(object sender, MouseButtonEventArgs e)
+        {
+            if(!_isPolygonSelected) return;
+            
+            using var colorDialog = new System.Windows.Forms.ColorDialog();
+            if (colorDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                FillColorButton.Fill = new SolidColorBrush(
+                    System.Windows.Media.Color.FromArgb(
+                        colorDialog.Color.A,
+                        colorDialog.Color.R,
+                        colorDialog.Color.G,
+                        colorDialog.Color.B));
+
+                _currentFillColor = Color.FromArgb(
+                    colorDialog.Color.A,
+                    colorDialog.Color.R,
+                    colorDialog.Color.G,
+                    colorDialog.Color.B);
+
+                if (_isModifyingShape)
+                {
+                    _allShapes[_currentShapeIndex].FillColor = _currentFillColor;
+                    RedrawCanvas();
+                }
+            }
+        }
+        private void ToggleFillButtonsOff()
+        {
+            _isPolygonSelected = false;
+            FillSolidButton.IsEnabled = false;
+        }
+        private void ToggleFillButtonsOn()
+        {
+            _isPolygonSelected = true;
+            FillSolidButton.IsEnabled = true;
+        }
 
         //---------- MENU ITEMS
         private void OnClick_ResetCanvas(object sender, RoutedEventArgs e)
@@ -626,7 +704,9 @@ namespace Lab04___Clipping_and_Filling
                                             ClassName = shape.GetType().Name,
                                             Points = shape.Points,
                                             Thickness = shape.Thickness,
-                                            Color = shape.Color.ToArgb() })
+                                            Color = shape.Color.ToArgb(),
+                                            FillColor = shape.FillColor?.ToArgb()
+                                        })
                                         .ToList();
 
             var s = new XmlSerializer(typeof(List<ShapeT>));
@@ -667,7 +747,15 @@ namespace Lab04___Clipping_and_Filling
                                 _allShapes.Add(new Polygon(
                                     shape.Points, 
                                     shape.Thickness, 
-                                    Color.FromArgb(shape.Color)));
+                                    Color.FromArgb(shape.Color),
+                                    shape.FillColor is not null ? Color.FromArgb((int)shape.FillColor) : null));
+                                break;
+                            case "Rectangle":
+                                _allShapes.Add(new Rectangle(
+                                    shape.Points, 
+                                    shape.Thickness, 
+                                    Color.FromArgb(shape.Color),
+                                    shape.FillColor is not null ? Color.FromArgb((int)shape.FillColor) : null));
                                 break;
                             case "Circle":
                                 _allShapes.Add(new Circle(
@@ -712,6 +800,8 @@ namespace Lab04___Clipping_and_Filling
         }
         
         //-----------
-       
+
+
+        
     }
 }

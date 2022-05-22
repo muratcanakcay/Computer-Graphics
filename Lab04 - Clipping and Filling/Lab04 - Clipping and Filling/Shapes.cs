@@ -2,18 +2,20 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Windows;
+using System.Windows.Forms;
 using System.Windows.Media.Imaging;
 using Color = System.Drawing.Color;
 using Point = System.Windows.Point;
 
 namespace Lab04___Clipping_and_Filling
 {
-    
-    internal interface IDrawable 
+
+    internal interface IDrawable
     {
         List<Point> Points { get; }
         int Thickness { get; set; }
         Color Color { get; set; }
+        Color? FillColor { get; set; }
         void Draw(WriteableBitmap wbm, bool isAntiAliased = false, bool isSuperSampled = false, int ssaa = 2);
         int GetVertexIndexOf(Point point);
         void MoveVertex(int vertexIndex, Vector offSet);
@@ -28,6 +30,7 @@ namespace Lab04___Clipping_and_Filling
         public List<Point> Points { get; }
         public int Thickness { get; set; }
         public Color Color { get; set; }
+        public Color? FillColor { get; set; } = null;
 
         protected Shape(List<Point> points, int thickness, Color color)
         {
@@ -35,7 +38,7 @@ namespace Lab04___Clipping_and_Filling
             Thickness = thickness;
             Color = color;
         }
-        
+
         public abstract void Draw(WriteableBitmap wbm, bool isAntiAliased = false, bool isSuperSampled = false, int ssaa = 2);
 
         public virtual int GetVertexIndexOf(Point point)
@@ -46,7 +49,7 @@ namespace Lab04___Clipping_and_Filling
 
             return -1;
         }
-        
+
         public virtual void MoveVertex(int vertexIndex, Vector offSet)
         {
             Points[vertexIndex] = Point.Add(Points[vertexIndex], offSet);
@@ -67,7 +70,7 @@ namespace Lab04___Clipping_and_Filling
 
             return -1;
         }
-        
+
         public virtual void MoveEdge(int edgeIndex, Vector offSet)
         {
             var nextIndex = edgeIndex == Points.Count - 1 ? 0 : edgeIndex + 1;
@@ -88,9 +91,10 @@ namespace Lab04___Clipping_and_Filling
         }
     }
 
-    public class Line : Shape 
+    public class Line : Shape
     {
-        public Line(List<Point> points, int thickness, Color color) : base(points, thickness, color) {}
+        public Line(List<Point> points, int thickness, Color color) : base(points, thickness, color)
+        { }
 
         public override void Draw(WriteableBitmap wbm, bool isAntiAliased = false, bool isSuperSampled = false, int ssaa = 2)
         {
@@ -113,7 +117,7 @@ namespace Lab04___Clipping_and_Filling
             try
             {
                 wbm.Lock();
-                
+
                 if (dx != 0 && Math.Abs(dy/dx) < 1)
                 {
                     double y = y0;
@@ -195,8 +199,10 @@ namespace Lab04___Clipping_and_Filling
                 var y = (int)y0;
 
                 IntensifyPixel(wbm, x, y, 0);
-                for (var i = 1; IntensifyPixel(wbm, x, y + i, 2*i*dx*invDenom); ++i);
-                for (var i = 1; IntensifyPixel(wbm, x, y - i, 2*i*dx*invDenom); ++i);
+                for (var i = 1; IntensifyPixel(wbm, x, y + i, 2*i*dx*invDenom); ++i)
+                    ;
+                for (var i = 1; IntensifyPixel(wbm, x, y - i, 2*i*dx*invDenom); ++i)
+                    ;
 
                 while (x < x1)
                 {
@@ -207,18 +213,22 @@ namespace Lab04___Clipping_and_Filling
                     {
                         twoVDx = d + dx;
                         d += dy > 0 ? dE : dXE;
-                        if (dy < 0) --y;
+                        if (dy < 0)
+                            --y;
                     }
                     else // move to E or NE
                     {
                         twoVDx = d - dx;
                         d += dy > 0 ? dXE : dE;
-                        if (dy > 0) ++y;
+                        if (dy > 0)
+                            ++y;
                     }
 
                     IntensifyPixel(wbm, x, y, twoVDx * invDenom);
-                    for (var i = 1; IntensifyPixel(wbm, x, y + i, ((2*i*dx) - twoVDx) * invDenom); ++i);
-                    for (var i = 1; IntensifyPixel(wbm, x, y - i, ((2*i*dx) + twoVDx) * invDenom); ++i);
+                    for (var i = 1; IntensifyPixel(wbm, x, y + i, ((2*i*dx) - twoVDx) * invDenom); ++i)
+                        ;
+                    for (var i = 1; IntensifyPixel(wbm, x, y - i, ((2*i*dx) + twoVDx) * invDenom); ++i)
+                        ;
                 }
             }
             else if (dy != 0)
@@ -241,8 +251,10 @@ namespace Lab04___Clipping_and_Filling
                 var x = (int)x0;
 
                 IntensifyPixel(wbm, x, y, 0);
-                for (var i = 1; IntensifyPixel(wbm, x + i, y, 2*i*dy*invDenom); ++i);
-                for (var i = 1; IntensifyPixel(wbm, x - i, y, 2*i*dy*invDenom); ++i);
+                for (var i = 1; IntensifyPixel(wbm, x + i, y, 2*i*dy*invDenom); ++i)
+                    ;
+                for (var i = 1; IntensifyPixel(wbm, x - i, y, 2*i*dy*invDenom); ++i)
+                    ;
 
                 while (y < y1)
                 {
@@ -253,18 +265,22 @@ namespace Lab04___Clipping_and_Filling
                     {
                         twoVDy = d + dy;
                         d += dx > 0 ? dN : dNX;
-                        if (dx < 0) --x;
+                        if (dx < 0)
+                            --x;
                     }
                     else // move to N or NE
                     {
                         twoVDy = d - dy;
                         d += dx > 0 ? dNX : dN;
-                        if (dx > 0) ++x;
+                        if (dx > 0)
+                            ++x;
                     }
 
                     IntensifyPixel(wbm, x, y, twoVDy * invDenom);
-                    for (var i = 1; IntensifyPixel(wbm, x + i, y, ((2*i*dy) - twoVDy) * invDenom); ++i);
-                    for (var i = 1; IntensifyPixel(wbm, x - i, y, ((2*i*dy) + twoVDy) * invDenom); ++i);
+                    for (var i = 1; IntensifyPixel(wbm, x + i, y, ((2*i*dy) - twoVDy) * invDenom); ++i)
+                        ;
+                    for (var i = 1; IntensifyPixel(wbm, x - i, y, ((2*i*dy) + twoVDy) * invDenom); ++i)
+                        ;
                 }
             }
         }
@@ -285,7 +301,7 @@ namespace Lab04___Clipping_and_Filling
                         (int)(backgroundColor.R*(1-cov) + Color.R*cov),
                         (int)(backgroundColor.G*(1-cov) + Color.G*cov),
                         (int)(backgroundColor.B*(1-cov) + Color.B*cov));
-                    
+
                     wbm.SetPixelColor(x, y, newColor);
                 }
                 finally
@@ -323,7 +339,8 @@ namespace Lab04___Clipping_and_Filling
 
         private static double Cov(double d, double r)
         {
-            if (d >= r) return 0;
+            if (d >= r)
+                return 0;
 
             return ((1/Math.PI) * Math.Acos(d/r)) - ((d / (Math.PI*r*r)) * Math.Sqrt((r*r) - (d*d)));
         }
@@ -336,14 +353,17 @@ namespace Lab04___Clipping_and_Filling
 
     public class Polygon : Shape
     {
-        public Polygon(List<Point> points, int thickness, Color color) : base(points, thickness, color) {}
+        public Polygon(List<Point> points, int thickness, Color color, Color? fillColor) : base(points, thickness, color)
+        {
+            FillColor = fillColor;
+        }
 
         public override void Draw(WriteableBitmap wbm, bool isAntiAliased = false, bool isSuperSampled = false, int ssaa = 2)
         {
             for (var i = 0; i < Points.Count; i++)
             {
                 var endPoint = i < Points.Count-1 ? Points[i+1] : Points[0];
-                var edge = new Line(new List<Point> {Points[i], endPoint}, Thickness, Color);
+                var edge = new Line(new List<Point> { Points[i], endPoint }, Thickness, Color);
                 edge.Draw(wbm, isAntiAliased, isSuperSampled, ssaa);
             }
         }
@@ -351,9 +371,9 @@ namespace Lab04___Clipping_and_Filling
         public override string ToString()
         {
             var sb = new StringBuilder();
-            
+
             for (var i = 0; i < Points.Count; i++)
-                sb.Append($"P{i}: ({Points[i].X}, {Points[i].Y})\n");            
+                sb.Append($"P{i}: ({Points[i].X}, {Points[i].Y})\n");
 
             return sb.ToString();
         }
@@ -361,25 +381,7 @@ namespace Lab04___Clipping_and_Filling
 
     public class Rectangle : Polygon
     {
-        public Rectangle(List<Point> points, int thickness, Color color) 
-            : base(
-                new List<Point>
-                      {
-                          points[0],
-                          new Point(points[1].X, points[0].Y),
-                          points[1],
-                          new Point(points[0].X, points[1].Y),
-                      }, thickness, color) {}
-
-        public override void Draw(WriteableBitmap wbm, bool isAntiAliased = false, bool isSuperSampled = false, int ssaa = 2)
-        {
-            for (var i = 0; i < Points.Count; i++)
-            {
-                var endPoint = i < Points.Count-1 ? Points[i+1] : Points[0];
-                var edge = new Line(new List<Point> {Points[i], endPoint}, Thickness, Color);
-                edge.Draw(wbm, isAntiAliased, isSuperSampled, ssaa);
-            }
-        }
+        public Rectangle(List<Point> points, int thickness, Color color, Color? fillColor) : base (points, thickness, color, fillColor ) { }
 
         public override void MoveVertex(int vertexIndex, Vector offSet)
         {
@@ -388,7 +390,7 @@ namespace Lab04___Clipping_and_Filling
             var dx = new Vector(offSet.X, 0);
             var dy = new Vector(0, offSet.Y);
 
-            switch(vertexIndex)
+            switch (vertexIndex)
             {
                 case 0:
                     Points[1] = Point.Add(Points[1], dy);
@@ -434,9 +436,9 @@ namespace Lab04___Clipping_and_Filling
         public override string ToString()
         {
             var sb = new StringBuilder();
-            
+
             for (var i = 0; i < Points.Count; i++)
-                sb.Append($"P{i}: ({Points[i].X}, {Points[i].Y})\n");            
+                sb.Append($"P{i}: ({Points[i].X}, {Points[i].Y})\n");
 
             return sb.ToString();
         }
@@ -446,18 +448,18 @@ namespace Lab04___Clipping_and_Filling
     {
         private Point Center => Points[0];
         private int Radius => (int)Math.Round(Points[0].DistanceFromPoint(Points[1]));
-        public Circle(List<Point> points, int thickness, Color color) : base(points, thickness, color) {}
-        
+        public Circle(List<Point> points, int thickness, Color color) : base(points, thickness, color) { }
+
         public override void Draw(WriteableBitmap wbm, bool isAntiAliased = false, bool isSuperSampled = false, int ssaa = 2)
         {
             var SSAA = isSuperSampled ? ssaa : 1;
-            
-            var x  = 0;
-            var y  = SSAA * Radius;
-            var d  = 1 - (SSAA * Radius);
+
+            var x = 0;
+            var y = SSAA * Radius;
+            var d = 1 - (SSAA * Radius);
             var xC = (int)(SSAA * Center.X);
             var yC = (int)(SSAA * Center.Y);
-            
+
             var plusMinus = new[] { -1, 1 };
 
             try
@@ -501,15 +503,15 @@ namespace Lab04___Clipping_and_Filling
         {
             return -1; // circle has no vertices
         }
-        
+
         public override int GetEdgeIndexOf(Point point)
         {
-            if (point.DistanceFromPoint(Center) < Radius - Thickness - GrabDistance || 
+            if (point.DistanceFromPoint(Center) < Radius - Thickness - GrabDistance ||
                 point.DistanceFromPoint(Center) > Radius + Thickness + GrabDistance)
                 return -1;
-            
+
             // change edgePoint to the closest point on circle to the clicked point
-            var v = Point.Subtract(point, Points[0]); 
+            var v = Point.Subtract(point, Points[0]);
             var vUnit = v / v.Length;
             var newEdgePoint = Point.Add(Center, Radius * vUnit);
             Points[1] = newEdgePoint;
@@ -532,15 +534,15 @@ namespace Lab04___Clipping_and_Filling
     {
         private Point Center => Points[0];
         private int Radius => (int)Math.Round(Points[0].DistanceFromPoint(Points[1]));
-        public CircleArc(List<Point> points, int thickness, Color color) : base(points, thickness, color) {}
-        
+        public CircleArc(List<Point> points, int thickness, Color color) : base(points, thickness, color) { }
+
         public override void Draw(WriteableBitmap wbm, bool isAntiAliased = false, bool isSuperSampled = false, int ssaa = 2)
         {
             var SSAA = isSuperSampled ? ssaa : 1;
-            
-            var x  = 0;
-            var y  = SSAA * Radius;
-            var d  = 1 - (SSAA * Radius);
+
+            var x = 0;
+            var y = SSAA * Radius;
+            var d = 1 - (SSAA * Radius);
             var xC = (int)(SSAA * Center.X);
             var yC = (int)(SSAA * Center.Y);
 
@@ -549,10 +551,10 @@ namespace Lab04___Clipping_and_Filling
             try
             {
                 wbm.Lock();
-                
+
                 var plusMinus = new[] { -1, 1 };
 
-                foreach(var i in plusMinus)
+                foreach (var i in plusMinus)
                     if (det > 0)
                     {
                         if (Determinant(Center, Points[1], new Point(Center.X + x, Center.Y + i*y)) > 0 &&
@@ -587,8 +589,8 @@ namespace Lab04___Clipping_and_Filling
 
                     ++x;
 
-                    foreach(var i in plusMinus)
-                        foreach(var j in plusMinus)
+                    foreach (var i in plusMinus)
+                        foreach (var j in plusMinus)
                             if (det > 0)
                             {
 
@@ -622,15 +624,15 @@ namespace Lab04___Clipping_and_Filling
         {
             return -1; // circle has no vertices
         }
-        
+
         public override int GetEdgeIndexOf(Point point)
         {
-            if (point.DistanceFromPoint(Center) < Radius - Thickness - GrabDistance || 
+            if (point.DistanceFromPoint(Center) < Radius - Thickness - GrabDistance ||
                 point.DistanceFromPoint(Center) > Radius + Thickness + GrabDistance)
                 return -1;
-            
+
             // change edgePoint to -> the point on circle that is closest to the clicked point
-            var v = Point.Subtract(point, Points[0]); 
+            var v = Point.Subtract(point, Points[0]);
             var vUnit = v / v.Length;
             var newEdgePoint = Point.Add(Center, Radius * vUnit);
             Points[1] = newEdgePoint;

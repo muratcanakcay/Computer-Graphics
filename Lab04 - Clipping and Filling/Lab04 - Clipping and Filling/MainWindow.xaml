@@ -100,6 +100,10 @@
                                 <RowDefinition Height="24"/>
                                 <RowDefinition Height="24"/>
                                 <RowDefinition Height="24"/>
+                                <RowDefinition Height="24"/>
+                                <RowDefinition Height="24"/>
+                                <RowDefinition Height="24"/>
+                                <RowDefinition Height="24"/>
                                 <RowDefinition/>
                             </Grid.RowDefinitions>
 
@@ -272,6 +276,47 @@
                                 Click="SuperSampleButton_OnClick">
                                 Apply SuperSampling
                             </Button>
+
+                            <!--FILL WITH SOLID COLOR-->
+                            <Button  
+                                Grid.Row="10"
+                                Grid.Column="0"
+                                Grid.ColumnSpan="2"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                Margin="1,0, 6, 0"
+                                Height="20"
+                                Width="100"
+                                Name="FillSolidButton"
+                                IsEnabled="false"
+                                ToolTip="Fill"
+                                Background="LightCyan"
+                                Click="FillSolidButton_OnClick">
+                                Fill w/ Solid Color
+                            </Button>
+
+                            <TextBlock Grid.Row="10"
+                                       Grid.Column="2"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"
+                                       Text="Fill Color"
+                            />
+
+                            <Rectangle  
+                                Grid.Row="10"
+                                Grid.Column="3"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Margin="1,0, 1, 0"
+                                Height="15"
+                                Width="30"
+                                Name="FillColorButton"
+                                IsEnabled="true"
+                                ToolTip="Select Color"
+                                Fill="Black"
+                                Stroke="Black"
+                                MouseLeftButtonUp="FillColorButton_OnClick"
+                            />
 
                             
 
