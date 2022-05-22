@@ -385,24 +385,26 @@ namespace Lab04___Clipping_and_Filling
         {
             Points[vertexIndex] = Point.Add(Points[vertexIndex], offSet);
 
+            var dx = new Vector(offSet.X, 0);
+            var dy = new Vector(0, offSet.Y);
+
             switch(vertexIndex)
             {
                 case 0:
-                    Points[1] = Point.Add(Points[1], new Vector(0, offSet.Y));
-                    Points[3] = Point.Add(Points[3], new Vector(offSet.X, 0));
+                    Points[1] = Point.Add(Points[1], dy);
+                    Points[3] = Point.Add(Points[3], dx);
                     break;
                 case 1:
-                    Points[0] = Point.Add(Points[0], new Vector(0, offSet.Y));
-                    Points[2] = Point.Add(Points[2], new Vector(offSet.X, 0));
+                    Points[0] = Point.Add(Points[0], dy);
+                    Points[2] = Point.Add(Points[2], dx);
                     break;
                 case 2:
-                    Points[1] = Point.Add(Points[1], new Vector(offSet.X, 0));
-                    Points[3] = Point.Add(Points[3], new Vector(0, offSet.Y));
+                    Points[1] = Point.Add(Points[1], dx);
+                    Points[3] = Point.Add(Points[3], dy);
                     break;
                 case 3:
-                    Points[0] = Point.Add(Points[0], new Vector(offSet.X, 0));
-                    Points[2] = Point.Add(Points[2], new Vector(0, offSet.Y));
-
+                    Points[0] = Point.Add(Points[0], dx);
+                    Points[2] = Point.Add(Points[2], dy);
                     break;
             }
         }
@@ -411,8 +413,22 @@ namespace Lab04___Clipping_and_Filling
         {
             var nextIndex = edgeIndex == Points.Count - 1 ? 0 : edgeIndex + 1;
 
-            Points[edgeIndex] = Point.Add(Points[edgeIndex], offSet);
-            Points[nextIndex] = Point.Add(Points[nextIndex], offSet);
+            var dx = new Vector(offSet.X, 0);
+            var dy = new Vector(0, offSet.Y);
+
+            switch (edgeIndex)
+            {
+                case 0:
+                case 2:
+                    Points[edgeIndex] = Point.Add(Points[edgeIndex], dy);
+                    Points[nextIndex] = Point.Add(Points[nextIndex], dy);
+                    break;
+                case 1:
+                case 3:
+                    Points[edgeIndex] = Point.Add(Points[edgeIndex], dx);
+                    Points[nextIndex] = Point.Add(Points[nextIndex], dx);
+                    break;
+            }
         }
 
         public override string ToString()
