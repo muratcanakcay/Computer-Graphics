@@ -4,64 +4,20 @@
     <ClassName>Rectangle</ClassName>
     <Points>
       <Point>
-        <X>156</X>
-        <Y>156.04</Y>
+        <X>609</X>
+        <Y>178.04</Y>
       </Point>
       <Point>
-        <X>329</X>
-        <Y>156.04</Y>
+        <X>379</X>
+        <Y>178.04</Y>
       </Point>
       <Point>
-        <X>329</X>
-        <Y>249.04</Y>
+        <X>379</X>
+        <Y>293.04</Y>
       </Point>
       <Point>
-        <X>156</X>
-        <Y>249.04</Y>
-      </Point>
-    </Points>
-    <Thickness>1</Thickness>
-    <Color>-16777216</Color>
-    <FillColor xsi:nil="true" />
-  </ShapeT>
-  <ShapeT>
-    <ClassName>Polygon</ClassName>
-    <Points>
-      <Point>
-        <X>577</X>
-        <Y>192.04</Y>
-      </Point>
-      <Point>
-        <X>640</X>
-        <Y>101.03999999999999</Y>
-      </Point>
-      <Point>
-        <X>738</X>
-        <Y>128.04</Y>
-      </Point>
-      <Point>
-        <X>755</X>
-        <Y>234.04</Y>
-      </Point>
-      <Point>
-        <X>639</X>
-        <Y>268.04</Y>
-      </Point>
-    </Points>
-    <Thickness>1</Thickness>
-    <Color>-16777216</Color>
-    <FillColor xsi:nil="true" />
-  </ShapeT>
-  <ShapeT>
-    <ClassName>Line</ClassName>
-    <Points>
-      <Point>
-        <X>351</X>
-        <Y>348.04</Y>
-      </Point>
-      <Point>
-        <X>581</X>
-        <Y>334.04</Y>
+        <X>609</X>
+        <Y>293.04</Y>
       </Point>
     </Points>
     <Thickness>1</Thickness>

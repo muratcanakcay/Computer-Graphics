@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Windows;
 using System.Windows.Forms;
@@ -367,13 +368,123 @@ namespace Lab04___Clipping_and_Filling
                 edge.Draw(wbm, isAntiAliased, isSuperSampled, ssaa);
             }
 
-            if (FillColor != null) FillWithSolidColor();
+            if (FillColor != null) FillWithSolidColor(wbm);
         }
 
-        private void FillWithSolidColor()
+        private class EdgeData
         {
-            throw new NotImplementedException();
+            public int YMax;
+            public double X { get; set; }
+            public double InvM;
         }
+
+        private class EdgeDataComparer : IComparer<EdgeData>
+        {
+            public int Compare(EdgeData? a, EdgeData? b)
+            {
+                if (a == null || b == null) return 0;
+                
+                var aXMin = a.X;
+                var bXMin = b.X;
+
+                if (Math.Abs(aXMin - bXMin) <= 0.5) // check tolerance
+                    return 0;
+            
+                if (aXMin < bXMin)
+                    return 1;
+
+                return -1;
+            }
+        }
+
+        private SortedDictionary<int, List<EdgeData>> CreateEdgeTable()
+        {
+            SortedDictionary<int, List<EdgeData>> et = new();
+
+            for (var i = 0; i < Points.Count; i++)
+            {
+                var x1 = Points[i].X;
+                var y1 = Points[i].Y;
+                var x2 = ( i == Points.Count - 1 ? Points[0].X : Points[i+1].X );
+                var y2 = ( i == Points.Count - 1 ? Points[0].Y : Points[i+1].Y );
+                double dx = x2 - x1;
+                double dy = y2 - y1;
+
+                if (dy == 0) continue; // horizontal edge
+
+                var xMin = Math.Min(x1, x2);
+                var yMin = (int)Math.Round(Math.Min(y1, y2));
+                var yMax = (int)Math.Round(Math.Max(y1, y2));
+
+                var edge = new EdgeData()
+                {
+                    X = xMin,
+                    YMax = yMax,
+                    InvM = dx/dy
+                };
+
+                if (et.ContainsKey(yMin))
+                {
+                    et[yMin].Add(edge);
+                    et[yMin].Sort(new EdgeDataComparer()); // sort the edge bucket w.r.t. x
+                }
+                else
+                {
+                    var edgeBucket = new List<EdgeData> { edge };
+                    et.Add(yMin, edgeBucket);
+                }
+            }
+
+            return et;
+        }
+
+        private void FillWithSolidColor(WriteableBitmap wbm)
+        {
+            var et = CreateEdgeTable();
+            var y = et.Keys.First();
+            List<EdgeData> aet = new();
+
+            while (aet.Count != 0 || et.Count != 0)
+            {
+                if (et.ContainsKey(y))
+                {
+                    aet.AddRange(et[y]);
+                    aet.Sort(new EdgeDataComparer());
+                    et.Remove(y);
+                }
+
+                for (var i = 0; i < aet.Count; i+=2)
+                {
+                    var x1 = (int)Math.Round(aet[i].X);
+                    var x2 = (int)Math.Round(aet[i+1].X);
+                    
+                    FillBetweenEdges(wbm, x1, x2, y);
+                }
+
+                ++y;
+
+                aet.RemoveAll(edge => edge.YMax == y);
+
+                foreach (var edge in aet)
+                    edge.X += edge.InvM;
+            }
+        }
+
+        private void FillBetweenEdges(WriteableBitmap wbm, int x1, int x2, int y)
+        {
+            
+            wbm.Lock();
+
+            if (FillColor == null) throw new ArgumentNullException();
+
+            for (var x = x1; x < x2; x++)
+            {
+                wbm.SetPixelColor(x, y, (Color)FillColor);
+            }
+
+            wbm.Unlock();
+        }
+
 
         public override string ToString()
         {

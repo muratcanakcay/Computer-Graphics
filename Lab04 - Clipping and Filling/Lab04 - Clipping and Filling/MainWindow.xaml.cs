@@ -38,13 +38,13 @@ namespace Lab04___Clipping_and_Filling
         private bool _isMovingEdge;
         private bool _isMovingShape;
         private bool _isModifyingShape;
-        private bool _isPolygonSelected;
+        private bool _isPolygonSelected; 
         private bool _isAntiAliased;
         private bool _isSuperSampled;
         private bool _isZooming;
         private Point _previousCursorPosition;
         private Point _currentCursorPosition;
-        private Polygon _selectedPolygon;
+        private Polygon? _selectedPolygon; 
         private int SSAA = 2; // TODO: make this modifiable from GUI
         private int _currentShapeIndex;
         private int _currentEdgeIndex;
