@@ -380,6 +380,41 @@ namespace Lab04___Clipping_and_Filling
                 edge.Draw(wbm, isAntiAliased, isSuperSampled, ssaa);
             }
         }
+
+        public override void MoveVertex(int vertexIndex, Vector offSet)
+        {
+            Points[vertexIndex] = Point.Add(Points[vertexIndex], offSet);
+
+            switch(vertexIndex)
+            {
+                case 0:
+                    Points[1] = Point.Add(Points[1], new Vector(0, offSet.Y));
+                    Points[3] = Point.Add(Points[3], new Vector(offSet.X, 0));
+                    break;
+                case 1:
+                    Points[0] = Point.Add(Points[0], new Vector(0, offSet.Y));
+                    Points[2] = Point.Add(Points[2], new Vector(offSet.X, 0));
+                    break;
+                case 2:
+                    Points[1] = Point.Add(Points[1], new Vector(offSet.X, 0));
+                    Points[3] = Point.Add(Points[3], new Vector(0, offSet.Y));
+                    break;
+                case 3:
+                    Points[0] = Point.Add(Points[0], new Vector(offSet.X, 0));
+                    Points[2] = Point.Add(Points[2], new Vector(0, offSet.Y));
+
+                    break;
+            }
+        }
+
+        public override void MoveEdge(int edgeIndex, Vector offSet)
+        {
+            var nextIndex = edgeIndex == Points.Count - 1 ? 0 : edgeIndex + 1;
+
+            Points[edgeIndex] = Point.Add(Points[edgeIndex], offSet);
+            Points[nextIndex] = Point.Add(Points[nextIndex], offSet);
+        }
+
         public override string ToString()
         {
             var sb = new StringBuilder();
