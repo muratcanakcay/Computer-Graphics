@@ -30,6 +30,7 @@ namespace Lab04___Clipping_and_Filling
         
         private bool _isDrawingLine;
         private bool _isDrawingPolygon;
+        private bool _isDrawingRectangle;
         private bool _isDrawingCircle;
         private bool _isDrawingCircleArc;
         private bool _isMovingVertex;
@@ -55,6 +56,7 @@ namespace Lab04___Clipping_and_Filling
         private WriteableBitmap _wbm;
         private readonly SolidColorBrush _activeButtonColor = Brushes.LightSalmon;
         private readonly SolidColorBrush _inactiveButtonColor = Brushes.LightCyan;
+        
 
         public MainWindow()
         {
@@ -103,6 +105,7 @@ namespace Lab04___Clipping_and_Filling
         {
             if (_isDrawingLine) ToggleIsDrawingLine();
             else if (_isDrawingPolygon) ToggleIsDrawingPolygon();
+            else if (_isDrawingRectangle) ToggleIsDrawingRectangle();
             else if (_isDrawingCircle) ToggleIsDrawingCircle();
             else if (_isDrawingCircleArc) ToggleIsDrawingCircleArc();
 
@@ -155,6 +158,7 @@ namespace Lab04___Clipping_and_Filling
             }
             else if (_isDrawingLine) DrawLine(_currentCursorPosition);
             else if (_isDrawingPolygon) DrawPolygon(_currentCursorPosition);
+            else if (_isDrawingRectangle) DrawRectangle(_currentCursorPosition);
             else if (_isDrawingCircle) DrawCircle(_currentCursorPosition);
             else if (_isDrawingCircleArc) DrawCircleArc(_currentCursorPosition);
             else if (!_isMovingVertex || !_isMovingEdge)
@@ -243,6 +247,20 @@ namespace Lab04___Clipping_and_Filling
                 }
 
                 currentLine = new Line(new List<Point> { _currentPoints[^1], _currentCursorPosition }, _currentShapeThickness, _currentShapeColor);
+                currentLine.Draw(_wbm, _isAntiAliased, _isSuperSampled);
+            }
+
+            // draw rectangle preview
+            if (_isDrawingRectangle && _currentPoints.Count > 0)
+            {
+                RedrawCanvas();
+                currentLine = new Line(new List<Point> { _currentPoints[0], new Point(_currentCursorPosition.X, _currentPoints[0].Y) }, _currentShapeThickness, _currentShapeColor);
+                currentLine.Draw(_wbm, _isAntiAliased, _isSuperSampled);
+                currentLine = new Line(new List<Point> { new Point(_currentCursorPosition.X, _currentPoints[0].Y), _currentCursorPosition }, _currentShapeThickness, _currentShapeColor);
+                currentLine.Draw(_wbm, _isAntiAliased, _isSuperSampled);
+                currentLine = new Line(new List<Point> { _currentCursorPosition, new Point(_currentPoints[0].X, _currentCursorPosition.Y) }, _currentShapeThickness, _currentShapeColor);
+                currentLine.Draw(_wbm, _isAntiAliased, _isSuperSampled);
+                currentLine = new Line(new List<Point> { new Point(_currentPoints[0].X, _currentCursorPosition.Y), _currentPoints[0] }, _currentShapeThickness, _currentShapeColor);
                 currentLine.Draw(_wbm, _isAntiAliased, _isSuperSampled);
             }
 
@@ -405,6 +423,37 @@ namespace Lab04___Clipping_and_Filling
                     new List<Point>(_currentPoints), _currentShapeThickness, _currentShapeColor));
                 _currentPoints.Clear();
                 ToggleIsDrawingPolygon();
+                RedrawCanvas();
+            }
+        }
+
+        //---------- RECTANGLE METHODS
+        private void RectangleButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            if(!_isDrawingRectangle) ToggleAllOff();
+            ToggleIsDrawingRectangle();
+        }
+        private void ToggleIsDrawingRectangle()
+        {
+            _isDrawingRectangle = !_isDrawingRectangle;
+            RectangleButton.Background = _isDrawingRectangle ? _activeButtonColor : _inactiveButtonColor;
+        }
+        private void DrawRectangle(Point clickPosition)
+        {
+            if (_currentPoints.Count == 0)
+            {
+                _currentPoints.Add(clickPosition);
+                Debug.WriteLine($"Starting: {clickPosition.X}, {clickPosition.Y}");
+            }
+            else
+            {
+                Debug.WriteLine($"Ending: {clickPosition.X}, {clickPosition.Y}");
+                
+                _currentPoints.Add(clickPosition);
+                _allShapes.Add(new Rectangle(
+                    _currentPoints, _currentShapeThickness, _currentShapeColor));
+                _currentPoints.Clear();
+                ToggleIsDrawingRectangle();
                 RedrawCanvas();
             }
         }
@@ -663,5 +712,6 @@ namespace Lab04___Clipping_and_Filling
         }
         
         //-----------
+       
     }
 }

@@ -183,9 +183,27 @@
                                 Draw Polygon
                             </Button>
 
-                            <!--CIRCLE-->
+                            <!--RECTANGLE-->
                             <Button  
                                 Grid.Row="3"
+                                Grid.Column="0"
+                                Grid.ColumnSpan="2"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                Margin="1,0, 6, 0"
+                                Height="20"
+                                Width="100"
+                                Name="RectangleButton"
+                                IsEnabled="true"
+                                ToolTip="Draw Rectangle"
+                                Background="LightCyan"
+                                Click="RectangleButton_OnClick">
+                                Draw Rectangle
+                            </Button>
+
+                            <!--CIRCLE-->
+                            <Button  
+                                Grid.Row="4"
                                 Grid.Column="0"
                                 Grid.ColumnSpan="2"
                                 HorizontalAlignment="Left"
@@ -203,7 +221,7 @@
 
                             <!--CIRCLE ARC-->
                             <Button  
-                                Grid.Row="4"
+                                Grid.Row="5"
                                 Grid.Column="0"
                                 Grid.ColumnSpan="2"
                                 HorizontalAlignment="Left"
@@ -221,7 +239,7 @@
 
                             <!--ANTI-ALIASING-->
                             <Button  
-                                Grid.Row="6"
+                                Grid.Row="7"
                                 Grid.Column="0"
                                 Grid.ColumnSpan="4"
                                 HorizontalAlignment="Left"
@@ -239,7 +257,7 @@
 
                             <!--SUPER SAMPLING-->
                             <Button  
-                                Grid.Row="7"
+                                Grid.Row="8"
                                 Grid.Column="0"
                                 Grid.ColumnSpan="4"
                                 HorizontalAlignment="Left"

@@ -359,6 +359,38 @@ namespace Lab04___Clipping_and_Filling
         }
     }
 
+    public class Rectangle : Polygon
+    {
+        public Rectangle(List<Point> points, int thickness, Color color) 
+            : base(
+                new List<Point>
+                      {
+                          points[0],
+                          new Point(points[1].X, points[0].Y),
+                          points[1],
+                          new Point(points[0].X, points[1].Y),
+                      }, thickness, color) {}
+
+        public override void Draw(WriteableBitmap wbm, bool isAntiAliased = false, bool isSuperSampled = false, int ssaa = 2)
+        {
+            for (var i = 0; i < Points.Count; i++)
+            {
+                var endPoint = i < Points.Count-1 ? Points[i+1] : Points[0];
+                var edge = new Line(new List<Point> {Points[i], endPoint}, Thickness, Color);
+                edge.Draw(wbm, isAntiAliased, isSuperSampled, ssaa);
+            }
+        }
+        public override string ToString()
+        {
+            var sb = new StringBuilder();
+            
+            for (var i = 0; i < Points.Count; i++)
+                sb.Append($"P{i}: ({Points[i].X}, {Points[i].Y})\n");            
+
+            return sb.ToString();
+        }
+    }
+
     public class Circle : Shape
     {
         private Point Center => Points[0];
