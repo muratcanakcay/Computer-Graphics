@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows;
@@ -39,7 +40,6 @@ namespace Lab04___Clipping_and_Filling
         private bool _isMovingEdge;
         private bool _isMovingShape;
         private bool _isModifyingShape;
-        private bool _isPolygonSelected; 
         private bool _isAntiAliased;
         private bool _isSuperSampled;
         private bool _isZooming;
@@ -52,7 +52,7 @@ namespace Lab04___Clipping_and_Filling
         private int _currentVertexIndex;
         private int _currentZoomLevel = 1;
         private int _currentShapeThickness = 1;
-        private Color _currentShapeColor = Color.FromArgb(255, 0, 0, 0);
+        private Color _currentShapeColor = Color.FromKnownColor(KnownColor.Black);
         private Color? _currentFillColor = null;
         private String? _currentFillImage = null;
         private readonly List<Point> _currentPoints = new();
@@ -62,7 +62,6 @@ namespace Lab04___Clipping_and_Filling
         private WriteableBitmap _wbm;
         private readonly SolidColorBrush _activeButtonColor = Brushes.LightSalmon;
         private readonly SolidColorBrush _inactiveButtonColor = Brushes.LightCyan;
-        
 
 
         public MainWindow()
@@ -116,12 +115,11 @@ namespace Lab04___Clipping_and_Filling
             else if (_isDrawingCircle) ToggleIsDrawingCircle();
             else if (_isDrawingCircleArc) ToggleIsDrawingCircleArc();
 
-            ToggleFillButtonsOff();
+            DisableFillButtons();
 
             _currentPoints.Clear();
             RedrawCanvas();
         }
-
         private void DrawAllShapes(WriteableBitmap wbm)
         {
             foreach (var shape in _allShapes)
@@ -136,7 +134,7 @@ namespace Lab04___Clipping_and_Filling
         private void TheCanvas_OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             _isModifyingShape = false;
-            ToggleFillButtonsOff();
+            DisableFillButtons();
             _currentCursorPosition = e.GetPosition(TheCanvas);
             Debug.WriteLine($"CLICKED ({_currentCursorPosition.X}, {_currentCursorPosition.Y})");
 
@@ -169,7 +167,7 @@ namespace Lab04___Clipping_and_Filling
                 if (_allShapes[_currentShapeIndex] is Polygon selectedPolygon)
                 {
                     _selectedPolygon = selectedPolygon;
-                    ToggleFillButtonsOn();
+                    EnableFillButtons();
                 }
 
                 Debug.WriteLine(_allShapes[_currentShapeIndex]);
@@ -297,7 +295,7 @@ namespace Lab04___Clipping_and_Filling
                 currentCircle.Draw(_wbm, _isAntiAliased, _isSuperSampled);
             }
 
-            // draw circle preview
+            // draw circle arc preview
             if (_isDrawingCircleArc && _currentPoints.Count > 1)
             {
                 RedrawCanvas();
@@ -723,16 +721,14 @@ namespace Lab04___Clipping_and_Filling
             SelectedFillImage.Text = _currentFillImage;
 
 
-            if (_selectedPolygon?.FillImage != null) // (_selectedPolygon != null && _selectedPolygon.FillColor != null)
+            if (_selectedPolygon?.FillImage != null) // (_selectedPolygon != null && _selectedPolygon.FillImage != null)
             {
                 _selectedPolygon.FillImage = _currentFillImage;
                 RedrawCanvas();
             }
         }
-        private void ToggleFillButtonsOff()
+        private void DisableFillButtons()
         {
-            _isPolygonSelected = false;
-            
             FillSolidButton.IsEnabled = false;
             FillColorButton.Fill = new SolidColorBrush(Colors.Transparent);
             _currentFillColor = null;
@@ -741,12 +737,33 @@ namespace Lab04___Clipping_and_Filling
             SelectedFillImage.Text = "No image selected";
             _currentFillImage = null;
         }
-        private void ToggleFillButtonsOn()
+        private void EnableFillButtons()
         {
-            _isPolygonSelected = true;
-            FillSolidButton.IsEnabled = true;
+            EnableFillSolidButton();
+            EnableFillImageButton();
+        }
+        private void EnableFillImageButton()
+        {
             FillImageButton.IsEnabled = true;
+            FillImageButton.Background = _selectedPolygon!.FillImage is not null
+                ? _activeButtonColor
+                : _inactiveButtonColor;
 
+            var fillImage = _selectedPolygon!.FillImage;
+            if (fillImage is not null)
+            {
+                SelectedFillImage.Text = fillImage;
+                _currentFillImage = fillImage;
+            }
+            else
+            {
+                SelectedFillImage.Text = "No image selected";
+                _currentFillImage = null;
+            }
+        }
+        private void EnableFillSolidButton()
+        {
+            FillSolidButton.IsEnabled = true;
             FillSolidButton.Background = _selectedPolygon!.FillColor is not null
                 ? _activeButtonColor
                 : _inactiveButtonColor;
@@ -756,32 +773,16 @@ namespace Lab04___Clipping_and_Filling
             {
                 FillColorButton.Fill = new SolidColorBrush(
                     System.Windows.Media.Color.FromArgb(
-                            ((Color)fillColor).A, 
-                            ((Color)fillColor).R,
-                            ((Color)fillColor).G, 
-                            ((Color)fillColor).B));
+                        ((Color)fillColor).A,
+                        ((Color)fillColor).R,
+                        ((Color)fillColor).G,
+                        ((Color)fillColor).B));
                 _currentFillColor = fillColor;
             }
             else
             {
                 FillColorButton.Fill = new SolidColorBrush(Colors.Transparent);
                 _currentFillColor = null;
-            }
-
-            FillImageButton.Background = _selectedPolygon.FillImage is not null
-                ? _activeButtonColor
-                : _inactiveButtonColor;
-                    
-            var fillImage = _selectedPolygon!.FillImage;
-            if (fillImage is not null)
-            {
-                SelectedFillImage.Text = fillImage;
-                _currentFillImage= fillImage;
-            }
-            else
-            {
-                SelectedFillImage.Text = "No image selected";
-                _currentFillImage = null;
             }
         }
 
@@ -909,7 +910,5 @@ namespace Lab04___Clipping_and_Filling
         
         //-----------
 
-
-       
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -69,7 +70,7 @@ namespace Lab04___Clipping_and_Filling
                 wbm.Lock();
                 for (var x = 0; x < wbm.Width; x++)
                     for (var y = 0; y < wbm.Height; y++)
-                        wbm.SetPixelColor(x, y, Color.FromArgb(255, 255, 255, 255));
+                        wbm.SetPixelColor(x, y, Color.FromKnownColor(KnownColor.White));
             }
             finally
             {

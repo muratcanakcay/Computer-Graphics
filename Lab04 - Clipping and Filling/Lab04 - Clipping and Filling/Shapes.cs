@@ -11,7 +11,6 @@ using Point = System.Windows.Point;
 
 namespace Lab04___Clipping_and_Filling
 {
-
     internal interface IDrawable
     {
         List<Point> Points { get; }
@@ -30,12 +29,12 @@ namespace Lab04___Clipping_and_Filling
     public abstract class Shape : IDrawable
     {
         protected const int GrabDistance = 10;
-        protected string? _fillImage = null;
-        protected WriteableBitmap? FillImageWbm = null;
+        protected string? _fillImage;
+        protected WriteableBitmap? FillImageWbm;
         public List<Point> Points { get; }
         public int Thickness { get; set; }
         public Color Color { get; set; }
-        public Color? FillColor { get; set; } = null;
+        public Color? FillColor { get; set; } 
         public string? FillImage
         {
             get => _fillImage;
@@ -399,6 +398,7 @@ namespace Lab04___Clipping_and_Filling
                 edge.Draw(wbm, isAntiAliased, isSuperSampled, ssaa);
             }
         }
+
         private class EdgeData
         {
             public int YMax;
@@ -492,7 +492,6 @@ namespace Lab04___Clipping_and_Filling
 
         private void FillBetweenEdges(WriteableBitmap wbm, int x1, int x2, int y)
         {
-            
             wbm.Lock();
 
             if (FillColor != null)
