@@ -394,7 +394,7 @@
                                 Margin="1,0, 6, 0"
                                 Height="20"
                                 Width="85"
-                                Name="BorderFillButton"
+                                Name="BorderFill4Button"
                                 IsEnabled="true"
                                 ToolTip="Fill w/ Image"
                                 Background="LightCyan"

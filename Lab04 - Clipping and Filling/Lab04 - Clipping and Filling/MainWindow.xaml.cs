@@ -57,8 +57,8 @@ namespace Lab04___Clipping_and_Filling
         private Color _currentShapeColor = Color.FromKnownColor(KnownColor.Black);
         private Color _currentBorderFillColor = Color.FromKnownColor(KnownColor.Red);
         private Color _currentBorderFillBorderColor = Color.FromKnownColor(KnownColor.Black);
-        private Color? _currentFillColor = null;
-        private String? _currentFillImage = null;
+        private Color? _currentFillColor;
+        private String? _currentFillImage;
         private readonly List<Point> _currentPoints = new();
         private readonly List<IDrawable> _allShapes = new();
         private readonly List<(Point, Color, Color, Boolean)> _allFills = new ();
@@ -67,7 +67,7 @@ namespace Lab04___Clipping_and_Filling
         private WriteableBitmap _wbm;
         private readonly SolidColorBrush _activeButtonColor = Brushes.LightSalmon;
         private readonly SolidColorBrush _inactiveButtonColor = Brushes.LightCyan;
-        private bool _isBorderFilling = false;
+        private bool _isBorderFilling;
         private bool _useEightConnected;
 
 
@@ -248,76 +248,6 @@ namespace Lab04___Clipping_and_Filling
                     _currentShapeIndex = -1;
                 }
             }
-        }
-        private void BorderFill(Point currentCursorPosition)
-        {
-            Debug.WriteLine($"Border Fill 8-connected: {_useEightConnected}");
-            
-            var pointStack = new Stack<Point>();
-            pointStack.Push(currentCursorPosition);
-            _wbm.Lock();
-            while (pointStack.Count > 0)
-            {
-                var currentPoint = pointStack.Pop();
-                var x = (int)currentPoint.X;
-                var y = (int)currentPoint.Y;
-                if (x < 0 || x > CanvasImage.ActualWidth || y < 0 || y > CanvasImage.ActualHeight) continue;
-
-                var c = _wbm.GetPixelColor(x, y);
-                if (
-                    ((c.R != _currentBorderFillColor.R) ||
-                    (c.G != _currentBorderFillColor.G) ||
-                    (c.B != _currentBorderFillColor.B)) 
-                    &&
-                    ((c.R != _currentBorderFillBorderColor.R) ||
-                     (c.G != _currentBorderFillBorderColor.G) ||
-                     (c.B != _currentBorderFillBorderColor.B)))
-                {
-                    _wbm.SetPixelColor(x, y, _currentBorderFillColor);
-                    pointStack.Push(new Point(x+1, y+0));
-                    pointStack.Push(new Point(x-1, y+0));
-                    pointStack.Push(new Point(x+0, y+1));
-                    pointStack.Push(new Point(x+0, y-1));
-
-                    if (_useEightConnected)
-                    {
-                        pointStack.Push(new Point(x + 1, y + 1));
-                        pointStack.Push(new Point(x - 1, y - 1));
-                        pointStack.Push(new Point(x - 1, y + 1));
-                        pointStack.Push(new Point(x + 1, y - 1));
-                    }
-                }
-            }
-            _wbm.Unlock();
-
-            CanvasImage.Source = _wbm;
-
-            _isBorderFilling = false;
-            BorderFillButton.Background = _inactiveButtonColor;
-
-
-
-
-            //void boundaryFill4(int x, int y, RGB boundary, RGB new) 
-            //{
-            //// x, y ‐ starting point coordinates
-            //// boundary ‐ color of the border (stop)
-            //// new ‐ must be different than boundary
-            //// and any color already present in the region
-            //RGB c = getPixel(x, y);
-            //if (c != boundary && c != new) 
-            //{
-            //    setPixel(x,y, new);
-            //    boundaryFill4(x + 1, y, boundary, new);
-            //    boundaryFill4(x ‐ 1, y, boundary, new);
-            //    boundaryFill4(x, y + 1, boundary, new);
-            //    boundaryFill4(x, y ‐ 1, boundary, new);
-            //}
-            //}
-
-
-
-
         }
         private void TheCanvas_OnMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
@@ -1014,7 +944,8 @@ namespace Lab04___Clipping_and_Filling
             MessageBox.Show("Click and hold on an edge or a vertex to move it.\n" +
                             "Double-click and hold on a shape to move the entire shape\n\n" +
                             "Double-click on a shape to select it. If a shape is selected you can then change " +
-                            "its color/thickness or delete it with del key\n\n" +
+                            "its color/thickness or delete it with del key. If a rectangle is selected you can " +
+                            "set it as the clipping rectangle.\n\n" +
                             "Ctrl+Mouse wheel to zoom in/out.", "Help", 
                             MessageBoxButton.OK);
         }
@@ -1028,7 +959,24 @@ namespace Lab04___Clipping_and_Filling
         }
         private void ToggleClipping()
         {
-            _clippingRectangleIndex = _clippingRectangleIndex == -1 ? _selectedRectangleIndex : -1;
+            if (_clippingRectangleIndex == -1)
+            {
+                _clippingRectangleIndex = _selectedRectangleIndex;
+                ((Rectangle)_allShapes[_clippingRectangleIndex]).IsClippingRectangle = true;
+            }
+            else if (_clippingRectangleIndex == _selectedRectangleIndex)
+            {
+                _clippingRectangleIndex = -1;
+                ((Rectangle)_allShapes[_clippingRectangleIndex]).IsClippingRectangle = false;
+            }
+            else
+            {
+                ((Rectangle)_allShapes[_clippingRectangleIndex]).IsClippingRectangle = false;
+                
+                _clippingRectangleIndex = _selectedRectangleIndex;
+                ((Rectangle)_allShapes[_clippingRectangleIndex]).IsClippingRectangle = true;
+            }
+
             ClipButton.Background = _clippingRectangleIndex == -1 ? _inactiveButtonColor : _activeButtonColor;
         }
 
@@ -1037,13 +985,13 @@ namespace Lab04___Clipping_and_Filling
         {
             _isBorderFilling = !_isBorderFilling;
             _useEightConnected = false;
-            BorderFillButton.Background = _isBorderFilling ? _activeButtonColor : _inactiveButtonColor;
+            BorderFill4Button.Background = _isBorderFilling ? _activeButtonColor : _inactiveButtonColor;
         }
         private void BorderFill8Button_OnClick(object sender, RoutedEventArgs e)
         {
             _isBorderFilling = !_isBorderFilling;
             _useEightConnected = true;
-            BorderFillButton.Background = _isBorderFilling ? _activeButtonColor : _inactiveButtonColor; 
+            BorderFill8Button.Background = _isBorderFilling ? _activeButtonColor : _inactiveButtonColor; 
         }
         private void SelectBorderFillColorButton_OnClick(object sender, MouseButtonEventArgs e)
         {
@@ -1082,6 +1030,76 @@ namespace Lab04___Clipping_and_Filling
                     colorDialog.Color.G,
                     colorDialog.Color.B);
             }
+        }
+        private void BorderFill(Point currentCursorPosition)
+        {
+            Debug.WriteLine($"Border Fill 8-connected: {_useEightConnected}");
+            
+            var pointStack = new Stack<Point>();
+            pointStack.Push(currentCursorPosition);
+            _wbm.Lock();
+            while (pointStack.Count > 0)
+            {
+                var currentPoint = pointStack.Pop();
+                var x = (int)currentPoint.X;
+                var y = (int)currentPoint.Y;
+                if (x < 0 || x > CanvasImage.ActualWidth || y < 0 || y > CanvasImage.ActualHeight) continue;
+
+                var c = _wbm.GetPixelColor(x, y);
+                if (
+                    ((c.R != _currentBorderFillColor.R) ||
+                    (c.G != _currentBorderFillColor.G) ||
+                    (c.B != _currentBorderFillColor.B)) 
+                    &&
+                    ((c.R != _currentBorderFillBorderColor.R) ||
+                     (c.G != _currentBorderFillBorderColor.G) ||
+                     (c.B != _currentBorderFillBorderColor.B)))
+                {
+                    _wbm.SetPixelColor(x, y, _currentBorderFillColor);
+                    pointStack.Push(new Point(x+1, y+0));
+                    pointStack.Push(new Point(x-1, y+0));
+                    pointStack.Push(new Point(x+0, y+1));
+                    pointStack.Push(new Point(x+0, y-1));
+
+                    if (_useEightConnected)
+                    {
+                        pointStack.Push(new Point(x + 1, y + 1));
+                        pointStack.Push(new Point(x - 1, y - 1));
+                        pointStack.Push(new Point(x - 1, y + 1));
+                        pointStack.Push(new Point(x + 1, y - 1));
+                    }
+                }
+            }
+            _wbm.Unlock();
+
+            CanvasImage.Source = _wbm;
+
+            _isBorderFilling = false;
+            BorderFill4Button.Background = _inactiveButtonColor;
+
+
+
+
+            //void boundaryFill4(int x, int y, RGB boundary, RGB new) 
+            //{
+            //// x, y ‐ starting point coordinates
+            //// boundary ‐ color of the border (stop)
+            //// new ‐ must be different than boundary
+            //// and any color already present in the region
+            //RGB c = getPixel(x, y);
+            //if (c != boundary && c != new) 
+            //{
+            //    setPixel(x,y, new);
+            //    boundaryFill4(x + 1, y, boundary, new);
+            //    boundaryFill4(x ‐ 1, y, boundary, new);
+            //    boundaryFill4(x, y + 1, boundary, new);
+            //    boundaryFill4(x, y ‐ 1, boundary, new);
+            //}
+            //}
+
+
+
+
         }
         
     }

@@ -397,11 +397,8 @@ namespace Lab04___Clipping_and_Filling
 
         public void CohenSutherland(WriteableBitmap wbm, bool isAntiAliased, bool isSuperSampled, int ssaa, Rectangle? clipR)
         {
-            if (clipR == null)
-            {
-                Draw(wbm, isAntiAliased, isSuperSampled, ssaa);
-                return;
-            }
+            Draw(wbm, isAntiAliased, isSuperSampled, ssaa);
+            if (clipR == null) return;
 
             var clip = clipR.GetRectangleF();
 
@@ -471,7 +468,7 @@ namespace Lab04___Clipping_and_Filling
 
             if (accepted)
             {
-                var lineSegment = new Line(new List<Point> { p1, p2 }, Thickness, Color);
+                var lineSegment = new Line(new List<Point> { p1, p2 }, Thickness+1, Color.FromKnownColor(KnownColor.Red));
                 lineSegment.Draw(wbm, isAntiAliased, isSuperSampled, ssaa);
             }
         }
@@ -484,6 +481,7 @@ namespace Lab04___Clipping_and_Filling
 
     public class Polygon : Shape
     {
+        public bool IsClippingRectangle { get; set; }
         public Polygon(List<Point> points, int thickness, Color color, Color? fillColor = null, string? fillImage = null) : base(points, thickness, color)
         {
             FillColor = fillColor;
@@ -499,7 +497,7 @@ namespace Lab04___Clipping_and_Filling
                 var endPoint = i < Points.Count-1 ? Points[i+1] : Points[0];
                 var edge = new Line(new List<Point> { Points[i], endPoint }, Thickness, Color);
 
-                edge.CohenSutherland(wbm, isAntiAliased, isSuperSampled, ssaa, clip);
+                edge.CohenSutherland(wbm, isAntiAliased, isSuperSampled, ssaa, IsClippingRectangle ? null : clip);
             }
         }
 
@@ -629,7 +627,6 @@ namespace Lab04___Clipping_and_Filling
     public class Rectangle : Polygon
     {
         public Rectangle(List<Point> points, int thickness, Color color, Color? fillColor = null, string? fillImage = null) : base (points, thickness, color, fillColor, fillImage) { }
-
         public override void MoveVertex(int vertexIndex, Vector offSet)
         {
             Points[vertexIndex] = Point.Add(Points[vertexIndex], offSet);
@@ -657,7 +654,6 @@ namespace Lab04___Clipping_and_Filling
                     break;
             }
         }
-
         public override void MoveEdge(int edgeIndex, Vector offSet)
         {
             var nextIndex = edgeIndex == Points.Count - 1 ? 0 : edgeIndex + 1;
