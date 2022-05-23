@@ -18,6 +18,7 @@ namespace Lab04___Clipping_and_Filling
         int Thickness { get; set; }
         Color Color { get; set; }
         Color? FillColor { get; set; }
+        String? FillImage{ get; set; }
         void Draw(WriteableBitmap wbm, bool isAntiAliased = false, bool isSuperSampled = false, int ssaa = 2);
         int GetVertexIndexOf(Point point);
         void MoveVertex(int vertexIndex, Vector offSet);
@@ -29,10 +30,36 @@ namespace Lab04___Clipping_and_Filling
     public abstract class Shape : IDrawable
     {
         protected const int GrabDistance = 10;
+        protected string? _fillImage = null;
+        protected WriteableBitmap? FillImageWbm = null;
         public List<Point> Points { get; }
         public int Thickness { get; set; }
         public Color Color { get; set; }
         public Color? FillColor { get; set; } = null;
+        public string? FillImage
+        {
+            get => _fillImage;
+            set
+            {
+                _fillImage = value;
+                if (value is not null)
+                {
+                    try
+                    {
+                        FillImageWbm = new WriteableBitmap(new BitmapImage(
+                            new Uri(new Uri(System.Reflection.Assembly.GetExecutingAssembly().Location), FillImage)));
+                    }
+                    catch (Exception exception)
+                    {
+                        Console.WriteLine(exception.Message);
+                    }
+                }
+                else
+                {
+                    FillImageWbm = null;
+                }
+            }
+        }
 
         protected Shape(List<Point> points, int thickness, Color color)
         {
@@ -355,14 +382,15 @@ namespace Lab04___Clipping_and_Filling
 
     public class Polygon : Shape
     {
-        public Polygon(List<Point> points, int thickness, Color color, Color? fillColor) : base(points, thickness, color)
+        public Polygon(List<Point> points, int thickness, Color color, Color? fillColor, String? fillImage) : base(points, thickness, color)
         {
             FillColor = fillColor;
+            FillImage = fillImage;
         }
 
         public override void Draw(WriteableBitmap wbm, bool isAntiAliased = false, bool isSuperSampled = false, int ssaa = 2)
         {
-            if (FillColor != null) FillWithSolidColor(wbm);
+            if (FillColor != null || FillImage != null) FillPolygon(wbm);
             
             for (var i = 0; i < Points.Count; i++)
             {
@@ -418,7 +446,7 @@ namespace Lab04___Clipping_and_Filling
             return et;
         }
 
-        private void FillWithSolidColor(WriteableBitmap wbm)
+        private void FillPolygon(WriteableBitmap wbm)
         {
             var et = CreateEdgeTable();
             if (et.Count == 0) return;
@@ -455,7 +483,7 @@ namespace Lab04___Clipping_and_Filling
 
                 ++y;
 
-                aet.RemoveAll(edge => edge.YMax == y);
+                aet.RemoveAll(edge => edge.YMax <= y);
 
                 foreach (var edge in aet)
                     edge.X += edge.InvM;
@@ -467,12 +495,22 @@ namespace Lab04___Clipping_and_Filling
             
             wbm.Lock();
 
-            for (var x = x1; x < x2; x++)
-                wbm.SetPixelColor(x, y, (Color)(FillColor!));
+            if (FillColor != null)
+            {
+                for (var x = x1; x < x2; x++)
+                    wbm.SetPixelColor(x, y, (Color)(FillColor!));
+            }
+            else if (FillImageWbm != null) // fill with image
+            {
+                for (var x = x1; x < x2; x++)
+                {
+                    var imageColor = FillImageWbm.GetPixelColor(x%FillImageWbm.PixelWidth, y%FillImageWbm.PixelHeight);
+                    wbm.SetPixelColor(x, y, imageColor);
+                }
+            }
 
             wbm.Unlock();
         }
-
 
         public override string ToString()
         {
@@ -487,7 +525,7 @@ namespace Lab04___Clipping_and_Filling
 
     public class Rectangle : Polygon
     {
-        public Rectangle(List<Point> points, int thickness, Color color, Color? fillColor) : base (points, thickness, color, fillColor ) { }
+        public Rectangle(List<Point> points, int thickness, Color color, Color? fillColor, String? fillImage) : base (points, thickness, color, fillColor, fillImage) { }
 
         public override void MoveVertex(int vertexIndex, Vector offSet)
         {

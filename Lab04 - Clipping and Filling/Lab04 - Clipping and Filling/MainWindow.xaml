@@ -315,7 +315,52 @@
                                 ToolTip="Select Color"
                                 Fill="Black"
                                 Stroke="Black"
-                                MouseLeftButtonUp="FillColorButton_OnClick"
+                                MouseLeftButtonUp="SelectFillColorButton_OnClick"
+                            />
+
+                            <!--FILL WITH IMAGE-->
+                            <Button  
+                                Grid.Row="11"
+                                Grid.Column="0"
+                                Grid.ColumnSpan="2"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                Margin="1,0, 6, 0"
+                                Height="20"
+                                Width="100"
+                                Name="FillImageButton"
+                                IsEnabled="false"
+                                ToolTip="Fill w/ Image"
+                                Background="LightCyan"
+                                Click="FillImageButton_OnClick">
+                                Fill w/ Image
+                            </Button>
+
+                            <Button  
+                                Grid.Row="11"
+                                Grid.Column="2"
+                                Grid.ColumnSpan="3"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                Margin="1,0, 6, 0"
+                                Height="20"
+                                Width="100"
+                                Name="ChooseImageButton"
+                                IsEnabled="true"
+                                ToolTip="Select Image"
+                                Background="LightCyan"
+                                Click="SelectFillImageButton_OnClick">
+                                Select Image
+                            </Button>
+
+                            <TextBlock Grid.Row="12"
+                                       Grid.Column="0"
+                                       Grid.ColumnSpan="5"
+                                       Name="SelectedFillImage"
+                                       Padding="5, 0 "
+                                       HorizontalAlignment="Left"
+                                       VerticalAlignment="Center"
+                                       Text="No image selected"
                             />
 
                             

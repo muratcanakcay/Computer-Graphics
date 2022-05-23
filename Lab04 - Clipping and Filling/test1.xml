@@ -4,24 +4,33 @@
     <ClassName>Polygon</ClassName>
     <Points>
       <Point>
-        <X>302</X>
-        <Y>226.04</Y>
+        <X>526</X>
+        <Y>64.03999999999996</Y>
       </Point>
       <Point>
-        <X>436</X>
-        <Y>462.04</Y>
+        <X>154</X>
+        <Y>338.03999999999996</Y>
       </Point>
       <Point>
-        <X>536</X>
-        <Y>228.04</Y>
+        <X>499</X>
+        <Y>358.04</Y>
       </Point>
       <Point>
-        <X>433</X>
-        <Y>341.04</Y>
+        <X>844</X>
+        <Y>100.03999999999999</Y>
+      </Point>
+      <Point>
+        <X>497</X>
+        <Y>243.04000000000002</Y>
+      </Point>
+      <Point>
+        <X>803</X>
+        <Y>565.04</Y>
       </Point>
     </Points>
     <Thickness>1</Thickness>
     <Color>-16777216</Color>
     <FillColor xsi:nil="true" />
+    <FillImage>../../../../texture3.jpg</FillImage>
   </ShapeT>
 </ArrayOfShapeT>
