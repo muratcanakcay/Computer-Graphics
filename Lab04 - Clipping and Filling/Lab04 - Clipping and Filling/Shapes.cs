@@ -405,6 +405,9 @@ namespace Lab04___Clipping_and_Filling
 
             var clip = clipR.GetRectangleF();
 
+            Debug.WriteLine(clipR.ToString());
+            Debug.WriteLine(clip.ToString());
+
             bool accepted = false;
             bool done = false;
             Point p1 = Points[0];
@@ -430,21 +433,25 @@ namespace Lab04___Clipping_and_Filling
                     Point p;
                     if ( ( outcodeOut & (byte)Outcodes.TOP ) != 0 ) 
                     {
+                        Debug.WriteLine("TOP");
                         p.X = p1.X + (p2.X - p1.X) * (clip.Top - p1.Y) / (p2.Y - p1.Y);
                         p.Y = clip.Top;
                     }
                     else if ( ( outcodeOut & (byte)Outcodes.BOTTOM ) != 0 ) 
                     {
+                        Debug.WriteLine("BOTTOM");
                         p.X = p1.X + (p2.X - p1.X) * (clip.Bottom - p1.Y) / (p2.Y - p1.Y);
                         p.Y = clip.Bottom;
                     }
                     else if ((outcodeOut & (byte)Outcodes.RIGHT) != 0)
                     {
+                        Debug.WriteLine("RIGHT");
                         p.Y = p1.Y + (p2.Y - p1.Y) * (clip.Right - p1.X) / (p2.X - p1.X);
                         p.X = clip.Right;
                     }
                     else if ((outcodeOut & (byte)Outcodes.LEFT) != 0)
                     {
+                        Debug.WriteLine("LEFT");
                         p.Y = p1.Y + (p2.Y - p1.Y) * (clip.Left - p1.X) / (p2.X - p1.X);
                         p.X = clip.Left;
                     }
@@ -677,12 +684,11 @@ namespace Lab04___Clipping_and_Filling
 
         public RectangleF GetRectangleF()
         {
-            var x = Math.Abs(Points[0].X - Points[1].X) < 0.001
-                ? (Points[1].X < Points[2].X ? Points[1].X : Points[2].X)
-                : (Points[0].X < Points[1].X ? Points[0].X : Points[1].X);
-            var y = Math.Abs(Points[0].Y - Points[1].Y) < 0.01
-                ? (Points[1].Y < Points[2].Y ? Points[1].Y : Points[2].Y)
-                : (Points[0].Y < Points[1].Y ? Points[0].Y : Points[1].Y);
+            var x = Math.Abs(Points[0].X - Points[1].X) < 0.001 ? (Points[1].X < Points[2].X ? Points[1].X : Points[2].X)
+                                                                      : (Points[0].X < Points[1].X ? Points[0].X : Points[1].X);
+            
+            var y = Math.Abs(Points[0].Y - Points[1].Y) < 0.01 ? (Points[1].Y < Points[2].Y ? Points[1].Y : Points[2].Y)
+                                                                     : (Points[0].Y < Points[1].Y ? Points[0].Y : Points[1].Y);
 
             var width = Math.Abs(Points[0].X - Points[2].X); 
             var height = Math.Abs(Points[0].Y - Points[2].Y);
