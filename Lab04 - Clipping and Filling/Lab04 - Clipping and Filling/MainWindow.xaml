@@ -104,6 +104,9 @@
                                 <RowDefinition Height="24"/>
                                 <RowDefinition Height="24"/>
                                 <RowDefinition Height="24"/>
+                                <RowDefinition Height="24"/>
+                                <RowDefinition Height="24"/>
+                                <RowDefinition Height="24"/>
                                 <RowDefinition/>
                             </Grid.RowDefinitions>
 
@@ -380,6 +383,88 @@
                                 Click="ClipButton_OnClick">
                                 Set Clipping Rectangle
                             </Button>
+
+                            <!--BORDER FILL -->
+                            <Button  
+                                Grid.Row="16"
+                                Grid.Column="0"
+                                Grid.ColumnSpan="1"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                Margin="1,0, 6, 0"
+                                Height="20"
+                                Width="85"
+                                Name="BorderFillButton"
+                                IsEnabled="true"
+                                ToolTip="Fill w/ Image"
+                                Background="LightCyan"
+                                Click="BorderFillButton_OnClick">
+                                Border Fill 4
+                            </Button>
+
+                            <Button  
+                                Grid.Row="17"
+                                Grid.Column="0"
+                                Grid.ColumnSpan="1"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                Margin="1,0, 6, 0"
+                                Height="20"
+                                Width="85"
+                                Name="BorderFill8Button"
+                                IsEnabled="true"
+                                ToolTip="Fill w/ Image"
+                                Background="LightCyan"
+                                Click="BorderFill8Button_OnClick">
+                                Border Fill 8
+                            </Button>
+
+                            <TextBlock Grid.Row="16"
+                                       Grid.Column="2"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"
+                                       Text="Fill Color"
+                            />
+
+                            <Rectangle  
+                                Grid.Row="16"
+                                Grid.Column="3"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Margin="1,0, 1, 0"
+                                Height="15"
+                                Width="30"
+                                Name="BorderFillColorButton"
+                                IsEnabled="true"
+                                ToolTip="Select Color"
+                                Fill="Red"
+                                Stroke="Black"
+                                MouseLeftButtonUp="SelectBorderFillColorButton_OnClick"
+                            />
+
+                            <TextBlock Grid.Row="17"
+                                       Grid.Column="1"
+                                       Grid.ColumnSpan="2"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"
+                                       Text="Border Color"
+                            />
+
+                            <Rectangle  
+                                Grid.Row="17"
+                                Grid.Column="3"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Margin="1,0, 1, 0"
+                                Height="15"
+                                Width="30"
+                                Name="BorderFillBorderColorButton"
+                                IsEnabled="true"
+                                ToolTip="Select Color"
+                                Fill="Black"
+                                Stroke="Black"
+                                MouseLeftButtonUp="SelectBorderFillBorderColorButton_OnClick"
+                            />
 
                             
 
