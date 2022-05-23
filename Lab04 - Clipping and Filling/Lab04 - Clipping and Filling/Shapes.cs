@@ -20,7 +20,7 @@ namespace Lab04___Clipping_and_Filling
         Color Color { get; set; }
         Color? FillColor { get; set; }
         String? FillImage{ get; set; }
-        void Draw(WriteableBitmap wbm, bool isAntiAliased = false, bool isSuperSampled = false, int ssaa = 2);
+        void Draw(WriteableBitmap wbm, bool isAntiAliased = false, bool isSuperSampled = false, int ssaa = 2, Rectangle? clip = null);
         int GetVertexIndexOf(Point point);
         void MoveVertex(int vertexIndex, Vector offSet);
         int GetEdgeIndexOf(Point point);
@@ -69,7 +69,7 @@ namespace Lab04___Clipping_and_Filling
             Color = color;
         }
 
-        public abstract void Draw(WriteableBitmap wbm, bool isAntiAliased = false, bool isSuperSampled = false, int ssaa = 2);
+        public abstract void Draw(WriteableBitmap wbm, bool isAntiAliased = false, bool isSuperSampled = false, int ssaa = 2, Rectangle? clip = null);
 
         public virtual int GetVertexIndexOf(Point point)
         {
@@ -126,7 +126,7 @@ namespace Lab04___Clipping_and_Filling
         public Line(List<Point> points, int thickness, Color color) : base(points, thickness, color)
         { }
 
-        public override void Draw(WriteableBitmap wbm, bool isAntiAliased = false, bool isSuperSampled = false, int ssaa = 2)
+        public override void Draw(WriteableBitmap wbm, bool isAntiAliased = false, bool isSuperSampled = false, int ssaa = 2, Rectangle? clip = null)
         {
             if (isAntiAliased)
             {
@@ -484,15 +484,13 @@ namespace Lab04___Clipping_and_Filling
 
     public class Polygon : Shape
     {
-        private readonly Rectangle? _clip;
-        public Polygon(List<Point> points, int thickness, Color color, Color? fillColor = null, string? fillImage = null, Rectangle? clip = null) : base(points, thickness, color)
+        public Polygon(List<Point> points, int thickness, Color color, Color? fillColor = null, string? fillImage = null) : base(points, thickness, color)
         {
             FillColor = fillColor;
             FillImage = fillImage;
-            _clip = clip;
         }
 
-        public override void Draw(WriteableBitmap wbm, bool isAntiAliased = false, bool isSuperSampled = false, int ssaa = 2)
+        public override void Draw(WriteableBitmap wbm, bool isAntiAliased = false, bool isSuperSampled = false, int ssaa = 2, Rectangle? clip = null)
         {
             if (FillColor != null || FillImage != null) FillPolygon(wbm);
             
@@ -501,7 +499,7 @@ namespace Lab04___Clipping_and_Filling
                 var endPoint = i < Points.Count-1 ? Points[i+1] : Points[0];
                 var edge = new Line(new List<Point> { Points[i], endPoint }, Thickness, Color);
 
-                edge.CohenSutherland(wbm, isAntiAliased, isSuperSampled, ssaa, _clip);
+                edge.CohenSutherland(wbm, isAntiAliased, isSuperSampled, ssaa, clip);
             }
         }
 
@@ -630,7 +628,7 @@ namespace Lab04___Clipping_and_Filling
 
     public class Rectangle : Polygon
     {
-        public Rectangle(List<Point> points, int thickness, Color color, Color? fillColor = null, string? fillImage = null, Rectangle? clip = null) : base (points, thickness, color, fillColor, fillImage, clip) { }
+        public Rectangle(List<Point> points, int thickness, Color color, Color? fillColor = null, string? fillImage = null) : base (points, thickness, color, fillColor, fillImage) { }
 
         public override void MoveVertex(int vertexIndex, Vector offSet)
         {
@@ -713,7 +711,7 @@ namespace Lab04___Clipping_and_Filling
         private int Radius => (int)Math.Round(Points[0].DistanceFromPoint(Points[1]));
         public Circle(List<Point> points, int thickness, Color color) : base(points, thickness, color) { }
 
-        public override void Draw(WriteableBitmap wbm, bool isAntiAliased = false, bool isSuperSampled = false, int ssaa = 2)
+        public override void Draw(WriteableBitmap wbm, bool isAntiAliased = false, bool isSuperSampled = false, int ssaa = 2, Rectangle? clip = null)
         {
             var SSAA = isSuperSampled ? ssaa : 1;
 
@@ -799,7 +797,7 @@ namespace Lab04___Clipping_and_Filling
         private int Radius => (int)Math.Round(Points[0].DistanceFromPoint(Points[1]));
         public CircleArc(List<Point> points, int thickness, Color color) : base(points, thickness, color) { }
 
-        public override void Draw(WriteableBitmap wbm, bool isAntiAliased = false, bool isSuperSampled = false, int ssaa = 2)
+        public override void Draw(WriteableBitmap wbm, bool isAntiAliased = false, bool isSuperSampled = false, int ssaa = 2, Rectangle? clip = null)
         {
             var SSAA = isSuperSampled ? ssaa : 1;
 

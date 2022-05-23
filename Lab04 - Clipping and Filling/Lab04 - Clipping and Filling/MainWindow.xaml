@@ -398,7 +398,7 @@
                                 IsEnabled="true"
                                 ToolTip="Fill w/ Image"
                                 Background="LightCyan"
-                                Click="BorderFillButton_OnClick">
+                                Click="BorderFill4Button_OnClick">
                                 Border Fill 4
                             </Button>
 

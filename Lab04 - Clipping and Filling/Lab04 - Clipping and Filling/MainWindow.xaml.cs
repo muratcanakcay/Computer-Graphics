@@ -133,7 +133,7 @@ namespace Lab04___Clipping_and_Filling
         private void DrawAllShapes(WriteableBitmap wbm)
         {
             foreach (var shape in _allShapes)
-                shape.Draw(wbm, _isAntiAliased, _isSuperSampled, SSAA);
+                shape.Draw(wbm, _isAntiAliased, _isSuperSampled, SSAA, _clippingRectangleIndex == -1 ? null : (Rectangle)_allShapes[_clippingRectangleIndex]);
 
             foreach (var fill in _allFills)
             {
@@ -249,7 +249,6 @@ namespace Lab04___Clipping_and_Filling
                 }
             }
         }
-
         private void BorderFill(Point currentCursorPosition)
         {
             Debug.WriteLine($"Border Fill 8-connected: {_useEightConnected}");
@@ -320,7 +319,6 @@ namespace Lab04___Clipping_and_Filling
 
 
         }
-
         private void TheCanvas_OnMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             _isMovingShape = false;
@@ -547,13 +545,8 @@ namespace Lab04___Clipping_and_Filling
             {
                 Debug.WriteLine($"Ending: {clickPosition.X}, {clickPosition.Y}");
                 _allShapes.Add(new Polygon(
-                    new List<Point>(_currentPoints), 
-                    _currentShapeThickness, 
-                    _currentShapeColor, 
-                    null, 
-                    null, 
-                    _clippingRectangleIndex == -1 ? null : (Rectangle)_allShapes[_clippingRectangleIndex]));
-                
+                    new List<Point>(_currentPoints), _currentShapeThickness, _currentShapeColor));
+
                 _currentPoints.Clear();
                 ToggleIsDrawingPolygon();
                 RedrawCanvas();
@@ -592,13 +585,7 @@ namespace Lab04___Clipping_and_Filling
                     new Point(_currentPoints[0].X, _currentPoints[1].Y),
                 };
 
-                _allShapes.Add(new Rectangle(
-                    rectangleVertices, 
-                    _currentShapeThickness, 
-                    _currentShapeColor, 
-                    null, 
-                    null, 
-                    _clippingRectangleIndex == -1 ? null : (Rectangle)_allShapes[_clippingRectangleIndex]));
+                _allShapes.Add(new Rectangle(rectangleVertices, _currentShapeThickness, _currentShapeColor));
 
                 _currentPoints.Clear();
                 ToggleIsDrawingRectangle();
@@ -1045,13 +1032,19 @@ namespace Lab04___Clipping_and_Filling
             ClipButton.Background = _clippingRectangleIndex == -1 ? _inactiveButtonColor : _activeButtonColor;
         }
 
-        private void BorderFillButton_OnClick(object sender, RoutedEventArgs e)
+        //----------- CLIPPING (COHEN SUTHERLAND ALGORITHM)
+        private void BorderFill4Button_OnClick(object sender, RoutedEventArgs e)
         {
             _isBorderFilling = !_isBorderFilling;
             _useEightConnected = false;
             BorderFillButton.Background = _isBorderFilling ? _activeButtonColor : _inactiveButtonColor;
         }
-
+        private void BorderFill8Button_OnClick(object sender, RoutedEventArgs e)
+        {
+            _isBorderFilling = !_isBorderFilling;
+            _useEightConnected = true;
+            BorderFillButton.Background = _isBorderFilling ? _activeButtonColor : _inactiveButtonColor; 
+        }
         private void SelectBorderFillColorButton_OnClick(object sender, MouseButtonEventArgs e)
         {
             using var colorDialog = new System.Windows.Forms.ColorDialog();
@@ -1071,7 +1064,6 @@ namespace Lab04___Clipping_and_Filling
                     colorDialog.Color.B);
             }
         }
-
         private void SelectBorderFillBorderColorButton_OnClick(object sender, MouseButtonEventArgs e)
         {
             using var colorDialog = new System.Windows.Forms.ColorDialog();
@@ -1091,12 +1083,6 @@ namespace Lab04___Clipping_and_Filling
                     colorDialog.Color.B);
             }
         }
-
-        private void BorderFill8Button_OnClick(object sender, RoutedEventArgs e)
-        {
-            _isBorderFilling = !_isBorderFilling;
-            _useEightConnected = true;
-            BorderFillButton.Background = _isBorderFilling ? _activeButtonColor : _inactiveButtonColor; 
-        }
+        
     }
 }
