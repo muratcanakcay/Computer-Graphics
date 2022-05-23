@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Media.Imaging;
+using Clipboard = System.Windows.Clipboard;
 using Color = System.Drawing.Color;
 using Point = System.Windows.Point;
 
@@ -372,6 +374,100 @@ namespace Lab04___Clipping_and_Filling
 
             return ((1/Math.PI) * Math.Acos(d/r)) - ((d / (Math.PI*r*r)) * Math.Sqrt((r*r) - (d*d)));
         }
+        
+        private enum Outcodes {
+            LEFT = 1,
+            RIGHT = 2,
+            BOTTOM = 4,
+            TOP = 8
+        };
+
+        private static byte ComputeOutcode(Point p, RectangleF clip)
+        {
+            byte outcode = 0;
+            
+            if (p.X > clip.Right) outcode |= (byte)Outcodes.RIGHT;
+            else if (p.X < clip.Left) outcode |= (byte)Outcodes.LEFT;
+            
+            if (p.Y > clip.Top) outcode |= (byte)Outcodes.TOP;
+            else if (p.Y < clip.Bottom) outcode |= (byte)Outcodes.BOTTOM;
+            
+            return outcode;
+        }
+
+        public void CohenSutherland(WriteableBitmap wbm, bool isAntiAliased, bool isSuperSampled, int ssaa, Rectangle? clipR)
+        {
+            if (clipR == null)
+            {
+                Draw(wbm, isAntiAliased, isSuperSampled, ssaa);
+                return;
+            }
+
+            var clip = clipR.GetRectangleF();
+
+            bool accepted = false;
+            bool done = false;
+            Point p1 = Points[0];
+            Point p2 = Points[1];
+            byte outcode1 = ComputeOutcode(p1, clip);
+            byte outcode2 = ComputeOutcode(p2, clip);
+
+            do
+            {
+                if ((outcode1 | outcode2) == 0) //trivially accepted
+                {
+                    accepted = true;
+                    done = true;
+                }
+                else if ((outcode1 & outcode2) != 0) //trivially rejected
+                {
+                    accepted = false;
+                    done = true;
+                }
+                else //subdivide
+                {
+                    byte outcodeOut = (outcode1 != 0) ? outcode1 : outcode2;
+                    Point p;
+                    if ( ( outcodeOut & (byte)Outcodes.TOP ) != 0 ) 
+                    {
+                        p.X = p1.X + (p2.X - p1.X) * (clip.Top - p1.Y) / (p2.Y - p1.Y);
+                        p.Y = clip.Top;
+                    }
+                    else if ( ( outcodeOut & (byte)Outcodes.BOTTOM ) != 0 ) 
+                    {
+                        p.X = p1.X + (p2.X - p1.X) * (clip.Bottom - p1.Y) / (p2.Y - p1.Y);
+                        p.Y = clip.Bottom;
+                    }
+                    else if ((outcodeOut & (byte)Outcodes.RIGHT) != 0)
+                    {
+                        p.Y = p1.Y + (p2.Y - p1.Y) * (clip.Right - p1.X) / (p2.X - p1.X);
+                        p.X = clip.Right;
+                    }
+                    else if ((outcodeOut & (byte)Outcodes.LEFT) != 0)
+                    {
+                        p.Y = p1.Y + (p2.Y - p1.Y) * (clip.Left - p1.X) / (p2.X - p1.X);
+                        p.X = clip.Left;
+                    }
+
+                    if (outcodeOut == outcode1)
+                    {
+                        p1 = p;
+                        outcode1 = ComputeOutcode(p1, clip);
+                    }
+                    else 
+                    {
+                        p2 = p;
+                        outcode2 = ComputeOutcode(p2, clip);
+                    }
+                }
+            } while (!done);
+
+            if (accepted)
+            {
+                var lineSegment = new Line(new List<Point> { p1, p2 }, Thickness, Color);
+                lineSegment.Draw(wbm, isAntiAliased, isSuperSampled, ssaa);
+            }
+        }
 
         public override string ToString()
         {
@@ -381,10 +477,12 @@ namespace Lab04___Clipping_and_Filling
 
     public class Polygon : Shape
     {
-        public Polygon(List<Point> points, int thickness, Color color, Color? fillColor, String? fillImage) : base(points, thickness, color)
+        private readonly Rectangle? _clip;
+        public Polygon(List<Point> points, int thickness, Color color, Color? fillColor = null, string? fillImage = null, Rectangle? clip = null) : base(points, thickness, color)
         {
             FillColor = fillColor;
             FillImage = fillImage;
+            _clip = clip;
         }
 
         public override void Draw(WriteableBitmap wbm, bool isAntiAliased = false, bool isSuperSampled = false, int ssaa = 2)
@@ -395,7 +493,8 @@ namespace Lab04___Clipping_and_Filling
             {
                 var endPoint = i < Points.Count-1 ? Points[i+1] : Points[0];
                 var edge = new Line(new List<Point> { Points[i], endPoint }, Thickness, Color);
-                edge.Draw(wbm, isAntiAliased, isSuperSampled, ssaa);
+
+                edge.CohenSutherland(wbm, isAntiAliased, isSuperSampled, ssaa, _clip);
             }
         }
 
@@ -524,7 +623,7 @@ namespace Lab04___Clipping_and_Filling
 
     public class Rectangle : Polygon
     {
-        public Rectangle(List<Point> points, int thickness, Color color, Color? fillColor, String? fillImage) : base (points, thickness, color, fillColor, fillImage) { }
+        public Rectangle(List<Point> points, int thickness, Color color, Color? fillColor = null, string? fillImage = null, Rectangle? clip = null) : base (points, thickness, color, fillColor, fillImage, clip) { }
 
         public override void MoveVertex(int vertexIndex, Vector offSet)
         {
@@ -574,6 +673,21 @@ namespace Lab04___Clipping_and_Filling
                     Points[nextIndex] = Point.Add(Points[nextIndex], dx);
                     break;
             }
+        }
+
+        public RectangleF GetRectangleF()
+        {
+            var x = Math.Abs(Points[0].X - Points[1].X) < 0.001
+                ? (Points[1].X < Points[2].X ? Points[1].X : Points[2].X)
+                : (Points[0].X < Points[1].X ? Points[0].X : Points[1].X);
+            var y = Math.Abs(Points[0].Y - Points[1].Y) < 0.01
+                ? (Points[1].Y < Points[2].Y ? Points[1].Y : Points[2].Y)
+                : (Points[0].Y < Points[1].Y ? Points[0].Y : Points[1].Y);
+
+            var width = Math.Abs(Points[0].X - Points[2].X); 
+            var height = Math.Abs(Points[0].Y - Points[2].Y);
+
+            return new RectangleF((float)x, (float)y, (float)width, (float)height);
         }
 
         public override string ToString()
