@@ -363,6 +363,24 @@
                                        Text="No image selected"
                             />
 
+                            <!--FILL WITH IMAGE-->
+                            <Button  
+                                Grid.Row="14"
+                                Grid.Column="0"
+                                Grid.ColumnSpan="2"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                Margin="1,0, 6, 0"
+                                Height="20"
+                                Width="130"
+                                Name="ClipButton"
+                                IsEnabled="false"
+                                ToolTip="Fill w/ Image"
+                                Background="LightCyan"
+                                Click="ClipButton_OnClick">
+                                Set Clipping Rectangle
+                            </Button>
+
                             
 
 

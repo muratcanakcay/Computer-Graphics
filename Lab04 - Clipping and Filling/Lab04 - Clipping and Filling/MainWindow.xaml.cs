@@ -45,7 +45,9 @@ namespace Lab04___Clipping_and_Filling
         private bool _isZooming;
         private Point _previousCursorPosition;
         private Point _currentCursorPosition;
-        private Polygon? _selectedPolygon; 
+        private Polygon? _selectedPolygon;
+        private int _selectedRectangleIndex;
+        private int _clippingRectangleIndex = -1;
         private int SSAA = 2; // TODO: make this modifiable from GUI
         private int _currentShapeIndex;
         private int _currentEdgeIndex;
@@ -62,6 +64,7 @@ namespace Lab04___Clipping_and_Filling
         private WriteableBitmap _wbm;
         private readonly SolidColorBrush _activeButtonColor = Brushes.LightSalmon;
         private readonly SolidColorBrush _inactiveButtonColor = Brushes.LightCyan;
+        
 
 
         public MainWindow()
@@ -116,6 +119,8 @@ namespace Lab04___Clipping_and_Filling
             else if (_isDrawingCircleArc) ToggleIsDrawingCircleArc();
 
             DisableFillButtons();
+            if (_clippingRectangleIndex == -1) ClipButton.IsEnabled = false;
+            else ClipButton.Background = _activeButtonColor;
 
             _currentPoints.Clear();
             RedrawCanvas();
@@ -135,6 +140,10 @@ namespace Lab04___Clipping_and_Filling
         {
             _isModifyingShape = false;
             DisableFillButtons();
+
+            if (_clippingRectangleIndex == -1) ClipButton.IsEnabled = false;
+            else ClipButton.Background = _activeButtonColor;
+
             _currentCursorPosition = e.GetPosition(TheCanvas);
             Debug.WriteLine($"CLICKED ({_currentCursorPosition.X}, {_currentCursorPosition.Y})");
 
@@ -168,6 +177,13 @@ namespace Lab04___Clipping_and_Filling
                 {
                     _selectedPolygon = selectedPolygon;
                     EnableFillButtons();
+                }
+
+                if (_allShapes[_currentShapeIndex] is Rectangle)
+                {
+                    _selectedRectangleIndex = _currentShapeIndex;
+                    ClipButton.IsEnabled = true;
+                    ClipButton.Background = _clippingRectangleIndex == _selectedRectangleIndex ? _activeButtonColor : _inactiveButtonColor;
                 }
 
                 Debug.WriteLine(_allShapes[_currentShapeIndex]);
@@ -436,7 +452,13 @@ namespace Lab04___Clipping_and_Filling
             {
                 Debug.WriteLine($"Ending: {clickPosition.X}, {clickPosition.Y}");
                 _allShapes.Add(new Polygon(
-                    new List<Point>(_currentPoints), _currentShapeThickness, _currentShapeColor, null, null));
+                    new List<Point>(_currentPoints), 
+                    _currentShapeThickness, 
+                    _currentShapeColor, 
+                    null, 
+                    null, 
+                    _clippingRectangleIndex == -1 ? null : (Rectangle)_allShapes[_clippingRectangleIndex]));
+                
                 _currentPoints.Clear();
                 ToggleIsDrawingPolygon();
                 RedrawCanvas();
@@ -476,7 +498,13 @@ namespace Lab04___Clipping_and_Filling
                 };
 
                 _allShapes.Add(new Rectangle(
-                    rectangleVertices, _currentShapeThickness, _currentShapeColor, null, null));
+                    rectangleVertices, 
+                    _currentShapeThickness, 
+                    _currentShapeColor, 
+                    null, 
+                    null, 
+                    _clippingRectangleIndex == -1 ? null : (Rectangle)_allShapes[_clippingRectangleIndex]));
+
                 _currentPoints.Clear();
                 ToggleIsDrawingRectangle();
                 RedrawCanvas();
@@ -908,7 +936,17 @@ namespace Lab04___Clipping_and_Filling
                             MessageBoxButton.OK);
         }
         
-        //-----------
-
+        //----------- CLIPPING (COHEN SUTHERLAND ALGORITHM)
+        
+        private void ClipButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            ToggleClipping();
+            RedrawCanvas(); 
+        }
+        private void ToggleClipping()
+        {
+            _clippingRectangleIndex = _clippingRectangleIndex == -1 ? _selectedRectangleIndex : -1;
+            ClipButton.Background = _clippingRectangleIndex == -1 ? _inactiveButtonColor : _activeButtonColor;
+        }
     }
 }
