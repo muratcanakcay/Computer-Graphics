@@ -848,12 +848,13 @@ namespace Lab04___Clipping_and_Filling
             else
             {
                 ((Rectangle)_allShapes[_clippingRectangleIndex]).IsClippingRectangle = false;
-                
                 _clippingRectangleIndex = _selectedRectangleIndex;
-                ((Rectangle)_allShapes[_clippingRectangleIndex]).IsClippingRectangle = true;
+                if (_clippingRectangleIndex != -1) 
+                    ((Rectangle)_allShapes[_clippingRectangleIndex]).IsClippingRectangle = true;
             }
 
             ClipButton.Background = _clippingRectangleIndex == -1 ? _inactiveButtonColor : _activeButtonColor;
+            if (_selectedRectangleIndex == -1) ClipButton.IsEnabled = false;
         }
 
         //----------- BORDER FILL
