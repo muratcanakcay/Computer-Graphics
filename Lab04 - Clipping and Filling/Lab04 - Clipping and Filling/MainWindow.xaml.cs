@@ -29,6 +29,7 @@ namespace Lab04___Clipping_and_Filling
             public int Color;
             public int? FillColor;
             public string? FillImage;
+            public bool IsClippingRectangle;
         };
         
         private bool _isDrawingLine;
@@ -832,6 +833,7 @@ namespace Lab04___Clipping_and_Filling
             _allShapes.Clear();
             _allFills.Clear();
             _isAntiAliased = true;
+            _clippingRectangleIndex = -1;
             ToggleIsAntiAliased();
             ToggleAllOff();
             RedrawCanvas();
@@ -853,7 +855,8 @@ namespace Lab04___Clipping_and_Filling
                                             Thickness = shape.Thickness,
                                             Color = shape.Color.ToArgb(),
                                             FillColor = shape.FillColor?.ToArgb(),
-                                            FillImage = shape.FillImage
+                                            FillImage = shape.FillImage,
+                                            IsClippingRectangle = shape.IsClippingRectangle
                                         })
                                         .ToList();
 
@@ -880,6 +883,7 @@ namespace Lab04___Clipping_and_Filling
                 {
                     var loadedList = (List<ShapeT>)loadedObject;
                     _allShapes.Clear();
+                    _clippingRectangleIndex = -1;
 
                     foreach (var shape in loadedList)
                     {
@@ -905,7 +909,12 @@ namespace Lab04___Clipping_and_Filling
                                     shape.Thickness, 
                                     Color.FromArgb(shape.Color),
                                     shape.FillColor is not null ? Color.FromArgb((int)shape.FillColor) : null,
-                                    shape.FillImage));
+                                    shape.FillImage,
+                                    shape.IsClippingRectangle));
+                                if (shape.IsClippingRectangle)
+                                {
+                                    _clippingRectangleIndex = _allShapes.Count - 1;
+                                }
                                 break;
                             case "Circle":
                                 _allShapes.Add(new Circle(
@@ -966,8 +975,8 @@ namespace Lab04___Clipping_and_Filling
             }
             else if (_clippingRectangleIndex == _selectedRectangleIndex)
             {
-                _clippingRectangleIndex = -1;
                 ((Rectangle)_allShapes[_clippingRectangleIndex]).IsClippingRectangle = false;
+                _clippingRectangleIndex = -1;
             }
             else
             {

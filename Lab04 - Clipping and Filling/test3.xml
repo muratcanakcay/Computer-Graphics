@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+<ArrayOfShapeT xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <ShapeT>
+    <ClassName>Rectangle</ClassName>
+    <Points>
+      <Point>
+        <X>309</X>
+        <Y>177.04</Y>
+      </Point>
+      <Point>
+        <X>702</X>
+        <Y>177.04</Y>
+      </Point>
+      <Point>
+        <X>702</X>
+        <Y>410.04</Y>
+      </Point>
+      <Point>
+        <X>309</X>
+        <Y>410.04</Y>
+      </Point>
+    </Points>
+    <Thickness>1</Thickness>
+    <Color>-16777216</Color>
+    <FillColor xsi:nil="true" />
+    <IsClippingRectangle>true</IsClippingRectangle>
+  </ShapeT>
+  <ShapeT>
+    <ClassName>Polygon</ClassName>
+    <Points>
+      <Point>
+        <X>780</X>
+        <Y>83.03999999999999</Y>
+      </Point>
+      <Point>
+        <X>581</X>
+        <Y>212.04</Y>
+      </Point>
+      <Point>
+        <X>629</X>
+        <Y>294.04</Y>
+      </Point>
+      <Point>
+        <X>752</X>
+        <Y>282.04</Y>
+      </Point>
+    </Points>
+    <Thickness>1</Thickness>
+    <Color>-16777216</Color>
+    <FillColor xsi:nil="true" />
+    <IsClippingRectangle>false</IsClippingRectangle>
+  </ShapeT>
+</ArrayOfShapeT>

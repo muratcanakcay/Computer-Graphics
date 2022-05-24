@@ -20,6 +20,7 @@ namespace Lab04___Clipping_and_Filling
         Color Color { get; set; }
         Color? FillColor { get; set; }
         String? FillImage{ get; set; }
+        bool IsClippingRectangle { get; set; }
         void Draw(WriteableBitmap wbm, bool isAntiAliased = false, bool isSuperSampled = false, int ssaa = 2, Rectangle? clip = null);
         int GetVertexIndexOf(Point point);
         void MoveVertex(int vertexIndex, Vector offSet);
@@ -61,6 +62,7 @@ namespace Lab04___Clipping_and_Filling
                 }
             }
         }
+        public bool IsClippingRectangle { get; set; } = false;
 
         protected Shape(List<Point> points, int thickness, Color color)
         {
@@ -481,7 +483,6 @@ namespace Lab04___Clipping_and_Filling
 
     public class Polygon : Shape
     {
-        public bool IsClippingRectangle { get; set; }
         public Polygon(List<Point> points, int thickness, Color color, Color? fillColor = null, string? fillImage = null) : base(points, thickness, color)
         {
             FillColor = fillColor;
@@ -626,7 +627,11 @@ namespace Lab04___Clipping_and_Filling
 
     public class Rectangle : Polygon
     {
-        public Rectangle(List<Point> points, int thickness, Color color, Color? fillColor = null, string? fillImage = null) : base (points, thickness, color, fillColor, fillImage) { }
+        public Rectangle(List<Point> points, int thickness, Color color, Color? fillColor = null,
+            string? fillImage = null, bool isClipping = false) : base(points, thickness, color, fillColor, fillImage)
+        {
+            IsClippingRectangle = isClipping;
+        }
         public override void MoveVertex(int vertexIndex, Vector offSet)
         {
             Points[vertexIndex] = Point.Add(Points[vertexIndex], offSet);
