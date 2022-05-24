@@ -827,6 +827,133 @@ namespace Lab04___Clipping_and_Filling
             }
         }
 
+        //----------- CLIPPING (COHEN SUTHERLAND ALGORITHM)
+        private void ClipButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            ToggleClipping();
+            RedrawCanvas(); 
+        }
+        private void ToggleClipping()
+        {
+            if (_clippingRectangleIndex == -1)
+            {
+                _clippingRectangleIndex = _selectedRectangleIndex;
+                ((Rectangle)_allShapes[_clippingRectangleIndex]).IsClippingRectangle = true;
+            }
+            else if (_clippingRectangleIndex == _selectedRectangleIndex)
+            {
+                ((Rectangle)_allShapes[_clippingRectangleIndex]).IsClippingRectangle = false;
+                _clippingRectangleIndex = -1;
+            }
+            else
+            {
+                ((Rectangle)_allShapes[_clippingRectangleIndex]).IsClippingRectangle = false;
+                
+                _clippingRectangleIndex = _selectedRectangleIndex;
+                ((Rectangle)_allShapes[_clippingRectangleIndex]).IsClippingRectangle = true;
+            }
+
+            ClipButton.Background = _clippingRectangleIndex == -1 ? _inactiveButtonColor : _activeButtonColor;
+        }
+
+        //----------- BORDER FILL
+        private void BorderFill4Button_OnClick(object sender, RoutedEventArgs e)
+        {
+            _isBorderFilling = !_isBorderFilling;
+            _useEightConnected = false;
+            BorderFill4Button.Background = _isBorderFilling ? _activeButtonColor : _inactiveButtonColor;
+        }
+        private void BorderFill8Button_OnClick(object sender, RoutedEventArgs e)
+        {
+            _isBorderFilling = !_isBorderFilling;
+            _useEightConnected = true;
+            BorderFill8Button.Background = _isBorderFilling ? _activeButtonColor : _inactiveButtonColor; 
+        }
+        private void SelectBorderFillColorButton_OnClick(object sender, MouseButtonEventArgs e)
+        {
+            using var colorDialog = new System.Windows.Forms.ColorDialog();
+            if (colorDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                BorderFillColorButton.Fill = new SolidColorBrush(
+                    System.Windows.Media.Color.FromArgb(
+                        colorDialog.Color.A,
+                        colorDialog.Color.R,
+                        colorDialog.Color.G,
+                        colorDialog.Color.B));
+
+                _currentBorderFillColor = Color.FromArgb(
+                    colorDialog.Color.A,
+                    colorDialog.Color.R,
+                    colorDialog.Color.G,
+                    colorDialog.Color.B);
+            }
+        }
+        private void SelectBorderFillBorderColorButton_OnClick(object sender, MouseButtonEventArgs e)
+        {
+            using var colorDialog = new System.Windows.Forms.ColorDialog();
+            if (colorDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                BorderFillBorderColorButton.Fill = new SolidColorBrush(
+                    System.Windows.Media.Color.FromArgb(
+                        colorDialog.Color.A,
+                        colorDialog.Color.R,
+                        colorDialog.Color.G,
+                        colorDialog.Color.B));
+
+                _currentBorderFillBorderColor = Color.FromArgb(
+                    colorDialog.Color.A,
+                    colorDialog.Color.R,
+                    colorDialog.Color.G,
+                    colorDialog.Color.B);
+            }
+        }
+        private void BorderFill(Point currentCursorPosition)
+        {
+            Debug.WriteLine($"Border Fill 8-connected: {_useEightConnected}");
+            
+            var pointStack = new Stack<Point>();
+            pointStack.Push(currentCursorPosition);
+            _wbm.Lock();
+            while (pointStack.Count > 0)
+            {
+                var currentPoint = pointStack.Pop();
+                var x = (int)currentPoint.X;
+                var y = (int)currentPoint.Y;
+                if (x < 0 || x > CanvasImage.ActualWidth || y < 0 || y > CanvasImage.ActualHeight) continue;
+
+                var c = _wbm.GetPixelColor(x, y);
+                if (
+                    ((c.R != _currentBorderFillColor.R) ||
+                    (c.G != _currentBorderFillColor.G) ||
+                    (c.B != _currentBorderFillColor.B)) 
+                    &&
+                    ((c.R != _currentBorderFillBorderColor.R) ||
+                     (c.G != _currentBorderFillBorderColor.G) ||
+                     (c.B != _currentBorderFillBorderColor.B)))
+                {
+                    _wbm.SetPixelColor(x, y, _currentBorderFillColor);
+                    pointStack.Push(new Point(x+1, y+0));
+                    pointStack.Push(new Point(x-1, y+0));
+                    pointStack.Push(new Point(x+0, y+1));
+                    pointStack.Push(new Point(x+0, y-1));
+
+                    if (_useEightConnected)
+                    {
+                        pointStack.Push(new Point(x + 1, y + 1));
+                        pointStack.Push(new Point(x - 1, y - 1));
+                        pointStack.Push(new Point(x - 1, y + 1));
+                        pointStack.Push(new Point(x + 1, y - 1));
+                    }
+                }
+            }
+            _wbm.Unlock();
+
+            CanvasImage.Source = _wbm;
+
+            _isBorderFilling = false;
+            BorderFill4Button.Background = _inactiveButtonColor;
+        }
+
         //---------- MENU ITEMS
         private void OnClick_ResetCanvas(object sender, RoutedEventArgs e)
         {
@@ -958,158 +1085,5 @@ namespace Lab04___Clipping_and_Filling
                             "Ctrl+Mouse wheel to zoom in/out.", "Help", 
                             MessageBoxButton.OK);
         }
-        
-        //----------- CLIPPING (COHEN SUTHERLAND ALGORITHM)
-        
-        private void ClipButton_OnClick(object sender, RoutedEventArgs e)
-        {
-            ToggleClipping();
-            RedrawCanvas(); 
-        }
-        private void ToggleClipping()
-        {
-            if (_clippingRectangleIndex == -1)
-            {
-                _clippingRectangleIndex = _selectedRectangleIndex;
-                ((Rectangle)_allShapes[_clippingRectangleIndex]).IsClippingRectangle = true;
-            }
-            else if (_clippingRectangleIndex == _selectedRectangleIndex)
-            {
-                ((Rectangle)_allShapes[_clippingRectangleIndex]).IsClippingRectangle = false;
-                _clippingRectangleIndex = -1;
-            }
-            else
-            {
-                ((Rectangle)_allShapes[_clippingRectangleIndex]).IsClippingRectangle = false;
-                
-                _clippingRectangleIndex = _selectedRectangleIndex;
-                ((Rectangle)_allShapes[_clippingRectangleIndex]).IsClippingRectangle = true;
-            }
-
-            ClipButton.Background = _clippingRectangleIndex == -1 ? _inactiveButtonColor : _activeButtonColor;
-        }
-
-        //----------- CLIPPING (COHEN SUTHERLAND ALGORITHM)
-        private void BorderFill4Button_OnClick(object sender, RoutedEventArgs e)
-        {
-            _isBorderFilling = !_isBorderFilling;
-            _useEightConnected = false;
-            BorderFill4Button.Background = _isBorderFilling ? _activeButtonColor : _inactiveButtonColor;
-        }
-        private void BorderFill8Button_OnClick(object sender, RoutedEventArgs e)
-        {
-            _isBorderFilling = !_isBorderFilling;
-            _useEightConnected = true;
-            BorderFill8Button.Background = _isBorderFilling ? _activeButtonColor : _inactiveButtonColor; 
-        }
-        private void SelectBorderFillColorButton_OnClick(object sender, MouseButtonEventArgs e)
-        {
-            using var colorDialog = new System.Windows.Forms.ColorDialog();
-            if (colorDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-            {
-                BorderFillColorButton.Fill = new SolidColorBrush(
-                    System.Windows.Media.Color.FromArgb(
-                        colorDialog.Color.A,
-                        colorDialog.Color.R,
-                        colorDialog.Color.G,
-                        colorDialog.Color.B));
-
-                _currentBorderFillColor = Color.FromArgb(
-                    colorDialog.Color.A,
-                    colorDialog.Color.R,
-                    colorDialog.Color.G,
-                    colorDialog.Color.B);
-            }
-        }
-        private void SelectBorderFillBorderColorButton_OnClick(object sender, MouseButtonEventArgs e)
-        {
-            using var colorDialog = new System.Windows.Forms.ColorDialog();
-            if (colorDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-            {
-                BorderFillBorderColorButton.Fill = new SolidColorBrush(
-                    System.Windows.Media.Color.FromArgb(
-                        colorDialog.Color.A,
-                        colorDialog.Color.R,
-                        colorDialog.Color.G,
-                        colorDialog.Color.B));
-
-                _currentBorderFillBorderColor = Color.FromArgb(
-                    colorDialog.Color.A,
-                    colorDialog.Color.R,
-                    colorDialog.Color.G,
-                    colorDialog.Color.B);
-            }
-        }
-        private void BorderFill(Point currentCursorPosition)
-        {
-            Debug.WriteLine($"Border Fill 8-connected: {_useEightConnected}");
-            
-            var pointStack = new Stack<Point>();
-            pointStack.Push(currentCursorPosition);
-            _wbm.Lock();
-            while (pointStack.Count > 0)
-            {
-                var currentPoint = pointStack.Pop();
-                var x = (int)currentPoint.X;
-                var y = (int)currentPoint.Y;
-                if (x < 0 || x > CanvasImage.ActualWidth || y < 0 || y > CanvasImage.ActualHeight) continue;
-
-                var c = _wbm.GetPixelColor(x, y);
-                if (
-                    ((c.R != _currentBorderFillColor.R) ||
-                    (c.G != _currentBorderFillColor.G) ||
-                    (c.B != _currentBorderFillColor.B)) 
-                    &&
-                    ((c.R != _currentBorderFillBorderColor.R) ||
-                     (c.G != _currentBorderFillBorderColor.G) ||
-                     (c.B != _currentBorderFillBorderColor.B)))
-                {
-                    _wbm.SetPixelColor(x, y, _currentBorderFillColor);
-                    pointStack.Push(new Point(x+1, y+0));
-                    pointStack.Push(new Point(x-1, y+0));
-                    pointStack.Push(new Point(x+0, y+1));
-                    pointStack.Push(new Point(x+0, y-1));
-
-                    if (_useEightConnected)
-                    {
-                        pointStack.Push(new Point(x + 1, y + 1));
-                        pointStack.Push(new Point(x - 1, y - 1));
-                        pointStack.Push(new Point(x - 1, y + 1));
-                        pointStack.Push(new Point(x + 1, y - 1));
-                    }
-                }
-            }
-            _wbm.Unlock();
-
-            CanvasImage.Source = _wbm;
-
-            _isBorderFilling = false;
-            BorderFill4Button.Background = _inactiveButtonColor;
-
-
-
-
-            //void boundaryFill4(int x, int y, RGB boundary, RGB new) 
-            //{
-            //// x, y ‐ starting point coordinates
-            //// boundary ‐ color of the border (stop)
-            //// new ‐ must be different than boundary
-            //// and any color already present in the region
-            //RGB c = getPixel(x, y);
-            //if (c != boundary && c != new) 
-            //{
-            //    setPixel(x,y, new);
-            //    boundaryFill4(x + 1, y, boundary, new);
-            //    boundaryFill4(x ‐ 1, y, boundary, new);
-            //    boundaryFill4(x, y + 1, boundary, new);
-            //    boundaryFill4(x, y ‐ 1, boundary, new);
-            //}
-            //}
-
-
-
-
-        }
-        
     }
 }
