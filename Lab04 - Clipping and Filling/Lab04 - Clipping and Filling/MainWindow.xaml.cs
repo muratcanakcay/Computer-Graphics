@@ -949,10 +949,9 @@ namespace Lab04___Clipping_and_Filling
             }
             _wbm.Unlock();
 
-            CanvasImage.Source = _wbm;
-
             _isBorderFilling = false;
             BorderFill4Button.Background = _inactiveButtonColor;
+            BorderFill8Button.Background = _inactiveButtonColor;
         }
 
         //---------- MENU ITEMS
