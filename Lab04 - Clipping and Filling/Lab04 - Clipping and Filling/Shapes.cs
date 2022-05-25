@@ -391,8 +391,8 @@ namespace Lab04___Clipping_and_Filling
             if (p.X > clip.Right) outcode |= (byte)Outcodes.RIGHT;
             else if (p.X < clip.Left) outcode |= (byte)Outcodes.LEFT;
             
-            if (p.Y > clip.Bottom) outcode |= (byte)Outcodes.TOP;
-            else if (p.Y < clip.Top) outcode |= (byte)Outcodes.BOTTOM;
+            if (p.Y > clip.Bottom) outcode |= (byte)Outcodes.BOTTOM;
+            else if (p.Y < clip.Top) outcode |= (byte)Outcodes.TOP;
             
             return outcode;
         }
@@ -430,13 +430,13 @@ namespace Lab04___Clipping_and_Filling
                 {
                     byte outcodeOut = (outcode1 != 0) ? outcode1 : outcode2;
                     Point p;
-                    if ( ( outcodeOut & (byte)Outcodes.TOP ) != 0 ) 
+                    if ( ( outcodeOut & (byte)Outcodes.BOTTOM ) != 0 ) 
                     {
                         Debug.WriteLine("TOP");
                         p.X = p1.X + (p2.X - p1.X) * (clip.Bottom - p1.Y) / (p2.Y - p1.Y);
                         p.Y = clip.Bottom;
                     }
-                    else if ( ( outcodeOut & (byte)Outcodes.BOTTOM ) != 0 ) 
+                    else if ( ( outcodeOut & (byte)Outcodes.TOP ) != 0 ) 
                     {
                         Debug.WriteLine("BOTTOM");
                         p.X = p1.X + (p2.X - p1.X) * (clip.Top - p1.Y) / (p2.Y - p1.Y);

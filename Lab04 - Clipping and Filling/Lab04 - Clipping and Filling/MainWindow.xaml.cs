@@ -59,7 +59,7 @@ namespace Lab04___Clipping_and_Filling
         private Color _currentBorderFillColor = Color.FromKnownColor(KnownColor.Red);
         private Color _currentBorderFillBorderColor = Color.FromKnownColor(KnownColor.Black);
         private Color? _currentFillColor;
-        private String? _currentFillImage;
+        private string? _currentFillImage;
         private readonly List<Point> _currentPoints = new();
         private readonly List<IDrawable> _allShapes = new();
         private readonly List<(Point, Color, Color, Boolean)> _allFills = new ();
@@ -923,10 +923,9 @@ namespace Lab04___Clipping_and_Filling
                 if (x < 0 || x > CanvasImage.ActualWidth || y < 0 || y > CanvasImage.ActualHeight) continue;
 
                 var c = _wbm.GetPixelColor(x, y);
-                if (
-                    ((c.R != _currentBorderFillColor.R) ||
-                    (c.G != _currentBorderFillColor.G) ||
-                    (c.B != _currentBorderFillColor.B)) 
+                if (((c.R != _currentBorderFillColor.R) ||
+                     (c.G != _currentBorderFillColor.G) ||
+                     (c.B != _currentBorderFillColor.B)) 
                     &&
                     ((c.R != _currentBorderFillBorderColor.R) ||
                      (c.G != _currentBorderFillBorderColor.G) ||
