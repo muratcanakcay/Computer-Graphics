@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Windows;
+﻿using System.Collections.Generic;
 using System.Windows.Media.Imaging;
 
 namespace Lab05___3DModelling;
@@ -17,6 +14,7 @@ public interface IMeshable
     public List<Point3d> Vertices { get; set; }  
     void ClearVertices();
     void Draw(WriteableBitmap wbm, WriteableBitmap texture);
+    void CalculateVertices();
 }
 
 public abstract class Model : IMeshable
@@ -34,4 +32,5 @@ public abstract class Model : IMeshable
         Vertices.Clear();
     }
     public abstract void Draw(WriteableBitmap wbm, WriteableBitmap texture);
+    public abstract void CalculateVertices();
 }

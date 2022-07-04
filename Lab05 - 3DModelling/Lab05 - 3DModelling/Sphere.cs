@@ -15,7 +15,7 @@ public class Sphere : Model
         Vertices = new List<Point3d>() { }; 
     }
 
-    public void CalculateVertices()
+    public override void CalculateVertices()
     {
         //0        - north pole
         //1..mn    - sides

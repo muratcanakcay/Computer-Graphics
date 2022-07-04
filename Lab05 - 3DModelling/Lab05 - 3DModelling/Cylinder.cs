@@ -15,7 +15,7 @@ public class Cylinder : Model
         Vertices = new List<Point3d>() { }; 
     }
 
-    public void CalculateVertices()
+    public override void CalculateVertices()
     {
         //0...n       - top base
         //n+1...3n    - sides

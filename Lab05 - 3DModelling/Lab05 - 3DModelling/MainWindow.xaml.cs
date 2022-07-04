@@ -23,9 +23,7 @@ namespace Lab05___3DModelling
         private int _cPosX = 0;
         private int _cPosY = 0;
         private int _cPosZ = 200;
-        //private readonly Cylinder _model = new(15, 50, 20);
-        //private readonly Sphere _model = new(15, 15, 20);
-        private readonly Cuboid _model = new(20, 20, 20);
+        private IMeshable _model = new Cylinder(15, 50, 20);
 
         public MainWindow()
         {
@@ -158,7 +156,69 @@ namespace Lab05___3DModelling
                 BitmapPalettes.Halftone256);
             Canvas.Source = _wbm;
         }
+        private void ResetTransformations()
+        {
+            AngleXSlider.Value = 0;
+            AngleYSlider.Value = 0;
+            AngleZSlider.Value = 0;
+            CamXslider.Value = 0;
+            CamYslider.Value = 0;
+            CamZslider.Value = 200;
+            SxSlider.Value = 300;
+            SySlider.Value = 300;
+        }
 
+
+        // ---------------- BUTTONS --------------------
+
+        private void CylinderButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            ModelName.Text = "Cylinder";
+            ModelProperties.RowDefinitions[0].Height = new GridLength(0);
+            ModelProperties.RowDefinitions[1].Height = new GridLength(30);
+            ModelProperties.RowDefinitions[2].Height = new GridLength(0);
+            ModelProperties.RowDefinitions[3].Height = new GridLength(30);
+            ModelProperties.RowDefinitions[4].Height = new GridLength(0);
+            ModelProperties.RowDefinitions[5].Height = new GridLength(30);
+            _model = new Cylinder(15, 50, 30);
+            Nslider.Value = 15;
+            HeightSlider.Value = 50;
+            RadiusSlider.Value = 30;
+            ResetTransformations();
+            RefreshCanvasAndModel();
+        }
+        private void SphereButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            ModelName.Text = "Sphere";
+            ModelProperties.RowDefinitions[0].Height = new GridLength(30);
+            ModelProperties.RowDefinitions[1].Height = new GridLength(30);
+            ModelProperties.RowDefinitions[2].Height = new GridLength(0);
+            ModelProperties.RowDefinitions[3].Height = new GridLength(00);
+            ModelProperties.RowDefinitions[4].Height = new GridLength(0);
+            ModelProperties.RowDefinitions[5].Height = new GridLength(30);
+            _model = new Sphere(15, 15, 50);
+            Mslider.Value = 15;
+            Nslider.Value = 15;
+            RadiusSlider.Value = 50;
+            ResetTransformations();
+            RefreshCanvasAndModel();
+        }
+        private void CuboidButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            ModelName.Text = "Cuboid";
+            ModelProperties.RowDefinitions[0].Height = new GridLength(0);
+            ModelProperties.RowDefinitions[1].Height = new GridLength(0);
+            ModelProperties.RowDefinitions[2].Height = new GridLength(30);
+            ModelProperties.RowDefinitions[3].Height = new GridLength(30);
+            ModelProperties.RowDefinitions[4].Height = new GridLength(30);
+            ModelProperties.RowDefinitions[5].Height = new GridLength(0);
+            _model = new Cuboid(50, 50, -50);
+            HeightSlider.Value = 50;
+            DepthSlider.Value = 50;
+            WidthSlider.Value = 50;
+            ResetTransformations();
+            RefreshCanvasAndModel();
+        }
 
         // ---------------- SLIDERS --------------------
 

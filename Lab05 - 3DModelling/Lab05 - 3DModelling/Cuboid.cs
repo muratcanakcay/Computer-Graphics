@@ -15,7 +15,7 @@ public class Cuboid : Model
         Vertices = new List<Point3d>() { }; 
     }
 
-    public void CalculateVertices()
+    public override void CalculateVertices()
     {
         // Front Face
         Vertices.Add(new Point3d 
