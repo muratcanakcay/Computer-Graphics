@@ -4,6 +4,7 @@ using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Numerics;
+using System.Windows.Input;
 using Microsoft.Win32;
 
 namespace Lab05___3DModelling
@@ -26,8 +27,11 @@ namespace Lab05___3DModelling
         private double lightX = 0;
         private double lightY = 25;
         private double lightZ = 0;
+        private bool _isLightOn = false;
         private Vector3 Light;
+        private Color _modelColor = Colors.Gray;
         private IMeshable _model = new Cylinder(15, 50, 20);
+        
 
         public MainWindow()
         {
@@ -115,37 +119,21 @@ namespace Lab05___3DModelling
         public void DrawModel(IMeshable model)
         {
             TransformAndProject(model);
-            model.Draw(_wbm, _texture);
+            var lightAttributes = CalculateLightAttributes();
+            model.Draw(_wbm, _texture, lightAttributes);
         }
 
         // ---------------- HELPER FUNCTIONS --------------------
 
-        private void SelectTextureButton_OnClick(object sender, RoutedEventArgs e)
+        private Phong CalculateLightAttributes()
         {
-            OpenFileDialog dlg = new OpenFileDialog()
+            return new Phong
             {
-                Filter = "Image files|*.jpg;*.png;*.bmp",
-                RestoreDirectory = true
+                IsIlluminated = _isLightOn,
+                Camera = new Vector3(_cPosX, _cPosY, _cPosZ),
+                Light = Light,
+                ModelColor = _modelColor
             };
-
-            if (dlg.ShowDialog() != true)
-                return;
-
-            try
-            {
-                _texture = new WriteableBitmap(new BitmapImage(new Uri(dlg.FileName)));
-            }
-            catch (Exception exception)
-            {
-                Console.WriteLine(exception.Message);
-            }
-
-            RefreshCanvasAndModel();
-        }
-        private void ClearTextureButton_OnClick(object sender, RoutedEventArgs e)
-        {
-            _texture = null;
-            RefreshCanvasAndModel();
         }
         private void RefreshCanvasAndModel()
         {
@@ -233,6 +221,64 @@ namespace Lab05___3DModelling
             SphereButton2.Visibility = Visibility.Visible;
             CuboidButton.Visibility = Visibility.Hidden;
             ResetTransformations();
+            RefreshCanvasAndModel();
+        }
+        private void SelectModelColorButton_OnClick(object sender, MouseButtonEventArgs e)
+        {
+            using var colorDialog = new System.Windows.Forms.ColorDialog();
+            if (colorDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                var modelColor = Color.FromArgb(
+                    colorDialog.Color.A,
+                    colorDialog.Color.R,
+                    colorDialog.Color.G,
+                    colorDialog.Color.B);
+                
+                ModelColorButton.Fill = new SolidColorBrush(modelColor);
+                _modelColor = modelColor;
+            }
+            
+            RefreshCanvasAndModel();
+        }
+        private void SelectTextureButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog dlg = new OpenFileDialog()
+            {
+                Filter = "Image files|*.jpg;*.png;*.bmp",
+                RestoreDirectory = true
+            };
+
+            if (dlg.ShowDialog() != true)
+                return;
+
+            try
+            {
+                _texture = new WriteableBitmap(new BitmapImage(new Uri(dlg.FileName)));
+            }
+            catch (Exception exception)
+            {
+                Console.WriteLine(exception.Message);
+            }
+
+            RefreshCanvasAndModel();
+        }
+        private void ClearTextureButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            _texture = null;
+            RefreshCanvasAndModel();
+        }
+        private void LightOnButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            _isLightOn = true;
+            LightOnButton.Visibility = Visibility.Hidden;
+            LightOffButton.Visibility = Visibility.Visible;
+            RefreshCanvasAndModel();
+        }
+        private void LightOffButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            _isLightOn = false;
+            LightOnButton.Visibility = Visibility.Visible;
+            LightOffButton.Visibility = Visibility.Hidden;
             RefreshCanvasAndModel();
         }
         private void OnClick_Exit(object sender, RoutedEventArgs e)

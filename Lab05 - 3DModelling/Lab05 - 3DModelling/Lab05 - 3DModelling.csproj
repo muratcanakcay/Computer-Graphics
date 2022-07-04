@@ -6,6 +6,7 @@
     <RootNamespace>Lab05___3DModelling</RootNamespace>
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
+	<UseWindowsForms>true</UseWindowsForms>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 

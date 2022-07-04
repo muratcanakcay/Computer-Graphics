@@ -94,39 +94,29 @@ public class Cylinder : Model
             TextureMap = new Point(0.75, 0.25)
         });
     }
-
-    public override void Draw(WriteableBitmap wbm, WriteableBitmap texture)
+    protected override List<Triangle> CalculateTriangles()
     {
-        var drawingData = new List<Pixel>();
+        var triangles = new List<Triangle>();
         
         // Cylinder Top Base 
         for (var i = 0; i < N - 1; i++)
         {
             var topBaseTriangle = new Triangle(Vertices[0], Vertices[i+2], Vertices[i+1]);
             if (topBaseTriangle.IsFacingCamera())
-            {
-                topBaseTriangle.Fill(drawingData, texture);
-                topBaseTriangle.Draw(drawingData);
-            }
+                triangles.Add(topBaseTriangle);
         }
 
         // Cylinder Top Base last triangle
         var lastTopBaseTriangle = new Triangle(Vertices[0], Vertices[1], Vertices[N]);
         if (lastTopBaseTriangle.IsFacingCamera())
-        {
-            lastTopBaseTriangle.Fill(drawingData, texture);
-            lastTopBaseTriangle.Draw(drawingData);
-        }
+            triangles.Add(lastTopBaseTriangle);
 
         // Cylinder Side with edge on top base
         for (var i = N; i <= 2 * N - 2; i++)
         {
             var topSideTriangle = new Triangle(Vertices[i+1], Vertices[i+2], Vertices[i+1+N]);
             if (topSideTriangle.IsFacingCamera())
-            {
-                topSideTriangle.Fill(drawingData, texture);
-                topSideTriangle.Draw(drawingData);
-            }
+                triangles.Add(topSideTriangle);
         }
 
         // Cylinder Side with edge on top base last triangle
@@ -140,20 +130,14 @@ public class Cylinder : Model
                                                 }, 
                                                 Vertices[3*N]);
         if (lastTopSideTriangle.IsFacingCamera())
-        {
-            lastTopSideTriangle.Fill(drawingData, texture);
-            lastTopSideTriangle.Draw(drawingData);
-        }
+            triangles.Add(lastTopSideTriangle);
 
         // Cylinder Side with edge on bottom base
         for (var i = 2 * N; i <= 3 * N - 2; i++)
         {
             var bottomSideTriangle = new Triangle(Vertices[i+1], Vertices[i+2-N], Vertices[i+2]);
             if (bottomSideTriangle.IsFacingCamera())
-            {
-                bottomSideTriangle.Fill(drawingData, texture);
-                bottomSideTriangle.Draw(drawingData);
-            }
+                triangles.Add(bottomSideTriangle);
         }
 
         // Cylinder Side with edge on bottom base last triangle
@@ -173,31 +157,21 @@ public class Cylinder : Model
                                                     TextureMap = new Point(1,1)
                                                 });
         if (lastBottomSideTriangle.IsFacingCamera())
-        {
-            lastBottomSideTriangle.Fill(drawingData, texture);
-            lastBottomSideTriangle.Draw(drawingData);
-        }
+            triangles.Add(lastBottomSideTriangle);
 
         // Cylinder Bottom Base 
         for (var i = 3 * N; i <= 4 * N - 2; i++)
         {
             var bottomBaseTriangle = new Triangle(Vertices[4*N+1], Vertices[i+1], Vertices[i+2]);
             if (bottomBaseTriangle.IsFacingCamera())
-            {
-                bottomBaseTriangle.Fill(drawingData, texture);
-                bottomBaseTriangle.Draw(drawingData);
-            }
+                triangles.Add(bottomBaseTriangle);
         }
         
         // Cylinder Bottom Base last triangle
         var lastBottomBaseTriangle = new Triangle(Vertices[4*N+1], Vertices[4*N], Vertices[3*N+1]);
         if (lastBottomBaseTriangle.IsFacingCamera())
-        {
-            lastBottomBaseTriangle.Fill(drawingData, texture);
-            lastBottomBaseTriangle.Draw(drawingData);
-        }
+            triangles.Add(lastBottomBaseTriangle);
 
-        wbm.SetPixels(drawingData);
-        drawingData.Clear();
+        return triangles;
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Numerics;
 using System.Windows.Media;
@@ -86,6 +87,7 @@ public class Triangle
 {
     public List<Point3d> Points { get; }
     private WriteableBitmap? _fillImageWbm;
+    private Phong _lightAttributes;
     public Triangle(Point3d v1, Point3d v2, Point3d v3)
     {
         Points = new List<Point3d>() { v1, v2, v3 };
@@ -102,12 +104,15 @@ public class Triangle
         }
     }
 
-    public void Fill(List<Pixel> drawingData, WriteableBitmap? texture)
+    public void Fill(List<Pixel> drawingData, WriteableBitmap? texture, Phong lightAttributes)
     {
-        if (texture == null)
+        if (texture == null && lightAttributes.IsIlluminated == false)
             return;
-        _fillImageWbm = texture;
-
+        
+        _lightAttributes = lightAttributes;
+        if (texture is not null) _fillImageWbm = texture;
+        
+        
         var et = CreateEdgeTable();
         if (et.Count == 0)
             return;
@@ -127,7 +132,11 @@ public class Triangle
             if (aet.Count%2 == 1)
             {
                 if (et.Count == 0)
+                {
+                    Debug.WriteLine("DROPPED TRIANGLE!");
                     return;
+                }
+                    
                 ++y;
                 continue;
             }
@@ -212,9 +221,6 @@ public class Triangle
 
     private void FillBetweenEdges(List<Pixel> drawingData, int x1, int x2, int y)
     {
-        if (_fillImageWbm == null)
-            return;
-
         Point p;
         Point3d pLeft, pRight;
         const double threshold = 1.5;
@@ -243,10 +249,58 @@ public class Triangle
             p = new Point(x, y);
             var interpolatedPoint = InterpolatePoint(p, pLeft, pRight);
 
-            var imageColor = _fillImageWbm.GetPixelColor((int)Math.Round(interpolatedPoint.TextureMap.X * _fillImageWbm.PixelWidth), (int)Math.Round((1-interpolatedPoint.TextureMap.Y) * _fillImageWbm.PixelHeight));
+            Color modelColor;
+            if (_lightAttributes.IsIlluminated)
+                modelColor = CalculateIllumination(interpolatedPoint, _lightAttributes);
+            else
+                modelColor = _fillImageWbm.GetPixelColor((int)Math.Round(interpolatedPoint.TextureMap.X * _fillImageWbm.PixelWidth), (int)Math.Round((1-interpolatedPoint.TextureMap.Y) * _fillImageWbm.PixelHeight));
+                
+            
 
-            drawingData.Add(new Pixel(x, y, imageColor));
+            drawingData.Add(new Pixel(x, y, modelColor));
         }
+    }
+
+    private static Color CalculateIllumination(Point3d point, Phong lightAttributes)
+    {
+        var p = new Vector3((float)point.Global.X, (float)point.Global.Y, (float)point.Global.Z);
+        var n = new Vector3((float)point.Normal.X, (float)point.Normal.Y, (float)point.Normal.Z);
+        var camera = lightAttributes.Camera;
+        var light = lightAttributes.Light;
+
+        var Ia = lightAttributes.Ia;
+        var ka = lightAttributes.ka;
+        var ks = lightAttributes.ks;
+        var kd = lightAttributes.kd;
+
+        var v = Vector3.Divide(Vector3.Subtract(camera, p), Vector3.Subtract(camera, p).Length());
+        var li = Vector3.Divide(Vector3.Subtract(light, p), Vector3.Subtract(light, p).Length());
+        var ri = Vector3.Subtract(Vector3.Multiply(2 * (Vector3.Dot(n, li)), n), li);
+
+        var I = new Vector3(Ia * ka, Ia * ka, Ia * ka);
+        I.X += (float)(kd * Ia * Math.Max(Vector3.Dot(n, li), 0) + ks * Ia * Math.Pow(Math.Max(Vector3.Dot(v, ri), 0), 1));
+        I.Y += (float)(kd * Ia * Math.Max(Vector3.Dot(n, li), 0) + ks * Ia * Math.Pow(Math.Max(Vector3.Dot(v, ri), 0), 1));
+        I.Z += (float)(kd * Ia * Math.Max(Vector3.Dot(n, li), 0) + ks * Ia * Math.Pow(Math.Max(Vector3.Dot(v, ri), 0), 1));
+            
+        var result = new Color()
+        {
+            A = lightAttributes.ModelColor.A,
+            R = (byte)Clamp(lightAttributes.ModelColor.R * I.X),
+            G = (byte)Clamp(lightAttributes.ModelColor.G * I.Y),
+            B = (byte)Clamp(lightAttributes.ModelColor.B * I.Z)
+        };
+
+        return result;
+    }
+
+    public static int Clamp(double val)
+    {
+        return val switch
+        {
+            > 255 => 255,
+            < 0 => 0,
+            _ => (int)val
+        };
     }
 
     private static Point3d InterpolatePoint(Point middleP, Point3d vertex1, Point3d vertex2)

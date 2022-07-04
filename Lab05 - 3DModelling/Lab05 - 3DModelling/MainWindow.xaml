@@ -75,7 +75,7 @@
 
                 <GroupBox Grid.Row="0" Margin="0,0,20,0" Padding="0,5,0,0">
                     <GroupBox.Header>
-                        <TextBlock Text="Model" FontWeight="Bold"/>
+                        <TextBlock Text="Models" FontWeight="Bold"/>
                     </GroupBox.Header>
                     <Grid>
                         <Grid.RowDefinitions>
@@ -305,12 +305,14 @@
                         <Grid.RowDefinitions>
                             <RowDefinition Height="auto"/>
                             <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
                         </Grid.RowDefinitions>
                         <Grid Grid.Row="0">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="26"/>
                             </Grid.RowDefinitions>
                             <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
@@ -320,28 +322,47 @@
                                 HorizontalAlignment="Center"
                                 VerticalAlignment="Center"
                                 Height="20"
-                                Width="100"
+                                Width="80"
                                 Name="LightOnButton"
                                 IsEnabled="true"
                                 ToolTip="Turn Light On"
                                 Background="LightCyan"
-                                Click="SelectTextureButton_OnClick">
+                                Click="LightOnButton_OnClick">
                                 Light On
                             </Button>
                             <Button  
                                 Grid.Row="0"
-                                Grid.Column="1"
+                                Grid.Column="0"
                                 HorizontalAlignment="Center"
                                 VerticalAlignment="Center"
                                 Height="20"
-                                Width="100"
+                                Width="80"
                                 Name="LightOffButton"
                                 IsEnabled="true"
                                 ToolTip="Turn Light Off"
                                 Background="LightCyan"
-                                Click="ClearTextureButton_OnClick">
+                                Visibility="Hidden"
+                                Click="LightOffButton_OnClick">
                                 Light Off
                             </Button>
+                            <Label Grid.Row="0" Grid.Column="1" HorizontalAlignment="Right" >Model Color</Label>
+                            
+                            <Rectangle  
+                                Grid.Row="0"
+                                Grid.Column="2"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                Margin="15,0, 1, 0"
+                                Height="15"
+                                Width="30"
+                                Name="ModelColorButton"
+                                IsEnabled="true"
+                                ToolTip="Select Model Color"
+                                Fill="Gray"
+                                Stroke="Gray"
+                                MouseLeftButtonUp="SelectModelColorButton_OnClick"
+                            />
+
                         </Grid>
                         <Grid Grid.Row="1">
                             <Grid.ColumnDefinitions>
@@ -362,6 +383,14 @@
                             <Label Grid.Row="2" Grid.Column="0" VerticalAlignment="Center">Light Z</Label>
                             <Slider Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" Name="LightZslider" Minimum="-50" Maximum="50" Value="0" 
                                     ValueChanged="LightZslider_ValueChanged"/>
+                        </Grid>
+                        <Grid Grid.Row="2">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="3*"/>
+                                <ColumnDefinition Width="7*"/>
+                            </Grid.ColumnDefinitions>
+
+                            
                         </Grid>
                     </Grid>
                     </TabItem>

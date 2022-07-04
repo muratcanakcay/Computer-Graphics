@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Media.Imaging;
@@ -179,95 +180,68 @@ public class Cuboid : Model
         });
     }
 
-    public override void Draw(WriteableBitmap wbm, WriteableBitmap texture)
+    protected override List<Triangle> CalculateTriangles()
     {
-        var drawingData = new List<Pixel>();
+        var triangles = new List<Triangle>();
         
         // Front Face
         var frontTriangle1 = new Triangle(Vertices[0], Vertices[3], Vertices[2]);
         if (frontTriangle1.IsFacingCamera())
-        {
-            frontTriangle1.Fill(drawingData, texture);
-            frontTriangle1.Draw(drawingData);
-        }
+            triangles.Add(frontTriangle1);
+        
         var frontTriangle2 = new Triangle(Vertices[0], Vertices[2], Vertices[1]);
         if (frontTriangle2.IsFacingCamera())
-        {              
-            frontTriangle2.Fill(drawingData, texture);
-            frontTriangle2.Draw(drawingData);
-        }
-
+            triangles.Add(frontTriangle2);
+        
         // Back Face
         var backTriangle1 = new Triangle(Vertices[4], Vertices[7], Vertices[6]);
         if (backTriangle1.IsFacingCamera())
-        {
-            backTriangle1.Fill(drawingData, texture);
-            backTriangle1.Draw(drawingData);
-        }
+            triangles.Add(backTriangle1);
+        
         var backTriangle2 = new Triangle(Vertices[4], Vertices[6], Vertices[5]);
         if (backTriangle2.IsFacingCamera())
-        {              
-            backTriangle2.Fill(drawingData, texture);
-            backTriangle2.Draw(drawingData);
-        }
+            triangles.Add(backTriangle2);
+        
 
         // Right Face
         var rightTriangle1 = new Triangle(Vertices[8], Vertices[11], Vertices[10]);
         if (rightTriangle1.IsFacingCamera())
-        {
-            rightTriangle1.Fill(drawingData, texture);
-            rightTriangle1.Draw(drawingData);
-        }
+            triangles.Add(rightTriangle1);
+        
         var rightTriangle2 = new Triangle(Vertices[8], Vertices[10], Vertices[9]);
-        if (rightTriangle2.IsFacingCamera())
-        {              
-            rightTriangle2.Fill(drawingData, texture);
-            rightTriangle2.Draw(drawingData);
-        }
+        if (rightTriangle2.IsFacingCamera())              
+            triangles.Add(rightTriangle2);
+        
 
-        // Right Face
+        // Left Face
         var leftTriangle1 = new Triangle(Vertices[12], Vertices[15], Vertices[14]);
         if (leftTriangle1.IsFacingCamera())
-        {
-            leftTriangle1.Fill(drawingData, texture);
-            leftTriangle1.Draw(drawingData);
-        }
+            triangles.Add(leftTriangle1);
+        
         var leftTriangle2 = new Triangle(Vertices[12], Vertices[14], Vertices[13]);
-        if (leftTriangle2.IsFacingCamera())
-        {              
-            leftTriangle2.Fill(drawingData, texture);
-            leftTriangle2.Draw(drawingData);
-        }
+        if (leftTriangle2.IsFacingCamera())              
+            triangles.Add(leftTriangle2);
+        
 
         // Top Face
         var topTriangle1 = new Triangle(Vertices[16], Vertices[19], Vertices[18]);
         if (topTriangle1.IsFacingCamera())
-        {
-            topTriangle1.Fill(drawingData, texture);
-            topTriangle1.Draw(drawingData);
-        }
+            triangles.Add(topTriangle1);
+        
         var topTriangle2 = new Triangle(Vertices[16], Vertices[18], Vertices[17]);
         if (topTriangle2.IsFacingCamera())
-        {              
-            topTriangle2.Fill(drawingData, texture);
-            topTriangle2.Draw(drawingData);
-        }
+            triangles.Add(topTriangle2);
+        
 
         // Bottom Face
         var bottomTriangle1 = new Triangle(Vertices[20], Vertices[23], Vertices[22]);
         if (bottomTriangle1.IsFacingCamera())
-        {
-            bottomTriangle1.Fill(drawingData, texture);
-            bottomTriangle1.Draw(drawingData);
-        }
+            triangles.Add(bottomTriangle1);
+        
         var bottomTriangle2 = new Triangle(Vertices[20], Vertices[22], Vertices[21]);
-        if (bottomTriangle2.IsFacingCamera())
-        {              
-            bottomTriangle2.Fill(drawingData, texture);
-            bottomTriangle2.Draw(drawingData);
-        }
+        if (bottomTriangle2.IsFacingCamera())              
+            triangles.Add(bottomTriangle2);
 
-        wbm.SetPixels(drawingData);
-        drawingData.Clear();
+        return triangles;
     }
 }

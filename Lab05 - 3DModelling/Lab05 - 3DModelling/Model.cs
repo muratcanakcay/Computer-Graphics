@@ -13,7 +13,7 @@ public interface IMeshable
     public int Depth { get; set; }
     public List<Point3d> Vertices { get; set; }  
     void ClearVertices();
-    void Draw(WriteableBitmap wbm, WriteableBitmap texture);
+    void Draw(WriteableBitmap wbm, WriteableBitmap? texture, Phong lightAttributes);
     void CalculateVertices();
 }
 
@@ -31,6 +31,21 @@ public abstract class Model : IMeshable
     {
         Vertices.Clear();
     }
-    public abstract void Draw(WriteableBitmap wbm, WriteableBitmap texture);
     public abstract void CalculateVertices();
+    protected abstract List<Triangle> CalculateTriangles();
+    public void Draw(WriteableBitmap wbm, WriteableBitmap? texture, Phong lightAttributes)
+    {
+        var drawingData = new List<Pixel>();
+        var triangles = CalculateTriangles();
+
+        foreach (var triangle in triangles)
+            triangle.Fill(drawingData, texture, lightAttributes);
+                
+        foreach (var triangle in triangles)
+            triangle.Draw(drawingData);
+
+        wbm.SetPixels(drawingData);
+        drawingData.Clear();
+        triangles.Clear();
+    }
 }

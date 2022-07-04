@@ -57,9 +57,9 @@ public class Sphere : Model
         });
     }
 
-    public override void Draw(WriteableBitmap wbm, WriteableBitmap texture)
+    protected override List<Triangle> CalculateTriangles()
     {
-        var drawingData = new List<Pixel>();
+        var triangles = new List<Triangle>();
         
         // Sphere Top Lid
         for (var i = 0; i < M - 1; i++)
@@ -67,8 +67,7 @@ public class Sphere : Model
             var topLidTriangle = new Triangle(Vertices[0], Vertices[i+2], Vertices[i+1]);
             if (topLidTriangle.IsFacingCamera())
             {
-                topLidTriangle.Fill(drawingData, texture);
-                topLidTriangle.Draw(drawingData);
+                triangles.Add(topLidTriangle);
             }
         }
 
@@ -85,8 +84,7 @@ public class Sphere : Model
         
         if (lastTopLidTriangle.IsFacingCamera())
         {
-            lastTopLidTriangle.Fill(drawingData, texture);
-            lastTopLidTriangle.Draw(drawingData);
+            triangles.Add(lastTopLidTriangle);
         }
 
         // Sphere Bottom Lid
@@ -95,8 +93,7 @@ public class Sphere : Model
             var bottomLidTriangle = new Triangle(Vertices[M*N + 1], Vertices[(N-1)*M + i + 1], Vertices[(N-1)*M + i + 2]);
             if (bottomLidTriangle.IsFacingCamera())
             {
-                bottomLidTriangle.Fill(drawingData, texture);
-                bottomLidTriangle.Draw(drawingData);
+                triangles.Add(bottomLidTriangle);
             }
         }
 
@@ -113,8 +110,7 @@ public class Sphere : Model
         
         if (lastBottomLidTriangle.IsFacingCamera())
         {
-            lastTopLidTriangle.Fill(drawingData, texture);
-            lastBottomLidTriangle.Draw(drawingData);
+            triangles.Add(lastBottomLidTriangle);
         }
 
         // Rings making up the strips
@@ -126,8 +122,7 @@ public class Sphere : Model
                 var upperStripTriangle = new Triangle(Vertices[i*M + j], Vertices[i*M + j + 1], Vertices[(i+1)*M + j + 1]);
                 if (upperStripTriangle.IsFacingCamera())
                 {
-                    upperStripTriangle.Fill(drawingData, texture);
-                    upperStripTriangle.Draw(drawingData);
+                    triangles.Add(upperStripTriangle);
                 }
             }
 
@@ -149,8 +144,7 @@ public class Sphere : Model
                                                         });
             if (lastUpperStripTriangle.IsFacingCamera())
             {
-                lastUpperStripTriangle.Fill(drawingData, texture);
-                lastUpperStripTriangle.Draw(drawingData);
+                triangles.Add(lastUpperStripTriangle);
             }
 
             // lower strip triangles
@@ -159,8 +153,7 @@ public class Sphere : Model
                 var lowerStripTriangle = new Triangle(Vertices[(i*M) + j], Vertices[(i+1)*M + j + 1], Vertices[(i+1)*M + j]);
                 if (lowerStripTriangle.IsFacingCamera())
                 {
-                    lowerStripTriangle.Fill(drawingData, texture);
-                    lowerStripTriangle.Draw(drawingData);
+                    triangles.Add(lowerStripTriangle);
                 }
             }
 
@@ -176,12 +169,10 @@ public class Sphere : Model
                                                         Vertices[(i+2)*M]);
             if (lastLowerStripTriangle.IsFacingCamera())
             {
-                lastLowerStripTriangle.Fill(drawingData, texture);
-                lastLowerStripTriangle.Draw(drawingData);
+                triangles.Add(lastLowerStripTriangle);
             }
         }
 
-        wbm.SetPixels(drawingData);
-        drawingData.Clear();
+        return triangles;
     }
 }
