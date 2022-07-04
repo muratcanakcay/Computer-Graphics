@@ -152,7 +152,7 @@ namespace Lab05___3DModelling
         }
         private void ClearCanvas()
         {
-            _wbm = new WriteableBitmap((int)TheCanvas.Width, (int)TheCanvas.Height, 96, 96, PixelFormats.Bgra32,
+            _wbm = new WriteableBitmap((int)CanvasImage.Width, (int)CanvasImage.Height, 96, 96, PixelFormats.Bgra32,
                 BitmapPalettes.Halftone256);
             CanvasImage.Source = _wbm;
         }
@@ -218,6 +218,13 @@ namespace Lab05___3DModelling
             WidthSlider.Value = 50;
             ResetTransformations();
             RefreshCanvasAndModel();
+        }
+        private void OnClick_Exit(object sender, RoutedEventArgs e)
+        {
+            if (MessageBox.Show(
+                    "Are you sure you want to leave?", "Exit", MessageBoxButton.YesNo)
+                == MessageBoxResult.Yes)
+                Close();
         }
 
         // ---------------- SLIDERS --------------------

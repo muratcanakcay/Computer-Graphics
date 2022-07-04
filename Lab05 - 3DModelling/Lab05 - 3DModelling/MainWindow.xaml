@@ -24,250 +24,268 @@
         </Style>
     </Window.Resources>
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="280"/>
-        </Grid.ColumnDefinitions>
-        <Canvas
-            Name="TheCanvas"
-            Height="900" 
-            Width="1500"
-            HorizontalAlignment="Center"
-            VerticalAlignment="Center"
-            Background="Transparent">
-            <Image
-                Name="CanvasImage" RenderTransformOrigin="0.5,0.5" Stretch="None">
-                <Image.RenderTransform>
-                    <TransformGroup>
-                        <ScaleTransform ScaleX="1" ScaleY="1"/>
-                    </TransformGroup>
-                </Image.RenderTransform>
-            </Image>
-        </Canvas>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
         
-        <Grid Grid.Column="1">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="120"/>
-                <RowDefinition Height="auto"/>
-                <RowDefinition Height="117"/>
-                <RowDefinition Height="90"/>
-                <RowDefinition Height="117"/>
-                <RowDefinition Height="57"/>
-            </Grid.RowDefinitions>
+        <Menu Grid.Row="0">
 
-            <GroupBox Grid.Row="0" Margin="0,0,20,0" Padding="0,5,0,0">
-                <GroupBox.Header>
-                    <TextBlock Text="Model" FontWeight="Bold"/>
-                </GroupBox.Header>
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="30"/>
-                        <RowDefinition Height="30"/>
-                        <RowDefinition Height="30"/>
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <Button  
-                        Grid.Row="0"
-                        Grid.Column="0"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        Height="20"
-                        Width="100"
-                        Name="CylinderButton"
-                        IsEnabled="true"
-                        ToolTip="Draw Cylinder"
-                        Background="LightCyan"
-                        Click="CylinderButton_OnClick">
-                        Cylinder
-                    </Button>
-                    <Button  
-                        Grid.Row="1"
-                        Grid.Column="0"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        Height="20"
-                        Width="100"
-                        Name="SphereButton"
-                        IsEnabled="true"
-                        ToolTip="Draw Sphere"
-                        Background="LightCyan"
-                        Click="SphereButton_OnClick">
-                        Sphere
-                    </Button>
-                    <Button  
-                        Grid.Row="2"
-                        Grid.Column="0"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        Height="20"
-                        Width="100"
-                        Name="CuboidButton"
-                        IsEnabled="true"
-                        ToolTip="Draw Cuboid"
-                        Background="LightCyan"
-                        Click="CuboidButton_OnClick">
-                        Cuboid
-                    </Button>
-                </Grid>
-            </GroupBox>
+            <Menu.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <DockPanel  HorizontalAlignment="Stretch"/>
+                </ItemsPanelTemplate>
+            </Menu.ItemsPanel>
 
-            <GroupBox Grid.Row="1" Margin="0,0,20,0" Padding="0,5,0,0">
-                <GroupBox.Header >
-                    <TextBlock Name="ModelName" Text="Cylinder" FontWeight="Bold"/>
-                </GroupBox.Header>
-                <Grid Name="ModelProperties">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="3*"/>
-                        <ColumnDefinition Width="7*"/>
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="0"/>
-                        <RowDefinition Height="30"/>
-                        <RowDefinition Height="0"/>
-                        <RowDefinition Height="30"/>
-                        <RowDefinition Height="0"/>
-                        <RowDefinition Height="30"/>
-                    </Grid.RowDefinitions>
-                    <Label Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" >M</Label>
-                    <Slider Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" Name="Mslider" Minimum="3" Maximum="80" Value="15"
-                            ValueChanged="Mslider_ValueChanged"></Slider>
-                    <Label Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" >N</Label>
-                    <Slider Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" Name="Nslider" Minimum="3" Maximum="80" Value="15"
-                            ValueChanged="Nslider_ValueChanged"></Slider>
-                    <Label Grid.Row="2" Grid.Column="0" VerticalAlignment="Center">Width</Label>
-                    <Slider Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" Name="WidthSlider" Minimum="10" Maximum="150" Value="50"
-                            ValueChanged="WidthSlider_ValueChanged"></Slider>
-                    <Label Grid.Row="3" Grid.Column="0" VerticalAlignment="Center">Height</Label>
-                    <Slider Grid.Row="3" Grid.Column="1" VerticalAlignment="Center" Name="HeightSlider" Minimum="10" Maximum="150" Value="50"
-                            ValueChanged="HeightSlider_ValueChanged"></Slider>
-                    <Label Grid.Row="4" Grid.Column="0" VerticalAlignment="Center">Depth</Label>
-                    <Slider Grid.Row="4" Grid.Column="1" VerticalAlignment="Center" Name="DepthSlider" Minimum="10" Maximum="150" Value="50"
-                            ValueChanged="DepthSlider_ValueChanged"></Slider>
-                    <Label Grid.Row="5" Grid.Column="0" VerticalAlignment="Center">Radius</Label>
-                    <Slider Grid.Row="5" Grid.Column="1" VerticalAlignment="Center" Name="RadiusSlider" Minimum="10" Maximum="60" Value="30"
-                            ValueChanged="RadiusSlider_ValueChanged"></Slider>
-                </Grid>
-            </GroupBox>
+            <MenuItem HorizontalAlignment="Left" Header="_Models">
+                <MenuItem Header="_Cylinder" Click="CylinderButton_OnClick" InputGestureText="Alt+C"></MenuItem>
+                <MenuItem Header="_Sphere" Click="SphereButton_OnClick" InputGestureText="Alt+S"></MenuItem>
+                <MenuItem Header="C_uboid" Click="CuboidButton_OnClick" InputGestureText="Alt+U"></MenuItem>
+            </MenuItem>
 
-            <GroupBox Grid.Row="2" Margin="0,0,20,0" Padding="0,5,0,0">
-                <GroupBox.Header>
-                    <TextBlock Text="Rotation" FontWeight="Bold"/>
-                </GroupBox.Header>
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="3*"/>
-                        <ColumnDefinition Width="7*"/>
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="30"/>
-                        <RowDefinition Height="30"/>
-                        <RowDefinition Height="30"/>
-                    </Grid.RowDefinitions>
-                    <Label Grid.Row="0" Grid.Column="0" VerticalAlignment="Center">Angle X</Label>
-                    <Slider Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" Name="AngleXSlider" Minimum="-360" Maximum="360" Value="0" 
-                            ValueChanged="AngleXSlider_ValueChanged"/>
-                    <Label Grid.Row="1" Grid.Column="0" VerticalAlignment="Center">Angle Y</Label>
-                    <Slider Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" Name="AngleYSlider" Minimum="-360" Maximum="360" Value="0"
-                            ValueChanged="AngleYSlider_ValueChanged"/>
-                    <Label Grid.Row="2" Grid.Column="0" VerticalAlignment="Center">Angle Z</Label>
-                    <Slider Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" Name="AngleZSlider" Minimum="-360" Maximum="360" Value="0"
-                            ValueChanged="AngleZSlider_ValueChanged"/>
-                </Grid>
-            </GroupBox>
+            
+            <MenuItem HorizontalAlignment="Left" Header="E_xit" Click="OnClick_Exit" InputGestureText="Alt+X"></MenuItem>
 
-            <GroupBox Grid.Row="3" Margin="0,0,20,0" Padding="0,5,0,0">
-                <GroupBox.Header>
-                    <TextBlock Text="Screen" FontWeight="Bold"/>
-                </GroupBox.Header>
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="3*"/>
-                        <ColumnDefinition Width="7*"/>
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="30"/>
-                        <RowDefinition Height="30"/>
-                    </Grid.RowDefinitions>
-                    <Label Grid.Row="0" Grid.Column="0" VerticalAlignment="Center">Width / 2</Label>
-                    <Slider Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" Name="SxSlider" Minimum="0" Maximum="1500" Value="750"
-                            ValueChanged="SxSlider_ValueChanged"/>
-                    <Label Grid.Row="1" Grid.Column="0" VerticalAlignment="Center">Height / 2</Label>
-                    <Slider Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" Name="SySlider" Minimum="0" Maximum="900" Value="450"
-                            ValueChanged="SySlider_ValueChanged"/>
-                </Grid>
-            </GroupBox>
+        </Menu>
+        
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="280"/>
+            </Grid.ColumnDefinitions>
+            
+            <Image
+                Grid.Column="0"
+                Name="CanvasImage"
+                Height="900" 
+                Width="1500"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center" />
+            
+            <Grid Grid.Column="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="120"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="117"/>
+                    <RowDefinition Height="90"/>
+                    <RowDefinition Height="117"/>
+                    <RowDefinition Height="57"/>
+                </Grid.RowDefinitions>
 
-            <GroupBox Grid.Row="4" Margin="0,0,20,0" Padding="0,5,0,0">
-                <GroupBox.Header>
-                    <TextBlock Text="Camera" FontWeight="Bold"/>
-                </GroupBox.Header>
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="3*"/>
-                        <ColumnDefinition Width="7*"/>
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="30"/>
-                        <RowDefinition Height="30"/>
-                        <RowDefinition Height="30"/>
-                    </Grid.RowDefinitions>
-                    <Label Grid.Row="0" Grid.Column="0" VerticalAlignment="Center">Camera X</Label>
-                    <Slider Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" Name="CamXslider" Minimum="-500" Maximum="500" Value="0"
-                            ValueChanged="CamXslider_ValueChanged"/>
-                    <Label Grid.Row="1" Grid.Column="0" VerticalAlignment="Center">Camera Y</Label>
-                    <Slider Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" Name="CamYslider" Minimum="-600" Maximum="600" Value="0"
-                            ValueChanged="CamYslider_ValueChanged"/>
-                    <Label Grid.Row="2" Grid.Column="0" VerticalAlignment="Center">Camera Z</Label>
-                    <Slider Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" Name="CamZslider" Minimum="100" Maximum="800" Value="400" 
-                            ValueChanged="CamZslider_ValueChanged"/>
-                </Grid>
-            </GroupBox>
+                <GroupBox Grid.Row="0" Margin="0,0,20,0" Padding="0,5,0,0">
+                    <GroupBox.Header>
+                        <TextBlock Text="Model" FontWeight="Bold"/>
+                    </GroupBox.Header>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="30"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Button  
+                            Grid.Row="0"
+                            Grid.Column="0"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Height="20"
+                            Width="100"
+                            Name="CylinderButton"
+                            IsEnabled="true"
+                            ToolTip="Draw Cylinder"
+                            Background="LightCyan"
+                            Click="CylinderButton_OnClick">
+                            Cylinder
+                        </Button>
+                        <Button  
+                            Grid.Row="1"
+                            Grid.Column="0"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Height="20"
+                            Width="100"
+                            Name="SphereButton"
+                            IsEnabled="true"
+                            ToolTip="Draw Sphere"
+                            Background="LightCyan"
+                            Click="SphereButton_OnClick">
+                            Sphere
+                        </Button>
+                        <Button  
+                            Grid.Row="2"
+                            Grid.Column="0"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Height="20"
+                            Width="100"
+                            Name="CuboidButton"
+                            IsEnabled="true"
+                            ToolTip="Draw Cuboid"
+                            Background="LightCyan"
+                            Click="CuboidButton_OnClick">
+                            Cuboid
+                        </Button>
+                    </Grid>
+                </GroupBox>
 
-            <GroupBox Grid.Row="5" Margin="0,0,20,0" Padding="0,5,0,0">
-                <GroupBox.Header>
-                    <TextBlock Text="Texture" FontWeight="Bold"/>
-                </GroupBox.Header>
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="30"/>
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <Button  
-                        Grid.Row="0"
-                        Grid.Column="0"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        Height="20"
-                        Width="100"
-                        Name="TextureButton"
-                        IsEnabled="true"
-                        ToolTip="Select Texture"
-                        Background="LightCyan"
-                        Click="SelectTextureButton_OnClick">
-                        Select Texture
-                    </Button>
-                    <Button  
-                        Grid.Row="0"
-                        Grid.Column="1"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        Height="20"
-                        Width="100"
-                        Name="ClearTextureButton"
-                        IsEnabled="true"
-                        ToolTip="Clear Texture"
-                        Background="LightCyan"
-                        Click="ClearTextureButton_OnClick">
-                        Clear Texture
-                    </Button>
-                </Grid>
-            </GroupBox>
+                <GroupBox Grid.Row="1" Margin="0,0,20,0" Padding="0,5,0,0">
+                    <GroupBox.Header >
+                        <TextBlock Name="ModelName" Text="Cylinder" FontWeight="Bold"/>
+                    </GroupBox.Header>
+                    <Grid Name="ModelProperties">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="3*"/>
+                            <ColumnDefinition Width="7*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="0"/>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="0"/>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="0"/>
+                            <RowDefinition Height="30"/>
+                        </Grid.RowDefinitions>
+                        <Label Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" >M</Label>
+                        <Slider Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" Name="Mslider" Minimum="3" Maximum="80" Value="15"
+                                ValueChanged="Mslider_ValueChanged"></Slider>
+                        <Label Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" >N</Label>
+                        <Slider Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" Name="Nslider" Minimum="3" Maximum="80" Value="15"
+                                ValueChanged="Nslider_ValueChanged"></Slider>
+                        <Label Grid.Row="2" Grid.Column="0" VerticalAlignment="Center">Width</Label>
+                        <Slider Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" Name="WidthSlider" Minimum="10" Maximum="150" Value="50"
+                                ValueChanged="WidthSlider_ValueChanged"></Slider>
+                        <Label Grid.Row="3" Grid.Column="0" VerticalAlignment="Center">Height</Label>
+                        <Slider Grid.Row="3" Grid.Column="1" VerticalAlignment="Center" Name="HeightSlider" Minimum="10" Maximum="150" Value="50"
+                                ValueChanged="HeightSlider_ValueChanged"></Slider>
+                        <Label Grid.Row="4" Grid.Column="0" VerticalAlignment="Center">Depth</Label>
+                        <Slider Grid.Row="4" Grid.Column="1" VerticalAlignment="Center" Name="DepthSlider" Minimum="10" Maximum="150" Value="50"
+                                ValueChanged="DepthSlider_ValueChanged"></Slider>
+                        <Label Grid.Row="5" Grid.Column="0" VerticalAlignment="Center">Radius</Label>
+                        <Slider Grid.Row="5" Grid.Column="1" VerticalAlignment="Center" Name="RadiusSlider" Minimum="10" Maximum="60" Value="30"
+                                ValueChanged="RadiusSlider_ValueChanged"></Slider>
+                    </Grid>
+                </GroupBox>
+
+                <GroupBox Grid.Row="2" Margin="0,0,20,0" Padding="0,5,0,0">
+                    <GroupBox.Header>
+                        <TextBlock Text="Rotation" FontWeight="Bold"/>
+                    </GroupBox.Header>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="3*"/>
+                            <ColumnDefinition Width="7*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="30"/>
+                        </Grid.RowDefinitions>
+                        <Label Grid.Row="0" Grid.Column="0" VerticalAlignment="Center">Angle X</Label>
+                        <Slider Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" Name="AngleXSlider" Minimum="-360" Maximum="360" Value="0" 
+                                ValueChanged="AngleXSlider_ValueChanged"/>
+                        <Label Grid.Row="1" Grid.Column="0" VerticalAlignment="Center">Angle Y</Label>
+                        <Slider Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" Name="AngleYSlider" Minimum="-360" Maximum="360" Value="0"
+                                ValueChanged="AngleYSlider_ValueChanged"/>
+                        <Label Grid.Row="2" Grid.Column="0" VerticalAlignment="Center">Angle Z</Label>
+                        <Slider Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" Name="AngleZSlider" Minimum="-360" Maximum="360" Value="0"
+                                ValueChanged="AngleZSlider_ValueChanged"/>
+                    </Grid>
+                </GroupBox>
+
+                <GroupBox Grid.Row="3" Margin="0,0,20,0" Padding="0,5,0,0">
+                    <GroupBox.Header>
+                        <TextBlock Text="Screen" FontWeight="Bold"/>
+                    </GroupBox.Header>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="3*"/>
+                            <ColumnDefinition Width="7*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="30"/>
+                        </Grid.RowDefinitions>
+                        <Label Grid.Row="0" Grid.Column="0" VerticalAlignment="Center">Width / 2</Label>
+                        <Slider Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" Name="SxSlider" Minimum="0" Maximum="1500" Value="750"
+                                ValueChanged="SxSlider_ValueChanged"/>
+                        <Label Grid.Row="1" Grid.Column="0" VerticalAlignment="Center">Height / 2</Label>
+                        <Slider Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" Name="SySlider" Minimum="0" Maximum="900" Value="450"
+                                ValueChanged="SySlider_ValueChanged"/>
+                    </Grid>
+                </GroupBox>
+
+                <GroupBox Grid.Row="4" Margin="0,0,20,0" Padding="0,5,0,0">
+                    <GroupBox.Header>
+                        <TextBlock Text="Camera" FontWeight="Bold"/>
+                    </GroupBox.Header>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="3*"/>
+                            <ColumnDefinition Width="7*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="30"/>
+                        </Grid.RowDefinitions>
+                        <Label Grid.Row="0" Grid.Column="0" VerticalAlignment="Center">Camera X</Label>
+                        <Slider Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" Name="CamXslider" Minimum="-500" Maximum="500" Value="0"
+                                ValueChanged="CamXslider_ValueChanged"/>
+                        <Label Grid.Row="1" Grid.Column="0" VerticalAlignment="Center">Camera Y</Label>
+                        <Slider Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" Name="CamYslider" Minimum="-600" Maximum="600" Value="0"
+                                ValueChanged="CamYslider_ValueChanged"/>
+                        <Label Grid.Row="2" Grid.Column="0" VerticalAlignment="Center">Camera Z</Label>
+                        <Slider Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" Name="CamZslider" Minimum="100" Maximum="800" Value="400" 
+                                ValueChanged="CamZslider_ValueChanged"/>
+                    </Grid>
+                </GroupBox>
+
+                <GroupBox Grid.Row="5" Margin="0,0,20,0" Padding="0,5,0,0">
+                    <GroupBox.Header>
+                        <TextBlock Text="Texture" FontWeight="Bold"/>
+                    </GroupBox.Header>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="30"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Button  
+                            Grid.Row="0"
+                            Grid.Column="0"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Height="20"
+                            Width="100"
+                            Name="TextureButton"
+                            IsEnabled="true"
+                            ToolTip="Select Texture"
+                            Background="LightCyan"
+                            Click="SelectTextureButton_OnClick">
+                            Select Texture
+                        </Button>
+                        <Button  
+                            Grid.Row="0"
+                            Grid.Column="1"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Height="20"
+                            Width="100"
+                            Name="ClearTextureButton"
+                            IsEnabled="true"
+                            ToolTip="Clear Texture"
+                            Background="LightCyan"
+                            Click="ClearTextureButton_OnClick">
+                            Clear Texture
+                        </Button>
+                    </Grid>
+                </GroupBox>
+            </Grid>
         </Grid>
     </Grid>
 </Window>
