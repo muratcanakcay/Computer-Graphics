@@ -18,11 +18,11 @@ namespace Lab05___3DModelling
         private double _angleX = 0;
         private double _angleY = 0;
         private double _angleZ = 0;
-        private int _sx = 300;
-        private int _sy = 300;
+        private int _sx = 750;
+        private int _sy = 450;
         private int _cPosX = 0;
         private int _cPosY = 0;
-        private int _cPosZ = 200;
+        private int _cPosZ = 400;
         private IMeshable _model = new Cylinder(15, 50, 20);
 
         public MainWindow()
@@ -152,9 +152,9 @@ namespace Lab05___3DModelling
         }
         private void ClearCanvas()
         {
-            _wbm = new WriteableBitmap((int)Canvas.Width, (int)Canvas.Height, 96, 96, PixelFormats.Bgra32,
+            _wbm = new WriteableBitmap((int)TheCanvas.Width, (int)TheCanvas.Height, 96, 96, PixelFormats.Bgra32,
                 BitmapPalettes.Halftone256);
-            Canvas.Source = _wbm;
+            CanvasImage.Source = _wbm;
         }
         private void ResetTransformations()
         {
@@ -163,9 +163,9 @@ namespace Lab05___3DModelling
             AngleZSlider.Value = 0;
             CamXslider.Value = 0;
             CamYslider.Value = 0;
-            CamZslider.Value = 200;
-            SxSlider.Value = 300;
-            SySlider.Value = 300;
+            CamZslider.Value = 400;
+            SxSlider.Value = 750;
+            SySlider.Value = 450;
         }
 
 

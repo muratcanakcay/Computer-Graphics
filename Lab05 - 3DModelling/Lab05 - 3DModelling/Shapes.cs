@@ -247,8 +247,6 @@ public class Triangle
 
             drawingData.Add(new Pixel(x, y, imageColor));
         }
-
-
     }
 
     private static Point3d InterpolatePoint(Point middleP, Point3d vertex1, Point3d vertex2)
@@ -262,26 +260,37 @@ public class Triangle
         double t = Vector2.Distance(new Vector2((float)v1.Projected.X, (float)v1.Projected.Y), new Vector2((float)middleP.X, (float)middleP.Y)) /
                    Vector2.Distance(new Vector2((float)v1.Projected.X, (float)v1.Projected.Y), new Vector2((float)v2.Projected.X, (float)v2.Projected.Y));
 
-        var interpolatedPoint = new Point4((v2.Projected.X - v1.Projected.X) * t + v1.Projected.X, (v2.Projected.Y - v1.Projected.Y) * t + v1.Projected.Y,
-            (v2.Projected.Z - v1.Projected.Z) * t + v1.Projected.Z, 1);
+        var interpolatedProjected = new Point4(
+            (v2.Projected.X - v1.Projected.X) * t + v1.Projected.X, 
+            (v2.Projected.Y - v1.Projected.Y) * t + v1.Projected.Y,
+            (v2.Projected.Z - v1.Projected.Z) * t + v1.Projected.Z, 
+            1);
 
         var u = v1.Projected.Z - v2.Projected.Z < 0.01 // compare floats
             ? t
-            : ((1d/interpolatedPoint.Z) - (1d/v1.Projected.Z))/((1d/v2.Projected.Z) - (1d/v1.Projected.Z));
+            : ((1d/interpolatedProjected.Z) - (1d/v1.Projected.Z))/((1d/v2.Projected.Z) - (1d/v1.Projected.Z));
 
-        var pG = new Point4(u * (v2.Global.X - v1.Global.X) + v1.Global.X, u * (v2.Global.Y - v1.Global.Y) + v1.Global.Y,
-            u * (v2.Global.Z - v1.Global.Z) + v1.Global.Z, 1); // u * (v2.Global.W - v1.Global.W) + v1.Global.W);
+        var interpolatedGlobal = new Point4(
+            u * (v2.Global.X - v1.Global.X) + v1.Global.X, 
+            u * (v2.Global.Y - v1.Global.Y) + v1.Global.Y,
+            u * (v2.Global.Z - v1.Global.Z) + v1.Global.Z, 
+            1); // u * (v2.Global.W - v1.Global.W) + v1.Global.W);
 
-        var nG = new Point4(u * (v2.Normal.X - v1.Normal.X) + v1.Normal.X, u * (v2.Normal.Y - v1.Normal.Y) + v1.Normal.Y,
-            u * (v2.Normal.Z - v1.Normal.Z) + v1.Normal.Z, 0); // u * (v2.Normal.W - v1.Normal.W) + v1.Normal.W);
+        var interpolatedNormal = new Point4(
+            u * (v2.Normal.X - v1.Normal.X) + v1.Normal.X, 
+            u * (v2.Normal.Y - v1.Normal.Y) + v1.Normal.Y,
+            u * (v2.Normal.Z - v1.Normal.Z) + v1.Normal.Z, 
+            0); // u * (v2.Normal.W - v1.Normal.W) + v1.Normal.W);
 
-        var interpolatedTextureCoordinates = new Point(u * (v2.TextureMap.X - v1.TextureMap.X) + v1.TextureMap.X, u * (v2.TextureMap.Y - v1.TextureMap.Y) + v1.TextureMap.Y);
+        var interpolatedTextureCoordinates = new Point(
+            u * (v2.TextureMap.X - v1.TextureMap.X) + v1.TextureMap.X, 
+            u * (v2.TextureMap.Y - v1.TextureMap.Y) + v1.TextureMap.Y);
 
         return new Point3d
         {
-            Projected = interpolatedPoint,
-            Global = pG,
-            Normal = nG,
+            Projected = interpolatedProjected,
+            Global = interpolatedGlobal,
+            Normal = interpolatedNormal,
             TextureMap = interpolatedTextureCoordinates
         };
     }
