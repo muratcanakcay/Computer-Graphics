@@ -36,7 +36,7 @@ namespace Lab05___3DModelling
         public MainWindow()
         {
             InitializeComponent();
-            RefreshCanvasAndModel();
+            RefreshCanvas();
         }
 
         //----------------- PROJECTION -------------------
@@ -132,16 +132,21 @@ namespace Lab05___3DModelling
                 IsIlluminated = _isLightOn,
                 Camera = new Vector3(_cPosX, _cPosY, _cPosZ),
                 Light = Light,
-                ModelColor = _modelColor
+                ModelColor = _modelColor,
+                Ia = 2f
             };
         }
-        private void RefreshCanvasAndModel()
+        private void RefreshCanvas()
         {
             ClearCanvas();
-            _model.ClearVertices();
-            _model.CalculateVertices();
             DrawModel(_model);
         }
+        private void RefreshModel()
+        {
+            _model.ClearVertices();
+            _model.CalculateVertices();
+        }
+
         private void ClearCanvas()
         {
             _wbm = new WriteableBitmap((int)CanvasImage.Width, (int)CanvasImage.Height, 96, 96, PixelFormats.Bgra32,
@@ -181,7 +186,8 @@ namespace Lab05___3DModelling
             SphereButton2.Visibility = Visibility.Hidden;
             CuboidButton.Visibility = Visibility.Visible;
             ResetTransformations();
-            RefreshCanvasAndModel();
+            RefreshModel();
+            RefreshCanvas();
         }
         private void SphereButton_OnClick(object sender, RoutedEventArgs e)
         {
@@ -201,7 +207,8 @@ namespace Lab05___3DModelling
             SphereButton2.Visibility = Visibility.Hidden;
             CuboidButton.Visibility = Visibility.Visible;
             ResetTransformations();
-            RefreshCanvasAndModel();
+            RefreshModel();
+            RefreshCanvas();
         }
         private void CuboidButton_OnClick(object sender, RoutedEventArgs e)
         {
@@ -221,7 +228,8 @@ namespace Lab05___3DModelling
             SphereButton2.Visibility = Visibility.Visible;
             CuboidButton.Visibility = Visibility.Hidden;
             ResetTransformations();
-            RefreshCanvasAndModel();
+            RefreshModel();
+            RefreshCanvas();
         }
         private void SelectModelColorButton_OnClick(object sender, MouseButtonEventArgs e)
         {
@@ -238,7 +246,7 @@ namespace Lab05___3DModelling
                 _modelColor = modelColor;
             }
             
-            RefreshCanvasAndModel();
+            RefreshCanvas();
         }
         private void SelectTextureButton_OnClick(object sender, RoutedEventArgs e)
         {
@@ -260,26 +268,26 @@ namespace Lab05___3DModelling
                 Console.WriteLine(exception.Message);
             }
 
-            RefreshCanvasAndModel();
+            RefreshCanvas();
         }
         private void ClearTextureButton_OnClick(object sender, RoutedEventArgs e)
         {
             _texture = null;
-            RefreshCanvasAndModel();
+            RefreshCanvas();
         }
         private void LightOnButton_OnClick(object sender, RoutedEventArgs e)
         {
             _isLightOn = true;
             LightOnButton.Visibility = Visibility.Hidden;
             LightOffButton.Visibility = Visibility.Visible;
-            RefreshCanvasAndModel();
+            RefreshCanvas();
         }
         private void LightOffButton_OnClick(object sender, RoutedEventArgs e)
         {
             _isLightOn = false;
             LightOnButton.Visibility = Visibility.Visible;
             LightOffButton.Visibility = Visibility.Hidden;
-            RefreshCanvasAndModel();
+            RefreshCanvas();
         }
         private void OnClick_Exit(object sender, RoutedEventArgs e)
         {
@@ -294,78 +302,92 @@ namespace Lab05___3DModelling
         private void Mslider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             _model.M = (int)Mslider.Value;
-            RefreshCanvasAndModel();
+            RefreshModel();
+            RefreshCanvas();
         }
         private void Nslider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             _model.N = (int)Nslider.Value;
-            RefreshCanvasAndModel();
+            RefreshModel();
+            RefreshCanvas();
         }
         private void WidthSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             _model.Width = (int)WidthSlider.Value;
-            RefreshCanvasAndModel();
+            RefreshModel();
+            RefreshCanvas();
         }
         private void HeightSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             _model.Height = (int)HeightSlider.Value;
-            RefreshCanvasAndModel();
+            RefreshModel();
+            RefreshCanvas();
         }
         private void DepthSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             _model.Depth = -(int)DepthSlider.Value;
-            RefreshCanvasAndModel();
+            RefreshModel();
+            RefreshCanvas();
         }
         private void RadiusSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             _model.Radius = (int)RadiusSlider.Value;
-            RefreshCanvasAndModel();
+            RefreshModel();
+            RefreshCanvas();
         }
 
         //Rotation
         private void AngleXSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             _angleX = AngleXSlider.Value;
-            RefreshCanvasAndModel();
+            RefreshModel();
+            RefreshCanvas();
         }
         private void AngleYSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             _angleY = AngleYSlider.Value;
-            RefreshCanvasAndModel();
+            RefreshModel();
+            RefreshCanvas();
         }
         private void AngleZSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             _angleZ = AngleZSlider.Value;
-            RefreshCanvasAndModel();
+            RefreshModel();
+            RefreshCanvas();
         }
 
         //Translation
         private void SxSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             _sx = (int)SxSlider.Value;
-            RefreshCanvasAndModel();
+            RefreshModel();
+            RefreshCanvas();
         }
         private void SySlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             _sy = (int)SySlider.Value;
-            RefreshCanvasAndModel();
+            RefreshModel();
+            RefreshCanvas();
         }
 
         // Camera
         private void CamXslider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             _cPosX = (int)CamXslider.Value;
-            RefreshCanvasAndModel();
+            RefreshModel();
+            RefreshCanvas();
         }
         private void CamYslider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             _cPosY = (int)CamYslider.Value;
-            RefreshCanvasAndModel();
+            RefreshModel();
+            RefreshCanvas();
         }
         private void CamZslider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             _cPosZ = (int)CamZslider.Value;
-            RefreshCanvasAndModel();
+            RefreshModel();
+            RefreshCanvas();
         }
 
         // Light
@@ -373,21 +395,24 @@ namespace Lab05___3DModelling
         {
             lightX = -LightXslider.Value;
             Light = new Vector3((float)lightX, (float)lightY, (float)lightZ);
-            RefreshCanvasAndModel();
+            RefreshModel();
+            RefreshCanvas();
         }
 
         private void LightYslider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             lightY = LightYslider.Value;
             Light = new Vector3((float)lightX, (float)lightY, (float)lightZ);
-            RefreshCanvasAndModel();
+            RefreshModel();
+            RefreshCanvas();
         }
 
         private void LightZslider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             lightZ = LightZslider.Value;
             Light = new Vector3((float)lightX, (float)lightY, (float)lightZ);
-            RefreshCanvasAndModel();
+            RefreshModel();
+            RefreshCanvas();
         }
     }
 }

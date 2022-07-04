@@ -9,8 +9,8 @@ public struct Phong
     public Vector3 Camera { get; set; }
     public Vector3 Light { get; set; }
     public Color ModelColor { get; set; }
-    public float Ia => 1f;
-    public float ka => 0.5f;
-    public float ks => 0.75f;
-    public float kd => 0.25f;
+    public float Ia { get; set; } = 1f;
+    public float ka { get; set; } = 0.5f;
+    public float ks { get; set; } = 0.75f;
+    public float kd { get; set; } = 0.25f;
 }

@@ -278,9 +278,9 @@ public class Triangle
         var ri = Vector3.Subtract(Vector3.Multiply(2 * (Vector3.Dot(n, li)), n), li);
 
         var I = new Vector3(Ia * ka, Ia * ka, Ia * ka);
-        I.X += (float)(kd * Ia * Math.Max(Vector3.Dot(n, li), 0) + ks * Ia * Math.Pow(Math.Max(Vector3.Dot(v, ri), 0), 1));
-        I.Y += (float)(kd * Ia * Math.Max(Vector3.Dot(n, li), 0) + ks * Ia * Math.Pow(Math.Max(Vector3.Dot(v, ri), 0), 1));
-        I.Z += (float)(kd * Ia * Math.Max(Vector3.Dot(n, li), 0) + ks * Ia * Math.Pow(Math.Max(Vector3.Dot(v, ri), 0), 1));
+        I.X += (float)(kd * Ia * Math.Max(Vector3.Dot(n, li), 0) + ks * Ia * Math.Pow(Math.Max(Vector3.Dot(v, ri), 0), 20));
+        I.Y += (float)(kd * Ia * Math.Max(Vector3.Dot(n, li), 0) + ks * Ia * Math.Pow(Math.Max(Vector3.Dot(v, ri), 0), 20));
+        I.Z += (float)(kd * Ia * Math.Max(Vector3.Dot(n, li), 0) + ks * Ia * Math.Pow(Math.Max(Vector3.Dot(v, ri), 0), 20));
             
         var result = new Color()
         {
