@@ -23,6 +23,10 @@ namespace Lab05___3DModelling
         private int _cPosX = 0;
         private int _cPosY = 0;
         private int _cPosZ = 400;
+        private double lightX = 0;
+        private double lightY = 25;
+        private double lightZ = 0;
+        private Vector3 Light;
         private IMeshable _model = new Cylinder(15, 50, 20);
 
         public MainWindow()
@@ -175,31 +179,39 @@ namespace Lab05___3DModelling
         {
             ModelName.Text = "Cylinder";
             ModelProperties.RowDefinitions[0].Height = new GridLength(0);
-            ModelProperties.RowDefinitions[1].Height = new GridLength(30);
+            ModelProperties.RowDefinitions[1].Height = new GridLength(26);
             ModelProperties.RowDefinitions[2].Height = new GridLength(0);
-            ModelProperties.RowDefinitions[3].Height = new GridLength(30);
+            ModelProperties.RowDefinitions[3].Height = new GridLength(26);
             ModelProperties.RowDefinitions[4].Height = new GridLength(0);
-            ModelProperties.RowDefinitions[5].Height = new GridLength(30);
+            ModelProperties.RowDefinitions[5].Height = new GridLength(26);
             _model = new Cylinder(15, 50, 30);
             Nslider.Value = 15;
             HeightSlider.Value = 50;
             RadiusSlider.Value = 30;
+            CylinderButton.Visibility = Visibility.Hidden;
+            SphereButton.Visibility = Visibility.Visible;
+            SphereButton2.Visibility = Visibility.Hidden;
+            CuboidButton.Visibility = Visibility.Visible;
             ResetTransformations();
             RefreshCanvasAndModel();
         }
         private void SphereButton_OnClick(object sender, RoutedEventArgs e)
         {
             ModelName.Text = "Sphere";
-            ModelProperties.RowDefinitions[0].Height = new GridLength(30);
-            ModelProperties.RowDefinitions[1].Height = new GridLength(30);
+            ModelProperties.RowDefinitions[0].Height = new GridLength(26);
+            ModelProperties.RowDefinitions[1].Height = new GridLength(26);
             ModelProperties.RowDefinitions[2].Height = new GridLength(0);
             ModelProperties.RowDefinitions[3].Height = new GridLength(00);
             ModelProperties.RowDefinitions[4].Height = new GridLength(0);
-            ModelProperties.RowDefinitions[5].Height = new GridLength(30);
+            ModelProperties.RowDefinitions[5].Height = new GridLength(26);
             _model = new Sphere(15, 15, 50);
             Mslider.Value = 15;
             Nslider.Value = 15;
             RadiusSlider.Value = 50;
+            CylinderButton.Visibility = Visibility.Visible;
+            SphereButton.Visibility = Visibility.Hidden;
+            SphereButton2.Visibility = Visibility.Hidden;
+            CuboidButton.Visibility = Visibility.Visible;
             ResetTransformations();
             RefreshCanvasAndModel();
         }
@@ -208,14 +220,18 @@ namespace Lab05___3DModelling
             ModelName.Text = "Cuboid";
             ModelProperties.RowDefinitions[0].Height = new GridLength(0);
             ModelProperties.RowDefinitions[1].Height = new GridLength(0);
-            ModelProperties.RowDefinitions[2].Height = new GridLength(30);
-            ModelProperties.RowDefinitions[3].Height = new GridLength(30);
-            ModelProperties.RowDefinitions[4].Height = new GridLength(30);
+            ModelProperties.RowDefinitions[2].Height = new GridLength(26);
+            ModelProperties.RowDefinitions[3].Height = new GridLength(26);
+            ModelProperties.RowDefinitions[4].Height = new GridLength(26);
             ModelProperties.RowDefinitions[5].Height = new GridLength(0);
             _model = new Cuboid(50, 50, -50);
             HeightSlider.Value = 50;
             DepthSlider.Value = 50;
             WidthSlider.Value = 50;
+            CylinderButton.Visibility = Visibility.Visible;
+            SphereButton.Visibility = Visibility.Hidden;
+            SphereButton2.Visibility = Visibility.Visible;
+            CuboidButton.Visibility = Visibility.Hidden;
             ResetTransformations();
             RefreshCanvasAndModel();
         }
@@ -306,7 +322,26 @@ namespace Lab05___3DModelling
             RefreshCanvasAndModel();
         }
 
+        // Light
+        private void LightXslider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            lightX = -LightXslider.Value;
+            Light = new Vector3((float)lightX, (float)lightY, (float)lightZ);
+            RefreshCanvasAndModel();
+        }
 
-        
+        private void LightYslider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            lightY = LightYslider.Value;
+            Light = new Vector3((float)lightX, (float)lightY, (float)lightZ);
+            RefreshCanvasAndModel();
+        }
+
+        private void LightZslider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            lightZ = LightZslider.Value;
+            Light = new Vector3((float)lightX, (float)lightY, (float)lightZ);
+            RefreshCanvasAndModel();
+        }
     }
 }
