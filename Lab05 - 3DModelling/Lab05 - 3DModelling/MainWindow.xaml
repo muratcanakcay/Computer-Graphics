@@ -32,7 +32,7 @@
         
         <Grid Grid.Column="1">
             <Grid.RowDefinitions>
-                <RowDefinition Height="150"/>
+                <RowDefinition Height="210"/>
                 <RowDefinition Height="117"/>
                 <RowDefinition Height="90"/>
                 <RowDefinition Height="117"/>
@@ -53,6 +53,8 @@
                         <RowDefinition Height="30"/>
                         <RowDefinition Height="30"/>
                         <RowDefinition Height="30"/>
+                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="30"/>
                     </Grid.RowDefinitions>
                     <Label Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" >M</Label>
                     <Slider Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" Name="Mslider" Minimum="3" Maximum="80" Value="15"
@@ -60,11 +62,17 @@
                     <Label Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" >N</Label>
                     <Slider Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" Name="Nslider" Minimum="3" Maximum="80" Value="15"
                             ValueChanged="Nslider_ValueChanged"></Slider>
-                    <Label Grid.Row="2" Grid.Column="0" VerticalAlignment="Center">Height</Label>
-                    <Slider Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" Name="HeightSlider" Minimum="10" Maximum="150" Value="50"
+                    <Label Grid.Row="2" Grid.Column="0" VerticalAlignment="Center">Width</Label>
+                    <Slider Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" Name="WidthSlider" Minimum="10" Maximum="150" Value="50"
+                            ValueChanged="WidthSlider_ValueChanged"></Slider>
+                    <Label Grid.Row="3" Grid.Column="0" VerticalAlignment="Center">Height</Label>
+                    <Slider Grid.Row="3" Grid.Column="1" VerticalAlignment="Center" Name="HeightSlider" Minimum="10" Maximum="150" Value="50"
                             ValueChanged="HeightSlider_ValueChanged"></Slider>
-                    <Label Grid.Row="3" Grid.Column="0" VerticalAlignment="Center">Radius</Label>
-                    <Slider Grid.Row="3" Grid.Column="1" VerticalAlignment="Center" Name="RadiusSlider" Minimum="10" Maximum="60" Value="20"
+                    <Label Grid.Row="4" Grid.Column="0" VerticalAlignment="Center">Depth</Label>
+                    <Slider Grid.Row="4" Grid.Column="1" VerticalAlignment="Center" Name="DepthSlider" Minimum="10" Maximum="150" Value="50"
+                            ValueChanged="DepthSlider_ValueChanged"></Slider>
+                    <Label Grid.Row="5" Grid.Column="0" VerticalAlignment="Center">Radius</Label>
+                    <Slider Grid.Row="5" Grid.Column="1" VerticalAlignment="Center" Name="RadiusSlider" Minimum="10" Maximum="60" Value="20"
                             ValueChanged="RadiusSlider_ValueChanged"></Slider>
                 </Grid>
             </GroupBox>

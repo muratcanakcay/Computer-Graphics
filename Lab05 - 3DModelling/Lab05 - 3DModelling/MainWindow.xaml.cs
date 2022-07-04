@@ -24,7 +24,8 @@ namespace Lab05___3DModelling
         private int _cPosY = 0;
         private int _cPosZ = 200;
         //private readonly Cylinder _model = new(15, 50, 20);
-        private readonly Sphere _model = new(15, 15, 20);
+        //private readonly Sphere _model = new(15, 15, 20);
+        private readonly Cuboid _model = new(20, 20, 20);
 
         public MainWindow()
         {
@@ -105,7 +106,8 @@ namespace Lab05___3DModelling
                     TextureMap = v.TextureMap
                 });
             }
-
+            
+            model.ClearVertices();
             model.Vertices = projectedPoints;
         }
         public void DrawModel(IMeshable model)
@@ -160,19 +162,29 @@ namespace Lab05___3DModelling
 
         // ---------------- SLIDERS --------------------
 
-        private void Nslider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            _model.N = (int)Nslider.Value;
-            RefreshCanvasAndModel();
-        }
         private void Mslider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             _model.M = (int)Mslider.Value;
             RefreshCanvasAndModel();
         }
+        private void Nslider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            _model.N = (int)Nslider.Value;
+            RefreshCanvasAndModel();
+        }
+        private void WidthSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            _model.Width = (int)WidthSlider.Value;
+            RefreshCanvasAndModel();
+        }
         private void HeightSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             _model.Height = (int)HeightSlider.Value;
+            RefreshCanvasAndModel();
+        }
+        private void DepthSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            _model.Depth = -(int)DepthSlider.Value;
             RefreshCanvasAndModel();
         }
         private void RadiusSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
@@ -227,6 +239,7 @@ namespace Lab05___3DModelling
             RefreshCanvasAndModel();
         }
 
-      
+
+        
     }
 }

@@ -24,9 +24,9 @@ public class Sphere : Model
         // north pole
         Vertices.Add(new Point3d //t0
         {
-            Global = new Point4(0, Radius, 0, 1),
-            Normal = new Point4(0, 1, 0, 0),
-            TextureMap = new Point(0.5, 1)
+            Global = new Point4(0, Radius, 0, 1d),
+            Normal = new Point4(0, 1d, 0, 0),
+            TextureMap = new Point(0.5, 1d)
         });
 
         // sides t1...t(mn+1)
@@ -35,16 +35,15 @@ public class Sphere : Model
         {
             for (var j = 0; j < M; j++)
             {
-                var xdivR = Math.Cos(2*Math.PI*j/M)*Math.Sin(Math.PI*(i + 1)/(N + 1));
-                var ydivR = Math.Cos(Math.PI*(i + 1)/(N + 1));
-                var zdivR = Math.Sin(2*Math.PI*j/M)*Math.Sin(Math.PI*(i + 1)/(N + 1));
-                double w = 1;
+                var xdivR = Math.Cos((2*Math.PI*j)/M)*Math.Sin((Math.PI*(i + 1))/(N + 1));
+                var ydivR = Math.Cos((Math.PI*(i + 1))/(N + 1));
+                var zdivR = Math.Sin((2*Math.PI*j)/M)*Math.Sin((Math.PI*(i + 1))/(N + 1));
 
                 Vertices.Add(new Point3d 
                 {
                     Global = new Point4(Radius*xdivR, Radius*ydivR, Radius*zdivR, 1),
                     Normal = new Point4(xdivR, ydivR, zdivR, 0),
-                    TextureMap = new Point((double)j/(M), 1 - (i+1)/(N+1d))
+                    TextureMap = new Point((double)j/M, 1 - (i+1)/(N+1d))
                 });
             }
         }
@@ -52,8 +51,8 @@ public class Sphere : Model
         // south pole
         Vertices.Add(new Point3d //t(mn+2)
         {
-            Global = new Point4(0, -Radius, 0, 1),
-            Normal = new Point4(0, -1, 0, 0),
+            Global = new Point4(0, -Radius, 0, 1d),
+            Normal = new Point4(0, -1d, 0, 0),
             TextureMap = new Point(0.5, 0)
         });
     }
@@ -80,7 +79,7 @@ public class Sphere : Model
                                                 Projected = Vertices[1].Projected,
                                                 Global = Vertices[1].Global,
                                                 Normal = Vertices[1].Normal,
-                                                TextureMap = new Point(1, 1-1/N)
+                                                TextureMap = new Point(1d, 1-1d/N)
                                             },
                                             Vertices[M]);
         
@@ -109,7 +108,7 @@ public class Sphere : Model
                                                     Projected = Vertices[(N-1)*M + 1].Projected,
                                                     Global = Vertices[(N-1)*M + 1].Global,
                                                     Normal = Vertices[(N-1)*M + 1].Normal,
-                                                    TextureMap = new Point(1, 1d/N)
+                                                    TextureMap = new Point(1d, 1d/(N+1))
                                                 });
         
         if (lastBottomLidTriangle.IsFacingCamera())
