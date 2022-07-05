@@ -278,7 +278,7 @@ public class Triangle
         var l = Vector3.Divide(Vector3.Subtract(light, p), Vector3.Subtract(light, p).Length());
         
         var r = Vector3.Subtract(Vector3.Multiply(2*(Vector3.Dot(normal, l)), normal), l);
-        //var r = Vector3.Divide(Vector3.Add(l, v), 2);
+        
 
         var I = new Vector3 (lightIntensity*ka, lightIntensity*ka, lightIntensity*ka);
 
@@ -287,7 +287,7 @@ public class Triangle
         I.Z += kd*lightIntensity*Math.Max(Vector3.Dot(normal, l), 0);
 
 
-        if (true)//(Vector3.Dot(normal, l) > 0)
+        if (Vector3.Dot(normal, l) > 0)
         {
             I.X += ks*lightIntensity*(float)Math.Pow(Math.Max(Vector3.Dot(v, r), 0), n);
             I.Y += ks*lightIntensity*(float)Math.Pow(Math.Max(Vector3.Dot(v, r), 0), n);

@@ -220,33 +220,8 @@
                         <TextBlock Name="AngleZText" Grid.Row="2" Grid.Column="2" VerticalAlignment="Center" Margin="5, 0, 0, 0" Text="0"/>
                     </Grid>
                 </GroupBox>
-
-                <GroupBox Grid.Row="3" Margin="0,0,20,0" Padding="0,5,0,0">
-                    <GroupBox.Header>
-                        <TextBlock Text="Screen" FontWeight="Bold"/>
-                    </GroupBox.Header>
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="3*"/>
-                            <ColumnDefinition Width="7*"/>
-                            <ColumnDefinition Width="2*"/>
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="26"/>
-                            <RowDefinition Height="26"/>
-                        </Grid.RowDefinitions>
-                        <Label Grid.Row="0" Grid.Column="0" VerticalAlignment="Center">Width / 2</Label>
-                        <Slider Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" Name="SxSlider" Minimum="0" Maximum="1500" Value="750"
-                                ValueChanged="SxSlider_ValueChanged"/>
-                        <TextBlock Name="SxText" Grid.Row="0" Grid.Column="2" VerticalAlignment="Center" Margin="5, 0, 0, 0" Text="750"/>
-                        <Label Grid.Row="1" Grid.Column="0" VerticalAlignment="Center">Height / 2</Label>
-                        <Slider Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" Name="SySlider" Minimum="0" Maximum="900" Value="450"
-                                ValueChanged="SySlider_ValueChanged"/>
-                        <TextBlock Name="SyText" Grid.Row="1" Grid.Column="2" VerticalAlignment="Center" Margin="5, 0, 0, 0" Text="450"/>
-                    </Grid>
-                </GroupBox>
                 
-                <GroupBox Grid.Row="4" Margin="0,0,20,0" Padding="0,5,0,0">
+                <GroupBox Grid.Row="3" Margin="0,0,20,0" Padding="0,5,0,0">
                     <GroupBox.Header>
                         <TextBlock Text="Camera" FontWeight="Bold"/>
                     </GroupBox.Header>
@@ -276,7 +251,7 @@
                     </Grid>
                 </GroupBox>
 
-                <TabControl Grid.Row="5" Grid.Column="0" Margin="0,0,20,0" Padding="0,5,0,0">
+                <TabControl Grid.Row="4" Grid.Column="0" Margin="0,0,20,0" Padding="0,5,0,0">
                     <TabItem Header="Texture">
                 
                         <Grid>
@@ -404,16 +379,16 @@
                                     ValueChanged="LightYslider_ValueChanged"/>
                             <TextBlock Name="LightYText" Grid.Row="1" Grid.Column="2" VerticalAlignment="Center" Margin="5, 0, 0, 0" Text="25"/>
                             <Label Grid.Row="2" Grid.Column="0" VerticalAlignment="Center">Light Z</Label>
-                            <Slider Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" Name="LightZslider" Minimum="-200" Maximum="200" Value="0" 
+                            <Slider Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" Name="LightZslider" Minimum="-600" Maximum="100" Value="-200" 
                                     ValueChanged="LightZslider_ValueChanged"/>
                             <TextBlock Name="LightZText" Grid.Row="2" Grid.Column="2" VerticalAlignment="Center" Margin="5, 0, 0, 0" Text="0"/>
                             <Label Grid.Row="3" Grid.Column="0" VerticalAlignment="Center">kD</Label>
-                            <Slider Grid.Row="3" Grid.Column="1" VerticalAlignment="Center" Name="kDslider" Minimum="0.25" Maximum="5" Value="0.25" 
-                                    ValueChanged="kDslider_ValueChanged" IsSnapToTickEnabled="True" TickFrequency="0.25"/>
+                            <Slider Grid.Row="3" Grid.Column="1" VerticalAlignment="Center" Name="kDslider" Minimum="0.05" Maximum="1" Value="0.25" 
+                                    ValueChanged="kDslider_ValueChanged" IsSnapToTickEnabled="True" TickFrequency="0.05"/>
                             <TextBlock Name="kDText" Grid.Row="3" Grid.Column="2" VerticalAlignment="Center" Margin="5, 0, 0, 0" Text="0.25"/>
                             <Label Grid.Row="4" Grid.Column="0" VerticalAlignment="Center">kS</Label>
-                            <Slider Grid.Row="4" Grid.Column="1" VerticalAlignment="Center" Name="kSslider" Minimum="0.1" Maximum="2" Value="0.75" 
-                                    ValueChanged="kSslider_ValueChanged" IsSnapToTickEnabled="True" TickFrequency="0.01"/>
+                            <Slider Grid.Row="4" Grid.Column="1" VerticalAlignment="Center" Name="kSslider" Minimum="0.05" Maximum="1" Value="0.75" 
+                                    ValueChanged="kSslider_ValueChanged" IsSnapToTickEnabled="True" TickFrequency="0.05"/>
                             <TextBlock Name="kSText" Grid.Row="4" Grid.Column="2" VerticalAlignment="Center" Margin="5, 0, 0, 0" Text="0.75"/>
                         </Grid>
                         <Grid Grid.Row="2">

@@ -10,7 +10,7 @@ public struct Phong
     public Vector3 Light { get; set; }
     public Color ModelColor { get; set; }
     public float LightIntensity { get; set; }
-    public float ka { get; set; } = 0.1f;
+    public float ka { get; set; } = 0.2f;
     public float ks { get; set; }
     public float kd { get; set; }
     public int n { get; set; } = 20;
