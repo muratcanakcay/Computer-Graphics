@@ -35,12 +35,13 @@ public class Cylinder : Model
             var z = Radius * Math.Sin((2 * Math.PI * i) / N);
             var xTex = 0.25*(1 + Math.Cos(2*Math.PI*i/N));
             var yTex = 0.25*(1 + Math.Sin(2*Math.PI*i/N));
-
+            
             Vertices.Add(new Point3d
             {
                 Global  = new Point4(x, Height, z, 1),
                 Normal = new Point4(0, 1, 0, 0),
                 TextureMap = new Point(xTex, yTex)
+                
             });
         }
         

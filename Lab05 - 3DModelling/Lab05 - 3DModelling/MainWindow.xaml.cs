@@ -127,14 +127,7 @@ namespace Lab05___3DModelling
 
         private Phong CalculateLightAttributes()
         {
-            return new Phong
-            {
-                IsIlluminated = _isLightOn,
-                Camera = new Vector3(_cPosX, _cPosY, _cPosZ),
-                Light = Light,
-                ModelColor = _modelColor,
-                Ia = 2f
-            };
+            return new Phong ( _isLightOn, new Vector3(_cPosX, _cPosY, _cPosZ), Light, _modelColor, 2f );
         }
         private void RefreshCanvas()
         {
