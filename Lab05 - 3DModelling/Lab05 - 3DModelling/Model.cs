@@ -40,9 +40,12 @@ public abstract class Model : IMeshable
 
         foreach (var triangle in triangles)
             triangle.Fill(drawingData, texture, lightAttributes);
-                
-        foreach (var triangle in triangles)
-            triangle.Draw(drawingData);
+
+        if (lightAttributes.DrawMesh)
+        {
+            foreach (var triangle in triangles)
+                triangle.Draw(drawingData);
+        }
 
         wbm.SetPixels(drawingData);
         drawingData.Clear();

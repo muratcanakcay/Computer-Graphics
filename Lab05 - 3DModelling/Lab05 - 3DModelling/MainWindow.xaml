@@ -257,6 +257,7 @@
                         <Grid>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="26"/>
+                                <RowDefinition Height="26"/>
                             </Grid.RowDefinitions>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>
@@ -289,6 +290,35 @@
                                 Background="LightCyan"
                                 Click="ClearTextureButton_OnClick">
                                 Clear Texture
+                            </Button>
+                            <Button  
+                                Grid.Row="1"
+                                Grid.Column="0"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Height="20"
+                                Width="100"
+                                Name="HideMeshButton"
+                                IsEnabled="true"
+                                ToolTip="Hide Wire Mesh"
+                                Background="LightSalmon"
+                                Click="HideMeshButton_OnClick">
+                                Hide Mesh
+                            </Button>
+                            <Button  
+                                Grid.Row="1"
+                                Grid.Column="0"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Height="20"
+                                Width="100"
+                                Name="ShowMeshButton"
+                                IsEnabled="true"
+                                ToolTip="Draw Wire Mesh"
+                                Background="LightSalmon"
+                                Visibility="Hidden"
+                                Click="ShowMeshButton_OnClick">
+                                Show Mesh
                             </Button>
                         </Grid>
                     </TabItem>
@@ -369,6 +399,8 @@
                                 <RowDefinition Height="26"/>
                                 <RowDefinition Height="26"/>
                                 <RowDefinition Height="26"/>
+                                <RowDefinition Height="26"/>
+                                <RowDefinition Height="26"/>
                             </Grid.RowDefinitions>
                             <Label Grid.Row="0" Grid.Column="0" VerticalAlignment="Center">Light X</Label>
                             <Slider Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" Name="LightXslider" Minimum="-200" Maximum="200" Value="33"
@@ -382,14 +414,25 @@
                             <Slider Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" Name="LightZslider" Minimum="-200" Maximum="200" Value="-80" 
                                     ValueChanged="LightZslider_ValueChanged" IsSnapToTickEnabled="True" TickFrequency="1"/>
                             <TextBlock Name="LightZText" Grid.Row="2" Grid.Column="2" VerticalAlignment="Center" Margin="5, 0, 0, 0" Text="-80"/>
-                            <Label Grid.Row="3" Grid.Column="0" VerticalAlignment="Center">kD</Label>
-                            <Slider Grid.Row="3" Grid.Column="1" VerticalAlignment="Center" Name="kDslider" Minimum="0.05" Maximum="1" Value="0.65" 
+                            <Label Grid.Row="3" Grid.Column="0" VerticalAlignment="Center">kA</Label>
+                            <Slider Grid.Row="3" Grid.Column="1" VerticalAlignment="Center" Name="kAslider" Minimum="0.05" Maximum="1" Value="0.2" 
+                                    ValueChanged="kAslider_ValueChanged" IsSnapToTickEnabled="True" TickFrequency="0.05"/>
+                            <TextBlock Name="kAText" Grid.Row="3" Grid.Column="2" VerticalAlignment="Center" Margin="5, 0, 0, 0" Text="0.2"/>
+                            <Label Grid.Row="4" Grid.Column="0" VerticalAlignment="Center">kD</Label>
+                            <Slider Grid.Row="4" Grid.Column="1" VerticalAlignment="Center" Name="kDslider" Minimum="0.05" Maximum="1" Value="0.65" 
                                     ValueChanged="kDslider_ValueChanged" IsSnapToTickEnabled="True" TickFrequency="0.05"/>
-                            <TextBlock Name="kDText" Grid.Row="3" Grid.Column="2" VerticalAlignment="Center" Margin="5, 0, 0, 0" Text="0.65"/>
-                            <Label Grid.Row="4" Grid.Column="0" VerticalAlignment="Center">kS</Label>
-                            <Slider Grid.Row="4" Grid.Column="1" VerticalAlignment="Center" Name="kSslider" Minimum="0.05" Maximum="1" Value="0.85" 
+                            <TextBlock Name="kDText" Grid.Row="4" Grid.Column="2" VerticalAlignment="Center" Margin="5, 0, 0, 0" Text="0.65"/>
+                            <Label Grid.Row="5" Grid.Column="0" VerticalAlignment="Center">kS</Label>
+                            <Slider Grid.Row="5" Grid.Column="1" VerticalAlignment="Center" Name="kSslider" Minimum="0.05" Maximum="1" Value="0.85" 
                                     ValueChanged="kSslider_ValueChanged" IsSnapToTickEnabled="True" TickFrequency="0.05"/>
-                            <TextBlock Name="kSText" Grid.Row="4" Grid.Column="2" VerticalAlignment="Center" Margin="5, 0, 0, 0" Text="0.85"/>
+                            <TextBlock Name="kSText" Grid.Row="5" Grid.Column="2" VerticalAlignment="Center" Margin="5, 0, 0, 0" Text="0.85"/>
+                            <Label Grid.Row="6" Grid.Column="0" VerticalAlignment="Center">n</Label>
+                            <Slider Grid.Row="6" Grid.Column="1" VerticalAlignment="Center" Name="nslider" Minimum="1" Maximum="100" Value="20" 
+                                    ValueChanged="n_slider_ValueChanged" IsSnapToTickEnabled="True" TickFrequency="1"/>
+                            <TextBlock Name="nText" Grid.Row="6" Grid.Column="2" VerticalAlignment="Center" Margin="5, 0, 0, 0" Text="20"/>
+
+
+
                         </Grid>
                         <Grid Grid.Row="2">
                             <Grid.ColumnDefinitions>
