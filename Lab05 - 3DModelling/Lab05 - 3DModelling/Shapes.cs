@@ -228,26 +228,26 @@ public class Triangle
         // interpolate (x1, y)
         p = new Point(x1, y);
         if (p.DistanceFromLine(new Point(Points[0].Projected.X, Points[0].Projected.Y), new Point(Points[1].Projected.X, Points[1].Projected.Y)) < threshold)
-            pLeft = InterpolatePoint(p, Points[0], Points[1]);
+            pLeft = InterpolatePoint(p, Points[0], Points[1], _lightAttributes.IsIlluminated);
         else if (p.DistanceFromLine(new Point(Points[0].Projected.X, Points[0].Projected.Y), new Point(Points[2].Projected.X, Points[2].Projected.Y)) < threshold)
-            pLeft = InterpolatePoint(p, Points[0], Points[2]);
+            pLeft = InterpolatePoint(p, Points[0], Points[2], _lightAttributes.IsIlluminated);
         else
-            pLeft = InterpolatePoint(p, Points[1], Points[2]);
+            pLeft = InterpolatePoint(p, Points[1], Points[2], _lightAttributes.IsIlluminated);
 
         // interpolate (x2, y)
         p = new Point(x2, y);
         if (p.DistanceFromLine(new Point(Points[0].Projected.X, Points[0].Projected.Y), new Point(Points[1].Projected.X, Points[1].Projected.Y)) < threshold)
-            pRight = InterpolatePoint(p, Points[0], Points[1]);
+            pRight = InterpolatePoint(p, Points[0], Points[1], _lightAttributes.IsIlluminated);
         else if (p.DistanceFromLine(new Point(Points[0].Projected.X, Points[0].Projected.Y), new Point(Points[2].Projected.X, Points[2].Projected.Y)) < threshold)
-            pRight= InterpolatePoint(p, Points[0], Points[2]);
+            pRight= InterpolatePoint(p, Points[0], Points[2], _lightAttributes.IsIlluminated);
         else
-            pRight = InterpolatePoint(p, Points[1], Points[2]);
+            pRight = InterpolatePoint(p, Points[1], Points[2], _lightAttributes.IsIlluminated);
 
         for (var x = x1; x < x2; x++)
         {
             // interpolate (x, y)
             p = new Point(x, y);
-            var interpolatedPoint = InterpolatePoint(p, pLeft, pRight);
+            var interpolatedPoint = InterpolatePoint(p, pLeft, pRight, _lightAttributes.IsIlluminated);
 
             Color modelColor;
             if (_lightAttributes.IsIlluminated)
@@ -303,7 +303,7 @@ public class Triangle
         };
     }
 
-    private static Point3d InterpolatePoint(Point middleP, Point3d vertex1, Point3d vertex2)
+    private static Point3d InterpolatePoint(Point middleP, Point3d vertex1, Point3d vertex2, bool sceneIsIlluminated)
     {
         var v1 = vertex1;
         var v2 = vertex2;
@@ -311,40 +311,57 @@ public class Triangle
         if (v1.Projected.X > v2.Projected.X || v1.Projected.Y > v2.Projected.Y)
             (v1, v2) = (v2, v1);
 
-        double t = Vector2.Distance(new Vector2((float)v1.Projected.X, (float)v1.Projected.Y), new Vector2((float)middleP.X, (float)middleP.Y)) /
-                   Vector2.Distance(new Vector2((float)v1.Projected.X, (float)v1.Projected.Y), new Vector2((float)v2.Projected.X, (float)v2.Projected.Y));
+        double t = Vector2.Distance(new Vector2((float)v1.Projected.X, (float)v1.Projected.Y),
+                       new Vector2((float)middleP.X, (float)middleP.Y))/
+                   Vector2.Distance(new Vector2((float)v1.Projected.X, (float)v1.Projected.Y),
+                       new Vector2((float)v2.Projected.X, (float)v2.Projected.Y));
 
         var interpolatedProjected = new Point4(
-            (v2.Projected.X - v1.Projected.X) * t + v1.Projected.X, 
-            (v2.Projected.Y - v1.Projected.Y) * t + v1.Projected.Y,
-            (v2.Projected.Z - v1.Projected.Z) * t + v1.Projected.Z, 
+            (v2.Projected.X - v1.Projected.X)*t + v1.Projected.X,
+            (v2.Projected.Y - v1.Projected.Y)*t + v1.Projected.Y,
+            (v2.Projected.Z - v1.Projected.Z)*t + v1.Projected.Z,
             1);
 
         var u = v1.Projected.Z - v2.Projected.Z < 0.01 // compare floats
             ? t
             : ((1d/interpolatedProjected.Z) - (1d/v1.Projected.Z))/((1d/v2.Projected.Z) - (1d/v1.Projected.Z));
 
-        var interpolatedGlobal = new Point4(
-            u * (v2.Global.X - v1.Global.X) + v1.Global.X, 
-            u * (v2.Global.Y - v1.Global.Y) + v1.Global.Y,
-            u * (v2.Global.Z - v1.Global.Z) + v1.Global.Z, 
-            1); // u * (v2.Global.W - v1.Global.W) + v1.Global.W);
+        Point4 interpolatedGlobal, interpolatedNormal;
+        Point interpolatedTextureCoordinates;
 
-        var interpolatedNormal = new Point4(
-            u * (v2.Normal.X - v1.Normal.X) + v1.Normal.X, 
-            u * (v2.Normal.Y - v1.Normal.Y) + v1.Normal.Y,
-            u * (v2.Normal.Z - v1.Normal.Z) + v1.Normal.Z, 
-            0); // u * (v2.Normal.W - v1.Normal.W) + v1.Normal.W);
+        if (sceneIsIlluminated)
+        {
+            interpolatedGlobal = new Point4(
+                u*(v2.Global.X - v1.Global.X) + v1.Global.X,
+                u*(v2.Global.Y - v1.Global.Y) + v1.Global.Y,
+                u*(v2.Global.Z - v1.Global.Z) + v1.Global.Z,
+                1); // u * (v2.Global.W - v1.Global.W) + v1.Global.W);
 
-        var interpolatedTextureCoordinates = new Point(
-            u * (v2.TextureMap.X - v1.TextureMap.X) + v1.TextureMap.X, 
-            u * (v2.TextureMap.Y - v1.TextureMap.Y) + v1.TextureMap.Y);
 
+            interpolatedNormal = new Point4(
+                u*(v2.Normal.X - v1.Normal.X) + v1.Normal.X,
+                u*(v2.Normal.Y - v1.Normal.Y) + v1.Normal.Y,
+                u*(v2.Normal.Z - v1.Normal.Z) + v1.Normal.Z,
+                0); // u * (v2.Normal.W - v1.Normal.W) + v1.Normal.W);
+
+            return new Point3d
+            {
+                Projected = interpolatedProjected,
+                Global = interpolatedGlobal,
+                Normal = interpolatedNormal,
+                TextureMap = interpolatedTextureCoordinates
+            };
+        }
+
+        interpolatedTextureCoordinates = new Point(
+            u*(v2.TextureMap.X - v1.TextureMap.X) + v1.TextureMap.X,
+            u*(v2.TextureMap.Y - v1.TextureMap.Y) + v1.TextureMap.Y);
+        
         return new Point3d
         {
             Projected = interpolatedProjected,
-            Global = interpolatedGlobal,
-            Normal = interpolatedNormal,
+            Global = v1.Global,
+            Normal = v1.Normal,
             TextureMap = interpolatedTextureCoordinates
         };
     }
