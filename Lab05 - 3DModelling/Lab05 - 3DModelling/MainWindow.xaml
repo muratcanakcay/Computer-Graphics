@@ -154,6 +154,7 @@
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="3*"/>
                             <ColumnDefinition Width="7*"/>
+                            <ColumnDefinition Width="2*"/>
                         </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="0"/>
@@ -166,21 +167,27 @@
                         <Label Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" >M</Label>
                         <Slider Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" Name="Mslider" Minimum="3" Maximum="80" Value="15"
                                 ValueChanged="Mslider_ValueChanged"></Slider>
+                        <TextBlock Name="MText" Grid.Row="0" Grid.Column="2" VerticalAlignment="Center" Margin="5, 0, 0, 0" Text="15"/>
                         <Label Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" >N</Label>
                         <Slider Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" Name="Nslider" Minimum="3" Maximum="80" Value="15"
                                 ValueChanged="Nslider_ValueChanged"></Slider>
+                        <TextBlock Name="NText" Grid.Row="1" Grid.Column="2" VerticalAlignment="Center" Margin="5, 0, 0, 0" Text="15"/>
                         <Label Grid.Row="2" Grid.Column="0" VerticalAlignment="Center">Width</Label>
                         <Slider Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" Name="WidthSlider" Minimum="10" Maximum="150" Value="50"
                                 ValueChanged="WidthSlider_ValueChanged"></Slider>
+                        <TextBlock Name="WidthText" Grid.Row="2" Grid.Column="2" VerticalAlignment="Center" Margin="5, 0, 0, 0" Text="50"/>
                         <Label Grid.Row="3" Grid.Column="0" VerticalAlignment="Center">Height</Label>
                         <Slider Grid.Row="3" Grid.Column="1" VerticalAlignment="Center" Name="HeightSlider" Minimum="10" Maximum="150" Value="50"
                                 ValueChanged="HeightSlider_ValueChanged"></Slider>
+                        <TextBlock Name="HeightText" Grid.Row="3" Grid.Column="2" VerticalAlignment="Center" Margin="5, 0, 0, 0" Text="50"/>
                         <Label Grid.Row="4" Grid.Column="0" VerticalAlignment="Center">Depth</Label>
                         <Slider Grid.Row="4" Grid.Column="1" VerticalAlignment="Center" Name="DepthSlider" Minimum="10" Maximum="150" Value="50"
                                 ValueChanged="DepthSlider_ValueChanged"></Slider>
+                        <TextBlock Name="DepthText" Grid.Row="4" Grid.Column="2" VerticalAlignment="Center" Margin="5, 0, 0, 0" Text="50"/>
                         <Label Grid.Row="5" Grid.Column="0" VerticalAlignment="Center">Radius</Label>
                         <Slider Grid.Row="5" Grid.Column="1" VerticalAlignment="Center" Name="RadiusSlider" Minimum="10" Maximum="60" Value="30"
                                 ValueChanged="RadiusSlider_ValueChanged"></Slider>
+                        <TextBlock Name="RadiusText" Grid.Row="5" Grid.Column="2" VerticalAlignment="Center" Margin="5, 0, 0, 0" Text="30"/>
                     </Grid>
                 </GroupBox>
 
@@ -192,6 +199,7 @@
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="3*"/>
                             <ColumnDefinition Width="7*"/>
+                            <ColumnDefinition Width="2*"/>
                         </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="26"/>
@@ -218,6 +226,7 @@
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="3*"/>
                             <ColumnDefinition Width="7*"/>
+                            <ColumnDefinition Width="2*"/>
                         </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="26"/>
@@ -240,6 +249,7 @@
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="3*"/>
                             <ColumnDefinition Width="7*"/>
+                            <ColumnDefinition Width="2*"/>
                         </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="26"/>

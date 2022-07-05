@@ -295,36 +295,42 @@ namespace Lab05___3DModelling
         private void Mslider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             _model.M = (int)Mslider.Value;
+            if (MText is not null) MText.Text = ((int)Mslider.Value).ToString();
             RefreshModel();
             RefreshCanvas();
         }
         private void Nslider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             _model.N = (int)Nslider.Value;
+            if (NText is not null) NText.Text = ((int)Nslider.Value).ToString();
             RefreshModel();
             RefreshCanvas();
         }
         private void WidthSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             _model.Width = (int)WidthSlider.Value;
+            if (WidthText is not null) WidthText.Text = ((int)WidthSlider.Value).ToString();
             RefreshModel();
             RefreshCanvas();
         }
         private void HeightSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             _model.Height = (int)HeightSlider.Value;
+            if (HeightText is not null) HeightText.Text = ((int)HeightSlider.Value).ToString();
             RefreshModel();
             RefreshCanvas();
         }
         private void DepthSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             _model.Depth = -(int)DepthSlider.Value;
+            if (DepthText is not null) DepthText.Text = ((int)DepthSlider.Value).ToString();
             RefreshModel();
             RefreshCanvas();
         }
         private void RadiusSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             _model.Radius = (int)RadiusSlider.Value;
+            if (RadiusText is not null) RadiusText.Text = ((int)RadiusSlider.Value).ToString();
             RefreshModel();
             RefreshCanvas();
         }
