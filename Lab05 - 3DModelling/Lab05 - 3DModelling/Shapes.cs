@@ -184,15 +184,17 @@ public class Triangle
 
         for (var i = 0; i < 3; i++)
         {
-            var x1 = Points[i].Projected.X;
-            var y1 = Points[i].Projected.Y;
-            var x2 = (i == 2 ? Points[0].Projected.X : Points[i+1].Projected.X);
-            var y2 = (i == 2 ? Points[0].Projected.Y : Points[i+1].Projected.Y);
+            var x1 = Math.Round(Points[i].Projected.X);
+            var y1 = Math.Round(Points[i].Projected.Y);
+            var x2 = Math.Round((i == 2 ? Points[0].Projected.X : Points[i+1].Projected.X));
+            var y2 = Math.Round((i == 2 ? Points[0].Projected.Y : Points[i+1].Projected.Y));
             double dx = x2 - x1;
             double dy = y2 - y1;
 
-            if (Math.Abs(dy) < threshold)
-                continue; // horizontal edge
+            //if (Math.Abs(dy) < threshold)
+            //    continue; // horizontal edge
+
+            if (dy == 0) continue;
 
             var xMin = y1 < y2 ? x1 : x2;
             var yMin = (int)Math.Round(Math.Min(y1, y2));
@@ -254,9 +256,7 @@ public class Triangle
                 modelColor = CalculateIllumination(interpolatedPoint, _lightAttributes);
             else
                 modelColor = _fillImageWbm.GetPixelColor((int)Math.Round(interpolatedPoint.TextureMap.X * _fillImageWbm.PixelWidth), (int)Math.Round((1-interpolatedPoint.TextureMap.Y) * _fillImageWbm.PixelHeight));
-                
             
-
             drawingData.Add(new Pixel(x, y, modelColor));
         }
     }
@@ -264,24 +264,37 @@ public class Triangle
     private static Color CalculateIllumination(Point3d point, Phong lightAttributes)
     {
         var p = new Vector3((float)point.Global.X, (float)point.Global.Y, (float)point.Global.Z);
-        var n = new Vector3((float)point.Normal.X, (float)point.Normal.Y, (float)point.Normal.Z);
+        var normal = new Vector3((float)point.Normal.X, (float)point.Normal.Y, (float)point.Normal.Z);
         var camera = lightAttributes.Camera;
         var light = lightAttributes.Light;
 
-        var Ia = lightAttributes.Ia;
+        var lightIntensity = lightAttributes.LightIntensity;
         var ka = lightAttributes.ka;
         var ks = lightAttributes.ks;
         var kd = lightAttributes.kd;
+        var n = lightAttributes.n;
 
-        var v = Vector3.Divide(Vector3.Subtract(camera, p), Vector3.Subtract(camera, p).Length());
-        var li = Vector3.Divide(Vector3.Subtract(light, p), Vector3.Subtract(light, p).Length());
-        var ri = Vector3.Subtract(Vector3.Multiply(2 * (Vector3.Dot(n, li)), n), li);
+        var v = Vector3.Divide(Vector3.Subtract( p, camera), Vector3.Subtract(p, camera).Length());
+        var l = Vector3.Divide(Vector3.Subtract(light, p), Vector3.Subtract(light, p).Length());
+        
+        var r = Vector3.Subtract(Vector3.Multiply(2*(Vector3.Dot(normal, l)), normal), l);
+        //var r = Vector3.Divide(Vector3.Add(l, v), 2);
 
-        var I = new Vector3(Ia * ka, Ia * ka, Ia * ka);
-        I.X += (float)(kd * Ia * Math.Max(Vector3.Dot(n, li), 0) + ks * Ia * Math.Pow(Math.Max(Vector3.Dot(v, ri), 0), 20));
-        I.Y += (float)(kd * Ia * Math.Max(Vector3.Dot(n, li), 0) + ks * Ia * Math.Pow(Math.Max(Vector3.Dot(v, ri), 0), 20));
-        I.Z += (float)(kd * Ia * Math.Max(Vector3.Dot(n, li), 0) + ks * Ia * Math.Pow(Math.Max(Vector3.Dot(v, ri), 0), 20));
-            
+        var I = new Vector3 (lightIntensity*ka, lightIntensity*ka, lightIntensity*ka);
+
+        I.X += kd*lightIntensity*Math.Max(Vector3.Dot(normal, l), 0);
+        I.Y += kd*lightIntensity*Math.Max(Vector3.Dot(normal, l), 0);
+        I.Z += kd*lightIntensity*Math.Max(Vector3.Dot(normal, l), 0);
+
+
+        if (true)//(Vector3.Dot(normal, l) > 0)
+        {
+            I.X += ks*lightIntensity*(float)Math.Pow(Math.Max(Vector3.Dot(v, r), 0), n);
+            I.Y += ks*lightIntensity*(float)Math.Pow(Math.Max(Vector3.Dot(v, r), 0), n);
+            I.Z += ks*lightIntensity*(float)Math.Pow(Math.Max(Vector3.Dot(v, r), 0), n);
+        }
+    
+
         var result = new Color()
         {
             A = lightAttributes.ModelColor.A,
@@ -343,6 +356,11 @@ public class Triangle
                 u*(v2.Normal.Y - v1.Normal.Y) + v1.Normal.Y,
                 u*(v2.Normal.Z - v1.Normal.Z) + v1.Normal.Z,
                 0); // u * (v2.Normal.W - v1.Normal.W) + v1.Normal.W);
+
+            var length = Math.Sqrt((interpolatedNormal.X * interpolatedNormal.X) + (interpolatedNormal.Y * interpolatedNormal.Y) + (interpolatedNormal.Z * interpolatedNormal.Z));
+            interpolatedNormal.X /= length;
+            interpolatedNormal.Y /= length;
+            interpolatedNormal.Z /= length;
 
             return new Point3d
             {

@@ -209,12 +209,15 @@
                         <Label Grid.Row="0" Grid.Column="0" VerticalAlignment="Center">Angle X</Label>
                         <Slider Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" Name="AngleXSlider" Minimum="-360" Maximum="360" Value="0" 
                                 ValueChanged="AngleXSlider_ValueChanged"/>
+                        <TextBlock Name="AngleXText" Grid.Row="0" Grid.Column="2" VerticalAlignment="Center" Margin="5, 0, 0, 0" Text="0"/>
                         <Label Grid.Row="1" Grid.Column="0" VerticalAlignment="Center">Angle Y</Label>
                         <Slider Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" Name="AngleYSlider" Minimum="-360" Maximum="360" Value="0"
                                 ValueChanged="AngleYSlider_ValueChanged"/>
+                        <TextBlock Name="AngleYText" Grid.Row="1" Grid.Column="2" VerticalAlignment="Center" Margin="5, 0, 0, 0" Text="0"/>
                         <Label Grid.Row="2" Grid.Column="0" VerticalAlignment="Center">Angle Z</Label>
                         <Slider Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" Name="AngleZSlider" Minimum="-360" Maximum="360" Value="0"
                                 ValueChanged="AngleZSlider_ValueChanged"/>
+                        <TextBlock Name="AngleZText" Grid.Row="2" Grid.Column="2" VerticalAlignment="Center" Margin="5, 0, 0, 0" Text="0"/>
                     </Grid>
                 </GroupBox>
 
@@ -235,9 +238,11 @@
                         <Label Grid.Row="0" Grid.Column="0" VerticalAlignment="Center">Width / 2</Label>
                         <Slider Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" Name="SxSlider" Minimum="0" Maximum="1500" Value="750"
                                 ValueChanged="SxSlider_ValueChanged"/>
+                        <TextBlock Name="SxText" Grid.Row="0" Grid.Column="2" VerticalAlignment="Center" Margin="5, 0, 0, 0" Text="750"/>
                         <Label Grid.Row="1" Grid.Column="0" VerticalAlignment="Center">Height / 2</Label>
                         <Slider Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" Name="SySlider" Minimum="0" Maximum="900" Value="450"
                                 ValueChanged="SySlider_ValueChanged"/>
+                        <TextBlock Name="SyText" Grid.Row="1" Grid.Column="2" VerticalAlignment="Center" Margin="5, 0, 0, 0" Text="450"/>
                     </Grid>
                 </GroupBox>
                 
@@ -259,12 +264,15 @@
                         <Label Grid.Row="0" Grid.Column="0" VerticalAlignment="Center">Camera X</Label>
                         <Slider Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" Name="CamXslider" Minimum="-500" Maximum="500" Value="0"
                                 ValueChanged="CamXslider_ValueChanged"/>
+                        <TextBlock Name="CamXText" Grid.Row="0" Grid.Column="2" VerticalAlignment="Center" Margin="5, 0, 0, 0" Text="0"/>
                         <Label Grid.Row="1" Grid.Column="0" VerticalAlignment="Center">Camera Y</Label>
                         <Slider Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" Name="CamYslider" Minimum="-600" Maximum="600" Value="0"
                                 ValueChanged="CamYslider_ValueChanged"/>
+                        <TextBlock Name="CamYText" Grid.Row="1" Grid.Column="2" VerticalAlignment="Center" Margin="5, 0, 0, 0" Text="0"/>
                         <Label Grid.Row="2" Grid.Column="0" VerticalAlignment="Center">Camera Z</Label>
                         <Slider Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" Name="CamZslider" Minimum="100" Maximum="800" Value="400" 
                                 ValueChanged="CamZslider_ValueChanged"/>
+                        <TextBlock Name="CamZText" Grid.Row="2" Grid.Column="2" VerticalAlignment="Center" Margin="5, 0, 0, 0" Text="400"/>
                     </Grid>
                 </GroupBox>
 
@@ -378,8 +386,11 @@
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="3*"/>
                                 <ColumnDefinition Width="7*"/>
+                                <ColumnDefinition Width="2*"/>
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
+                                <RowDefinition Height="26"/>
+                                <RowDefinition Height="26"/>
                                 <RowDefinition Height="26"/>
                                 <RowDefinition Height="26"/>
                                 <RowDefinition Height="26"/>
@@ -387,12 +398,23 @@
                             <Label Grid.Row="0" Grid.Column="0" VerticalAlignment="Center">Light X</Label>
                             <Slider Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" Name="LightXslider" Minimum="-100" Maximum="100" Value="0"
                                     ValueChanged="LightXslider_ValueChanged"/>
+                            <TextBlock Name="LightXText" Grid.Row="0" Grid.Column="2" VerticalAlignment="Center" Margin="5, 0, 0, 0" Text="0"/>
                             <Label Grid.Row="1" Grid.Column="0" VerticalAlignment="Center">Light Y</Label>
                             <Slider Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" Name="LightYslider" Minimum="-200" Maximum="200" Value="25"
                                     ValueChanged="LightYslider_ValueChanged"/>
+                            <TextBlock Name="LightYText" Grid.Row="1" Grid.Column="2" VerticalAlignment="Center" Margin="5, 0, 0, 0" Text="25"/>
                             <Label Grid.Row="2" Grid.Column="0" VerticalAlignment="Center">Light Z</Label>
-                            <Slider Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" Name="LightZslider" Minimum="-50" Maximum="50" Value="0" 
+                            <Slider Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" Name="LightZslider" Minimum="-200" Maximum="200" Value="0" 
                                     ValueChanged="LightZslider_ValueChanged"/>
+                            <TextBlock Name="LightZText" Grid.Row="2" Grid.Column="2" VerticalAlignment="Center" Margin="5, 0, 0, 0" Text="0"/>
+                            <Label Grid.Row="3" Grid.Column="0" VerticalAlignment="Center">kD</Label>
+                            <Slider Grid.Row="3" Grid.Column="1" VerticalAlignment="Center" Name="kDslider" Minimum="0.25" Maximum="5" Value="0.25" 
+                                    ValueChanged="kDslider_ValueChanged" IsSnapToTickEnabled="True" TickFrequency="0.25"/>
+                            <TextBlock Name="kDText" Grid.Row="3" Grid.Column="2" VerticalAlignment="Center" Margin="5, 0, 0, 0" Text="0.25"/>
+                            <Label Grid.Row="4" Grid.Column="0" VerticalAlignment="Center">kS</Label>
+                            <Slider Grid.Row="4" Grid.Column="1" VerticalAlignment="Center" Name="kSslider" Minimum="0.1" Maximum="2" Value="0.75" 
+                                    ValueChanged="kSslider_ValueChanged" IsSnapToTickEnabled="True" TickFrequency="0.01"/>
+                            <TextBlock Name="kSText" Grid.Row="4" Grid.Column="2" VerticalAlignment="Center" Margin="5, 0, 0, 0" Text="0.75"/>
                         </Grid>
                         <Grid Grid.Row="2">
                             <Grid.ColumnDefinitions>

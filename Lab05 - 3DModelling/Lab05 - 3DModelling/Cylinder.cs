@@ -46,7 +46,7 @@ public class Cylinder : Model
         }
         
         //Sides
-        for (var i = 1; i <= N; i++) // t(n+1) - t(2n)
+        for (var i = 0; i < N; i++) // t(n+1) - t(2n)
         {
             var x = Radius * Math.Cos((2 * Math.PI * i) / N);
             var z = Radius * Math.Sin((2 * Math.PI * i) / N);
@@ -55,11 +55,11 @@ public class Cylinder : Model
             {
                 Global  = new Point4(x, Height, z, 1),
                 Normal = new Point4(x / Radius, 0, z / Radius, 0),
-                TextureMap = new Point((i-1d)/N, 1)
+                TextureMap = new Point(((double)i)/N, 1)
             });
         }
         
-        for (var i = 1; i <= N; i++) // t(2n+1) - t(3n)
+        for (var i = 0; i < N; i++) // t(2n+1) - t(3n)
         {
             var x = Radius * Math.Cos((2 * Math.PI * i) / N);
             var z = Radius * Math.Sin((2 * Math.PI * i) / N);
@@ -68,12 +68,12 @@ public class Cylinder : Model
             {
                 Global  = new Point4(x, 0, z, 1),
                 Normal = new Point4(x / Radius, 0, z / Radius, 0),
-                TextureMap = new Point((i-1)/(double)N, 0.5)
+                TextureMap = new Point((i)/(double)N, 0.5)
             });
         }
         
         //Bottom base
-        for (var i = 0; i < N; i++) // t(3n +1) - t(4n)
+        for (var i = 1; i <= N; i++) // t(3n +1) - t(4n)
         {
             var x = Radius * Math.Cos((2 * Math.PI * i) / N);
             var z = Radius * Math.Sin((2 * Math.PI * i) / N);

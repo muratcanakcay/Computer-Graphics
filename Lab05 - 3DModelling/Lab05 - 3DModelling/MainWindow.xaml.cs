@@ -24,14 +24,17 @@ namespace Lab05___3DModelling
         private int _cPosX = 0;
         private int _cPosY = 0;
         private int _cPosZ = 400;
-        private double lightX = 0;
-        private double lightY = 25;
-        private double lightZ = 0;
+        private double _lightX = 0;
+        private double _lightY = 25;
+        private double _lightZ = 0;
+        private float _kD = 0.25f;
+        private float _kS = 0.75f;
         private bool _isLightOn = false;
         private Vector3 Light;
         private Color _modelColor = Colors.Gray;
         private IMeshable _model = new Cylinder(15, 50, 20);
-        
+        private Matrix4x4 inv;
+
 
         public MainWindow()
         {
@@ -73,7 +76,7 @@ namespace Lab05___3DModelling
                 0, _sx / (float)Math.Tan(-theta), _sy, 0,
                 0, 0, 0, 1,
                 0, 0, 1, 0);
-            
+
             var cameraPos = new Vector3(_cPosX, _cPosY, _cPosZ);
             var cameraTarget = new Vector3(0, 0, 0);
             var cameraUp = new Vector3(0, 1, 0);
@@ -90,6 +93,8 @@ namespace Lab05___3DModelling
             
             // final transformation matrix    
             Matrix4x4 M = Matrix4x4.Multiply(P, Matrix4x4.Multiply(C, Matrix4x4.Multiply(Rx, Matrix4x4.Multiply(Ry, Rz))));
+
+            Matrix4x4.Invert(Matrix4x4.Multiply(C, Matrix4x4.Multiply(Rx, Matrix4x4.Multiply(Ry, Rz))), out inv);
 
             foreach (var v in vertices)
             {
@@ -127,7 +132,7 @@ namespace Lab05___3DModelling
 
         private Phong CalculateLightAttributes()
         {
-            return new Phong ( _isLightOn, new Vector3(_cPosX, _cPosY, _cPosZ), Light, _modelColor, 2f );
+            return new Phong ( _isLightOn, Vector3.Transform(new Vector3(0, 0, 0), inv),  Light, _modelColor, 1f, _kD, _kS );
         }
         private void RefreshCanvas()
         {
@@ -156,6 +161,8 @@ namespace Lab05___3DModelling
             CamZslider.Value = 400;
             SxSlider.Value = 750;
             SySlider.Value = 450;
+            kDslider.Value = 0.25f;
+            kSslider.Value = 0.27f;
         }
 
 
@@ -339,19 +346,22 @@ namespace Lab05___3DModelling
         private void AngleXSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             _angleX = AngleXSlider.Value;
-            RefreshModel();
+            if (AngleXText is not null) AngleXText.Text = ((int)AngleXSlider.Value).ToString();
+            //RefreshModel();
             RefreshCanvas();
         }
         private void AngleYSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             _angleY = AngleYSlider.Value;
-            RefreshModel();
+            if (AngleYText is not null) AngleYText.Text = ((int)AngleYSlider.Value).ToString();
+            //RefreshModel();
             RefreshCanvas();
         }
         private void AngleZSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             _angleZ = AngleZSlider.Value;
-            RefreshModel();
+            if (AngleZText is not null) AngleZText.Text = ((int)AngleZSlider.Value).ToString();
+            //RefreshModel();
             RefreshCanvas();
         }
 
@@ -359,13 +369,15 @@ namespace Lab05___3DModelling
         private void SxSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             _sx = (int)SxSlider.Value;
-            RefreshModel();
+            if (SxText is not null) SxText.Text = ((int)SxSlider.Value).ToString();
+            //RefreshModel();
             RefreshCanvas();
         }
         private void SySlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             _sy = (int)SySlider.Value;
-            RefreshModel();
+            if (SyText is not null) SyText.Text = ((int)SySlider.Value).ToString();
+            //RefreshModel();
             RefreshCanvas();
         }
 
@@ -373,44 +385,67 @@ namespace Lab05___3DModelling
         private void CamXslider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             _cPosX = (int)CamXslider.Value;
-            RefreshModel();
+            if (CamXText is not null) CamXText.Text = ((int)CamXslider.Value).ToString();
+            //RefreshModel();
             RefreshCanvas();
         }
         private void CamYslider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             _cPosY = (int)CamYslider.Value;
-            RefreshModel();
+            if (CamYText is not null) CamYText.Text = ((int)CamYslider.Value).ToString();
+            //RefreshModel();
             RefreshCanvas();
         }
         private void CamZslider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             _cPosZ = (int)CamZslider.Value;
-            RefreshModel();
+            if (CamZText is not null) CamZText.Text = ((int)CamZslider.Value).ToString();
+            //RefreshModel();
             RefreshCanvas();
         }
 
         // Light
         private void LightXslider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            lightX = -LightXslider.Value;
-            Light = new Vector3((float)lightX, (float)lightY, (float)lightZ);
-            RefreshModel();
+            _lightX = -LightXslider.Value;
+            Light = new Vector3((float)_lightX, (float)_lightY, (float)_lightZ);
+            if (LightXText is not null) LightXText.Text = ((int)LightXslider.Value).ToString();
+            //RefreshModel();
             RefreshCanvas();
         }
 
         private void LightYslider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            lightY = LightYslider.Value;
-            Light = new Vector3((float)lightX, (float)lightY, (float)lightZ);
-            RefreshModel();
+            _lightY = LightYslider.Value;
+            Light = new Vector3((float)_lightX, (float)_lightY, (float)_lightZ);
+            if (LightYText is not null) LightYText.Text = ((int)LightYslider.Value).ToString();
+            //RefreshModel();
             RefreshCanvas();
         }
 
         private void LightZslider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            lightZ = LightZslider.Value;
-            Light = new Vector3((float)lightX, (float)lightY, (float)lightZ);
-            RefreshModel();
+            _lightZ = LightZslider.Value;
+            Light = new Vector3((float)_lightX, (float)_lightY, (float)_lightZ);
+            if (LightZText is not null) LightZText.Text = ((int)LightZslider.Value).ToString();
+            //RefreshModel();
+            RefreshCanvas();
+        }
+
+        private void kDslider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            
+            _kD = (float)kDslider.Value;
+            if (kDText is not null) kDText.Text = ((float)kDslider.Value).ToString();
+            //RefreshModel();
+            RefreshCanvas();
+        }
+
+        private void kSslider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            _kS = (float)kSslider.Value;
+            if (kSText is not null) kSText.Text = ((float)kSslider.Value).ToString();
+            //RefreshModel();
             RefreshCanvas();
         }
     }

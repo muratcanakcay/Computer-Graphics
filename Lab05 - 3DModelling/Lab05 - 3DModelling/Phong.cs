@@ -9,16 +9,19 @@ public struct Phong
     public Vector3 Camera { get; set; }
     public Vector3 Light { get; set; }
     public Color ModelColor { get; set; }
-    public float Ia { get; set; }
-    public float ka { get; set; } = 0.5f;
-    public float ks { get; set; } = 0.75f;
-    public float kd { get; set; } = 0.25f;
-    public Phong(bool isIlluminated, Vector3 camera, Vector3 light, Color modelColor, float ia = 1f)
+    public float LightIntensity { get; set; }
+    public float ka { get; set; } = 0.1f;
+    public float ks { get; set; }
+    public float kd { get; set; }
+    public int n { get; set; } = 20;
+    public Phong(bool isIlluminated, Vector3 camera, Vector3 light, Color modelColor, float lightIntensity = 1f, float kD = 0.25f, float kS = 0.75f)
     {
         IsIlluminated = isIlluminated;
         Camera = camera;
         Light = light;
         ModelColor= modelColor;
-        Ia = ia;
+        LightIntensity = lightIntensity;
+        kd = kD;
+        ks = kS;
     }    
 }
