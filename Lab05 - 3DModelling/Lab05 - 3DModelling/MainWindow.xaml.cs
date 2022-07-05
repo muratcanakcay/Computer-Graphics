@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -125,8 +126,14 @@ namespace Lab05___3DModelling
 
         private Phong CalculateLightAttributes()
         {
-            return new Phong ( _isLightOn, new Vector3(_cPosX, _cPosY, _cPosZ),  _lightPos, _modelColor, 1f, _kD, _kS );
+            //return new Phong ( _isLightOn, new Vector3(_cPosX, _cPosY, _cPosZ),  _lightPos, _modelColor, 1f, _kD, _kS );
             //return new Phong ( _isLightOn, Vector3.Transform(new Vector3(0, 0, 0), _invTransform),  _lightPos, _modelColor, 1f, _kD, _kS );
+            
+            var transformed = Vector3.Transform(new Vector3(0, 0, 0), _invTransform);
+            Debug.WriteLine($"{new Vector3(_cPosX, _cPosY, _cPosZ)} ===== {transformed}");
+            //return new Phong ( _isLightOn, transformed,  _lightPos, _modelColor, 1f, _kD, _kS );
+            return new Phong ( _isLightOn, new Vector3(_cPosX, _cPosY, _cPosZ),  _lightPos, _modelColor, 1f, _kD, _kS );
+
         }
         private void RefreshCanvas()
         {
