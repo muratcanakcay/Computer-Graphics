@@ -21,26 +21,26 @@ public class Cuboid : Model
         // Front Face
         Vertices.Add(new Point3d 
         {
-            Global = new Point4(0, 0, Depth, 1d),
-            Normal = new Point4(0, 0, 1, 0),
+            Global = new Point4(0, 0, -Depth, 1d),
+            Normal = new Point4(0, 0, -1, 0),
             TextureMap = new Point(0, 0.5)
         });
         Vertices.Add(new Point3d
         {
-            Global = new Point4(Width, 0, Depth, 1d),
-            Normal = new Point4(0, 0, 1, 0),
+            Global = new Point4(Width, 0, -Depth, 1d),
+            Normal = new Point4(0, 0, -1, 0),
             TextureMap = new Point(1/3d, 0.5)
         });
         Vertices.Add(new Point3d 
         {
-            Global = new Point4(Width, Height, Depth, 1d),
-            Normal = new Point4(0, 0, 1, 0),
+            Global = new Point4(Width, Height, -Depth, 1d),
+            Normal = new Point4(0, 0, -1, 0),
             TextureMap = new Point(1/3d, 1d)
         });
         Vertices.Add(new Point3d 
         {
-            Global = new Point4(0, Height, Depth, 1d),
-            Normal = new Point4(0, 0, 1, 0),
+            Global = new Point4(0, Height, -Depth, 1d),
+            Normal = new Point4(0, 0, -1, 0),
             TextureMap = new Point(0, 1d)
         });
 
@@ -48,25 +48,25 @@ public class Cuboid : Model
         Vertices.Add(new Point3d 
         {
             Global = new Point4(Width, 0, 0, 1d),
-            Normal = new Point4(0, 0, -1, 0),
+            Normal = new Point4(0, 0, 1, 0),
             TextureMap = new Point(0, 0)
         });
         Vertices.Add(new Point3d 
         {
             Global = new Point4(0, 0, 0, 1d),
-            Normal = new Point4(0, 0, -1, 0),
+            Normal = new Point4(0, 0, 1, 0),
             TextureMap = new Point(1/3d, 0)
         });
         Vertices.Add(new Point3d 
         {
             Global = new Point4(0, Height, 0, 1d),
-            Normal = new Point4(0, 0, -1, 0),
+            Normal = new Point4(0, 0, 1, 0),
             TextureMap = new Point(1/3d, 0.5)
         });
         Vertices.Add(new Point3d 
         {
             Global = new Point4(Width, Height, 0, 1d),
-            Normal = new Point4(0, 0, -1, 0),
+            Normal = new Point4(0, 0, 1, 0),
             TextureMap = new Point(0, 0.5)
         });
         
@@ -75,7 +75,7 @@ public class Cuboid : Model
         // Right Face
         Vertices.Add(new Point3d
         {
-            Global = new Point4(Width, 0, Depth, 1d),
+            Global = new Point4(Width, 0, -Depth, 1d),
             Normal = new Point4(1, 0, 0, 0),
             TextureMap = new Point(2/3d, 0.5)
         });
@@ -93,7 +93,7 @@ public class Cuboid : Model
         });
         Vertices.Add(new Point3d
         {
-            Global = new Point4(Width, Height, Depth, 1d),
+            Global = new Point4(Width, Height, -Depth, 1d),
             Normal = new Point4(1, 0, 0, 0),
             TextureMap = new Point(2/3d, 1d)
         });
@@ -108,13 +108,13 @@ public class Cuboid : Model
         });
         Vertices.Add(new Point3d 
         {
-            Global = new Point4(0, 0, Depth, 1d),
+            Global = new Point4(0, 0, -Depth, 1d),
             Normal = new Point4(-1, 0, 0, 0),
             TextureMap = new Point(1d, 0)
         });
         Vertices.Add(new Point3d 
         {
-            Global = new Point4(0, Height, Depth, 1d),
+            Global = new Point4(0, Height, -Depth, 1d),
             Normal = new Point4(-1, 0, 0, 0),
             TextureMap = new Point(1d, 0.5)
         });
@@ -130,13 +130,13 @@ public class Cuboid : Model
 
         Vertices.Add(new Point3d 
         {
-            Global = new Point4(0, Height, Depth, 1d),
+            Global = new Point4(0, Height, -Depth, 1d),
             Normal = new Point4(0, 1, 0, 0),
             TextureMap = new Point(1/3d, 0.5)
         });
         Vertices.Add(new Point3d 
         {
-            Global = new Point4(Width, Height, Depth, 1d),
+            Global = new Point4(Width, Height, -Depth, 1d),
             Normal = new Point4(0, 1, 0, 0),
             TextureMap = new Point(2/3d, 0.5)
         });
@@ -168,13 +168,13 @@ public class Cuboid : Model
         });
         Vertices.Add(new Point3d 
         {
-            Global = new Point4(Width, 0, Depth, 1d),
+            Global = new Point4(Width, 0, -Depth, 1d),
             Normal = new Point4(0, -1, 0, 0),
             TextureMap = new Point(2/3d, 0.5)
         });
         Vertices.Add(new Point3d 
         {
-            Global = new Point4(0, 0, Depth, 1d),
+            Global = new Point4(0, 0, -Depth, 1d),
             Normal = new Point4(0, -1, 0, 0),
             TextureMap = new Point(1/3d, 0.5)
         });

@@ -180,19 +180,15 @@ public class Triangle
     private SortedDictionary<int, List<EdgeData>> CreateEdgeTable()
     {
         SortedDictionary<int, List<EdgeData>> et = new();
-        const double threshold = 0.9;
-
+        
         for (var i = 0; i < 3; i++)
         {
             var x1 = Math.Round(Points[i].Projected.X);
             var y1 = Math.Round(Points[i].Projected.Y);
             var x2 = Math.Round((i == 2 ? Points[0].Projected.X : Points[i+1].Projected.X));
             var y2 = Math.Round((i == 2 ? Points[0].Projected.Y : Points[i+1].Projected.Y));
-            double dx = x2 - x1;
-            double dy = y2 - y1;
-
-            //if (Math.Abs(dy) < threshold)
-            //    continue; // horizontal edge
+            var dx = x2 - x1;
+            var dy = y2 - y1;
 
             if (dy == 0) continue;
 

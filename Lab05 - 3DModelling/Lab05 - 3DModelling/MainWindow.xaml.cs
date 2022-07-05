@@ -24,15 +24,15 @@ namespace Lab05___3DModelling
         private int _cPosX = 0;
         private int _cPosY = 0;
         private int _cPosZ = 400;
-        private double _lightX = 0;
-        private double _lightY = 25;
-        private double _lightZ = -200;
-        private float _kD = 0.25f;
-        private float _kS = 0.75f;
+        private double _lightX = 33;
+        private double _lightY = 33;
+        private double _lightZ = -80;
+        private float _kD = 0.65f;
+        private float _kS = 0.85f;
         private bool _isLightOn = false;
         private Vector3 _lightPos;
         private Matrix4x4 _invTransform;
-        private Color _modelColor = Colors.Gray;
+        private Color _modelColor = Colors.DarkGreen;
         private IMeshable _model = new Cylinder(15, 50, 20);
 
         public MainWindow()
@@ -125,7 +125,8 @@ namespace Lab05___3DModelling
 
         private Phong CalculateLightAttributes()
         {
-            return new Phong ( _isLightOn, Vector3.Transform(new Vector3(0, 0, 0), _invTransform),  _lightPos, _modelColor, 1f, _kD, _kS );
+            return new Phong ( _isLightOn, new Vector3(_cPosX, _cPosY, _cPosZ),  _lightPos, _modelColor, 1f, _kD, _kS );
+            //return new Phong ( _isLightOn, Vector3.Transform(new Vector3(0, 0, 0), _invTransform),  _lightPos, _modelColor, 1f, _kD, _kS );
         }
         private void RefreshCanvas()
         {
@@ -152,11 +153,11 @@ namespace Lab05___3DModelling
             CamXslider.Value = 0;
             CamYslider.Value = 0;
             CamZslider.Value = 400;
-            kDslider.Value = 0.25f;
-            kSslider.Value = 0.27f;
-            LightXslider.Value = 0;
-            LightYslider.Value = 25;
-            LightZslider.Value = -200;
+            kDslider.Value = 0.65f;
+            kSslider.Value = 0.85f;
+            LightXslider.Value = 33;
+            LightYslider.Value = 33;
+            LightZslider.Value = -80;
         }
 
 
@@ -213,7 +214,7 @@ namespace Lab05___3DModelling
             ModelProperties.RowDefinitions[3].Height = new GridLength(26);
             ModelProperties.RowDefinitions[4].Height = new GridLength(26);
             ModelProperties.RowDefinitions[5].Height = new GridLength(0);
-            _model = new Cuboid(50, 50, -50);
+            _model = new Cuboid(50, 50, 50);
             HeightSlider.Value = 50;
             DepthSlider.Value = 50;
             WidthSlider.Value = 50;
@@ -237,6 +238,7 @@ namespace Lab05___3DModelling
                     colorDialog.Color.B);
                 
                 ModelColorButton.Fill = new SolidColorBrush(modelColor);
+                ModelColorButton.Stroke = new SolidColorBrush(modelColor);
                 _modelColor = modelColor;
             }
             
@@ -323,7 +325,7 @@ namespace Lab05___3DModelling
         }
         private void DepthSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            _model.Depth = -(int)DepthSlider.Value;
+            _model.Depth = (int)DepthSlider.Value;
             if (DepthText is not null) DepthText.Text = ((int)DepthSlider.Value).ToString();
             RefreshModel();
             RefreshCanvas();

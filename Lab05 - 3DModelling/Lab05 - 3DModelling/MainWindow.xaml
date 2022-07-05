@@ -351,8 +351,8 @@
                                 Name="ModelColorButton"
                                 IsEnabled="true"
                                 ToolTip="Select Model Color"
-                                Fill="Gray"
-                                Stroke="Gray"
+                                Fill="DarkGreen"
+                                Stroke="DarkGreen"
                                 MouseLeftButtonUp="SelectModelColorButton_OnClick"
                             />
 
@@ -371,25 +371,25 @@
                                 <RowDefinition Height="26"/>
                             </Grid.RowDefinitions>
                             <Label Grid.Row="0" Grid.Column="0" VerticalAlignment="Center">Light X</Label>
-                            <Slider Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" Name="LightXslider" Minimum="-100" Maximum="100" Value="0"
-                                    ValueChanged="LightXslider_ValueChanged"/>
-                            <TextBlock Name="LightXText" Grid.Row="0" Grid.Column="2" VerticalAlignment="Center" Margin="5, 0, 0, 0" Text="0"/>
+                            <Slider Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" Name="LightXslider" Minimum="-200" Maximum="200" Value="33"
+                                    ValueChanged="LightXslider_ValueChanged" IsSnapToTickEnabled="True" TickFrequency="1"/>
+                            <TextBlock Name="LightXText" Grid.Row="0" Grid.Column="2" VerticalAlignment="Center" Margin="5, 0, 0, 0" Text="33"/>
                             <Label Grid.Row="1" Grid.Column="0" VerticalAlignment="Center">Light Y</Label>
-                            <Slider Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" Name="LightYslider" Minimum="-200" Maximum="200" Value="25"
-                                    ValueChanged="LightYslider_ValueChanged"/>
-                            <TextBlock Name="LightYText" Grid.Row="1" Grid.Column="2" VerticalAlignment="Center" Margin="5, 0, 0, 0" Text="25"/>
+                            <Slider Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" Name="LightYslider" Minimum="-200" Maximum="200" Value="33"
+                                    ValueChanged="LightYslider_ValueChanged" IsSnapToTickEnabled="True" TickFrequency="1"/>
+                            <TextBlock Name="LightYText" Grid.Row="1" Grid.Column="2" VerticalAlignment="Center" Margin="5, 0, 0, 0" Text="33"/>
                             <Label Grid.Row="2" Grid.Column="0" VerticalAlignment="Center">Light Z</Label>
-                            <Slider Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" Name="LightZslider" Minimum="-600" Maximum="100" Value="-200" 
-                                    ValueChanged="LightZslider_ValueChanged"/>
-                            <TextBlock Name="LightZText" Grid.Row="2" Grid.Column="2" VerticalAlignment="Center" Margin="5, 0, 0, 0" Text="0"/>
+                            <Slider Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" Name="LightZslider" Minimum="-200" Maximum="200" Value="-80" 
+                                    ValueChanged="LightZslider_ValueChanged" IsSnapToTickEnabled="True" TickFrequency="1"/>
+                            <TextBlock Name="LightZText" Grid.Row="2" Grid.Column="2" VerticalAlignment="Center" Margin="5, 0, 0, 0" Text="-80"/>
                             <Label Grid.Row="3" Grid.Column="0" VerticalAlignment="Center">kD</Label>
-                            <Slider Grid.Row="3" Grid.Column="1" VerticalAlignment="Center" Name="kDslider" Minimum="0.05" Maximum="1" Value="0.25" 
+                            <Slider Grid.Row="3" Grid.Column="1" VerticalAlignment="Center" Name="kDslider" Minimum="0.05" Maximum="1" Value="0.65" 
                                     ValueChanged="kDslider_ValueChanged" IsSnapToTickEnabled="True" TickFrequency="0.05"/>
-                            <TextBlock Name="kDText" Grid.Row="3" Grid.Column="2" VerticalAlignment="Center" Margin="5, 0, 0, 0" Text="0.25"/>
+                            <TextBlock Name="kDText" Grid.Row="3" Grid.Column="2" VerticalAlignment="Center" Margin="5, 0, 0, 0" Text="0.65"/>
                             <Label Grid.Row="4" Grid.Column="0" VerticalAlignment="Center">kS</Label>
-                            <Slider Grid.Row="4" Grid.Column="1" VerticalAlignment="Center" Name="kSslider" Minimum="0.05" Maximum="1" Value="0.75" 
+                            <Slider Grid.Row="4" Grid.Column="1" VerticalAlignment="Center" Name="kSslider" Minimum="0.05" Maximum="1" Value="0.85" 
                                     ValueChanged="kSslider_ValueChanged" IsSnapToTickEnabled="True" TickFrequency="0.05"/>
-                            <TextBlock Name="kSText" Grid.Row="4" Grid.Column="2" VerticalAlignment="Center" Margin="5, 0, 0, 0" Text="0.75"/>
+                            <TextBlock Name="kSText" Grid.Row="4" Grid.Column="2" VerticalAlignment="Center" Margin="5, 0, 0, 0" Text="0.85"/>
                         </Grid>
                         <Grid Grid.Row="2">
                             <Grid.ColumnDefinitions>

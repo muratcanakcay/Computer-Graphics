@@ -55,7 +55,7 @@ public class Cylinder : Model
             {
                 Global  = new Point4(x, Height, z, 1),
                 Normal = new Point4(x / Radius, 0, z / Radius, 0),
-                TextureMap = new Point(((double)i)/N, 1)
+                TextureMap = new Point(i/(double)N, 1)
             });
         }
         
@@ -68,7 +68,7 @@ public class Cylinder : Model
             {
                 Global  = new Point4(x, 0, z, 1),
                 Normal = new Point4(x / Radius, 0, z / Radius, 0),
-                TextureMap = new Point((i)/(double)N, 0.5)
+                TextureMap = new Point(i/(double)N, 0.5)
             });
         }
         
@@ -113,7 +113,7 @@ public class Cylinder : Model
             triangles.Add(lastTopBaseTriangle);
 
         // Cylinder Side with edge on top base
-        for (var i = N; i <= 2 * N - 2; i++)
+        for (var i = N; i < 2 * N - 1; i++)
         {
             var topSideTriangle = new Triangle(Vertices[i+1], Vertices[i+2], Vertices[i+1+N]);
             if (topSideTriangle.IsFacingCamera())
@@ -134,7 +134,7 @@ public class Cylinder : Model
             triangles.Add(lastTopSideTriangle);
 
         // Cylinder Side with edge on bottom base
-        for (var i = 2 * N; i <= 3 * N - 2; i++)
+        for (var i = 2 * N; i < 3 * N - 1; i++)
         {
             var bottomSideTriangle = new Triangle(Vertices[i+1], Vertices[i+2-N], Vertices[i+2]);
             if (bottomSideTriangle.IsFacingCamera())
