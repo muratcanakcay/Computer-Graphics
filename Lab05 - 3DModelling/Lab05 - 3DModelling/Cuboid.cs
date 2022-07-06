@@ -13,7 +13,6 @@ public class Cuboid : Model
         Width = w;
         Height = h;
         Depth = d;
-        Vertices = new List<Point3d>() { }; 
     }
 
     public override void CalculateVertices()

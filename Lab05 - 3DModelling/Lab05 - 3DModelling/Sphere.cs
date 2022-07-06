@@ -12,7 +12,6 @@ public class Sphere : Model
         M = m;
         N = n;
         Radius = r;
-        Vertices = new List<Point3d>() { }; 
     }
 
     public override void CalculateVertices()

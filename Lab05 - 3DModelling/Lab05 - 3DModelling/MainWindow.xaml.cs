@@ -129,14 +129,11 @@ namespace Lab05___3DModelling
 
         private Phong CalculateLightAttributes()
         {
-            //return new Phong ( _isLightOn, new Vector3(_cPosX, _cPosY, _cPosZ),  _lightPos, _modelColor, 1f, _kD, _kS );
-            //return new Phong ( _isLightOn, Vector3.Transform(new Vector3(0, 0, 0), _invTransform), _lightPos, _modelColor, 1f, _kD, _kS );
-            
-            var transformed = Vector3.Transform(new Vector3(0, 0, 0), _invTransform);
-            Debug.WriteLine($"{new Vector3(_cPosX, _cPosY, _cPosZ)} ===== {transformed}");
-            //return new Phong ( _isLightOn, transformed, _lightPos, _modelColor, 1f, _kD, _kS );
-            return new Phong ( _isMeshOn, _isLightOn, new Vector3(_cPosX, _cPosY, _cPosZ), _lightPos, _modelColor, _kA, _kD, _kS, _n);
+            //var invTransformedCamera = Vector3.Transform(new Vector3(0, 0, 0), _invTransform);
+            //Debug.WriteLine($"{new Vector3(_cPosX, _cPosY, _cPosZ)} ===== {invTransformedCamera}");
+            //return new Phong ( _isLightOn, invTransformedCamera, _lightPos, _modelColor, 1f, _kD, _kS );
 
+            return new Phong ( _isMeshOn, _isLightOn, new Vector3(_cPosX, _cPosY, _cPosZ), _lightPos, _modelColor, _kA, _kD, _kS, _n);
         }
         private void RefreshCanvas()
         {

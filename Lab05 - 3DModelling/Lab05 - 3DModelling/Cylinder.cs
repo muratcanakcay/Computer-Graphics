@@ -12,7 +12,6 @@ public class Cylinder : Model
         N = n;
         Height = h;
         Radius = r;
-        Vertices = new List<Point3d>() { }; 
     }
 
     public override void CalculateVertices()

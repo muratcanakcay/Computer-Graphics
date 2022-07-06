@@ -13,13 +13,9 @@ namespace Lab05___3DModelling;
 public class Line
 {
     private List<Point> Points { get; }
-
     private Color Color { get; } = Colors.Gray;
 
-    public Line(List<Point> points)
-    {
-        Points = points;
-    }
+    public Line(List<Point> points) => Points = points;
 
     public void Draw(List<Pixel> drawingData)
     {
@@ -77,10 +73,7 @@ public class Line
         }
     }
 
-    public override string ToString()
-    {
-        return $"({Points[0].X}, {Points[0].Y})-({Points[1].X}, {Points[1].Y})\n";
-    }
+    public override string ToString() => $"({Points[0].X}, {Points[0].Y})-({Points[1].X}, {Points[1].Y})\n";
 }
 
 public class Triangle
@@ -371,12 +364,6 @@ public class Triangle
             u*(v2.TextureMap.X - v1.TextureMap.X) + v1.TextureMap.X,
             u*(v2.TextureMap.Y - v1.TextureMap.Y) + v1.TextureMap.Y);
         
-        return new Point3d
-        {
-            Projected = interpolatedProjected,
-            Global = v1.Global,
-            Normal = v1.Normal,
-            TextureMap = interpolatedTextureCoordinates
-        };
+        return v1 with { Projected = interpolatedProjected, TextureMap = interpolatedTextureCoordinates };
     }
 }
