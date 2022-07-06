@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Collections.Generic;
 using System.Numerics;
 using System.Windows.Input;
 using Microsoft.Win32;
@@ -35,7 +34,7 @@ namespace Lab05___3DModelling
         private bool _isLightOn = false;
         private bool _isMeshOn = true;
         private Vector3 _lightPos;
-        private Matrix4x4 _invTransform;
+        private Matrix4x4 _invTransformCameraMatrix;
         private Color _modelColor = Colors.DarkGreen;
         private IMeshable _model = new Cylinder(15, 50, 20);
 
@@ -97,7 +96,7 @@ namespace Lab05___3DModelling
             // final transformation matrix    
             Matrix4x4 M = Matrix4x4.Multiply(P, Matrix4x4.Multiply(C, Matrix4x4.Multiply(Rx, Matrix4x4.Multiply(Ry, Rz))));
 
-            Matrix4x4.Invert(Matrix4x4.Multiply(C, Matrix4x4.Multiply(Rx, Matrix4x4.Multiply(Ry, Rz))), out _invTransform);
+            Matrix4x4.Invert(Matrix4x4.Multiply(C, Matrix4x4.Multiply(Rx, Matrix4x4.Multiply(Ry, Rz))), out _invTransformCameraMatrix);
 
             foreach (var v in vertices)
             {
@@ -134,12 +133,8 @@ namespace Lab05___3DModelling
 
         private Phong CalculateLightAttributes()
         {
-            var invTransformedCamera = Vector3.Transform(new Vector3(0, 0, 0), _invTransform);
-            //Debug.WriteLine($"{new Vector3(_cPosX, _cPosY, _cPosZ)} ===== {invTransformedCamera}");
+            var invTransformedCamera = Vector3.Transform(new Vector3(0, 0, 0), _invTransformCameraMatrix);
             return new Phong ( _isMeshOn, _isLightOn, invTransformedCamera, _lightPos, _modelColor, _kA, _kD, _kS, _n );
-
-            // if camera not inverse transformed:
-            //return new Phong ( _isMeshOn, _isLightOn, new Vector3(_cPosX, _cPosY, _cPosZ), _lightPos, _modelColor, _kA, _kD, _kS, _n);
         }
         private void RefreshModel()
         {
