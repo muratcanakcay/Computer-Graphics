@@ -36,7 +36,7 @@ namespace Lab05___3DModelling
         private Vector3 _lightPos;
         private Matrix4x4 _invTransformCameraMatrix;
         private Color _modelColor = Colors.DarkGreen;
-        private IMeshable _model = new Cylinder(15, 50, 20);
+        private IMeshable _model = new Sphere(15, 15, 50);
 
         public MainWindow()
         {
@@ -72,8 +72,6 @@ namespace Lab05___3DModelling
                                          0, 0, 1, 0,
                                          0, 0, 0, 1);
 
-            
-
             var P = new Matrix4x4(-_sx / (float)Math.Tan(-theta), 0, _sx, 0,
                 0, _sx / (float)Math.Tan(-theta), _sy, 0,
                 0, 0, 0, 1,
@@ -92,15 +90,14 @@ namespace Lab05___3DModelling
                 cZ.X, cZ.Y, cZ.Z, Vector3.Dot(cZ, cameraPos),
                 0, 0, 0, 1);
 
-            
             // final transformation matrix    
-            Matrix4x4 M = Matrix4x4.Multiply(P, Matrix4x4.Multiply(C, Matrix4x4.Multiply(Rx, Matrix4x4.Multiply(Ry, Rz))));
+            var M = Matrix4x4.Multiply(P, Matrix4x4.Multiply(C, Matrix4x4.Multiply(Rx, Matrix4x4.Multiply(Ry, Rz))));
 
+            // inverse transform matrix for camera to be used in Phong illumination
             Matrix4x4.Invert(Matrix4x4.Multiply(C, Matrix4x4.Multiply(Rx, Matrix4x4.Multiply(Ry, Rz))), out _invTransformCameraMatrix);
 
             foreach (var v in vertices)
             {
-
                 var x = M.M11 * v.Global.X + M.M12 * v.Global.Y + M.M13 * v.Global.Z + M.M14 * v.Global.W;
                 var y = M.M21 * v.Global.X + M.M22 * v.Global.Y + M.M23 * v.Global.Z + M.M24 * v.Global.W;
                 var z = M.M31 * v.Global.X + M.M32 * v.Global.Y + M.M33 * v.Global.Z + M.M34 * v.Global.W;
@@ -111,7 +108,13 @@ namespace Lab05___3DModelling
                 z /= w;
                 w = 1;
 
-                projectedPoints.Add(v with { Projected = new Point4(x, y, z, w) });
+                projectedPoints.Add(new Point3d
+                {
+                    Projected = new Point4(x, y, z, w),
+                    Global = v.Global,
+                    Normal = v.Normal,
+                    TextureMap = v.TextureMap
+                });
             }
             
             model.ClearVertices();
@@ -155,7 +158,6 @@ namespace Lab05___3DModelling
             LightYslider.Value = 33;
             LightZslider.Value = -80;
         }
-
 
         // ---------------- BUTTONS --------------------
 
@@ -302,8 +304,7 @@ namespace Lab05___3DModelling
             ShowMeshButton.Visibility = Visibility.Hidden;
             HideMeshButton.Visibility = Visibility.Visible;
             DrawModel(_model);
-        }
-        private void OnClick_Exit(object sender, RoutedEventArgs e)
+        } private void OnClick_Exit(object sender, RoutedEventArgs e)
         {
             if (MessageBox.Show(
                     "Are you sure you want to leave?", "Exit", MessageBoxButton.YesNo)
@@ -405,7 +406,6 @@ namespace Lab05___3DModelling
             if (LightXText is not null) LightXText.Text = ((int)LightXslider.Value).ToString();
             DrawModel(_model);
         }
-
         private void LightYslider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             _lightY = LightYslider.Value;
@@ -413,7 +413,6 @@ namespace Lab05___3DModelling
             if (LightYText is not null) LightYText.Text = ((int)LightYslider.Value).ToString();
             DrawModel(_model);
         }
-
         private void LightZslider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             _lightZ = LightZslider.Value;
@@ -421,7 +420,6 @@ namespace Lab05___3DModelling
             if (LightZText is not null) LightZText.Text = ((int)LightZslider.Value).ToString();
             DrawModel(_model);
         }
-
         private void kDslider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             
@@ -429,21 +427,18 @@ namespace Lab05___3DModelling
             if (kDText is not null) kDText.Text = ((float)kDslider.Value).ToString();
             DrawModel(_model);
         }
-
         private void kSslider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             _kS = (float)kSslider.Value;
             if (kSText is not null) kSText.Text = ((float)kSslider.Value).ToString();
             DrawModel(_model);
         }
-
         private void kAslider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             _kA = (float)kAslider.Value;
             if (kAText is not null) kAText.Text = ((float)kAslider.Value).ToString();
             DrawModel(_model);
         }
-
         private void n_slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             _n = (int)nslider.Value;

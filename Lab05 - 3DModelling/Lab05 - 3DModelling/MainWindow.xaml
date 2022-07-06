@@ -96,7 +96,6 @@
                             IsEnabled="true"
                             ToolTip="Draw Cylinder"
                             Background="LightCyan"
-                            Visibility="Hidden"
                             Click="CylinderButton_OnClick">
                             Cylinder
                         </Button>
@@ -110,6 +109,7 @@
                             Name="SphereButton"
                             IsEnabled="true"
                             ToolTip="Draw Sphere"
+                            Visibility="Hidden"
                             Background="LightCyan"
                             Click="SphereButton_OnClick">
                             Sphere
@@ -157,10 +157,10 @@
                             <ColumnDefinition Width="2*"/>
                         </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="0"/>
+                            <RowDefinition Height="26"/>
                             <RowDefinition Height="26"/>
                             <RowDefinition Height="0"/>
-                            <RowDefinition Height="26"/>
+                            <RowDefinition Height="0"/>
                             <RowDefinition Height="0"/>
                             <RowDefinition Height="26"/>
                         </Grid.RowDefinitions>
@@ -185,9 +185,9 @@
                                 ValueChanged="DepthSlider_ValueChanged" IsSnapToTickEnabled="True" TickFrequency="1"/>
                         <TextBlock Name="DepthText" Grid.Row="4" Grid.Column="2" VerticalAlignment="Center" Margin="5, 0, 0, 0" Text="50"/>
                         <Label Grid.Row="5" Grid.Column="0" VerticalAlignment="Center">Radius</Label>
-                        <Slider Grid.Row="5" Grid.Column="1" VerticalAlignment="Center" Name="RadiusSlider" Minimum="10" Maximum="60" Value="30"
+                        <Slider Grid.Row="5" Grid.Column="1" VerticalAlignment="Center" Name="RadiusSlider" Minimum="10" Maximum="60" Value="50"
                                 ValueChanged="RadiusSlider_ValueChanged" IsSnapToTickEnabled="True" TickFrequency="1"/>
-                        <TextBlock Name="RadiusText" Grid.Row="5" Grid.Column="2" VerticalAlignment="Center" Margin="5, 0, 0, 0" Text="30"/>
+                        <TextBlock Name="RadiusText" Grid.Row="5" Grid.Column="2" VerticalAlignment="Center" Margin="5, 0, 0, 0" Text="50"/>
                     </Grid>
                 </GroupBox>
 
