@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Lab05___3DModelling"
         mc:Ignorable="d"
-        Title="Textured Model" 
+        Title="3D-Modeling" 
         Height="720" 
         MinHeight="720"
         Width="1200"
