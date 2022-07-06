@@ -134,11 +134,12 @@ namespace Lab05___3DModelling
 
         private Phong CalculateLightAttributes()
         {
-            //var invTransformedCamera = Vector3.Transform(new Vector3(0, 0, 0), _invTransform);
+            var invTransformedCamera = Vector3.Transform(new Vector3(0, 0, 0), _invTransform);
             //Debug.WriteLine($"{new Vector3(_cPosX, _cPosY, _cPosZ)} ===== {invTransformedCamera}");
-            //return new Phong ( _isLightOn, invTransformedCamera, _lightPos, _modelColor, 1f, _kD, _kS );
+            return new Phong ( _isMeshOn, _isLightOn, invTransformedCamera, _lightPos, _modelColor, _kA, _kD, _kS, _n );
 
-            return new Phong ( _isMeshOn, _isLightOn, new Vector3(_cPosX, _cPosY, _cPosZ), _lightPos, _modelColor, _kA, _kD, _kS, _n);
+            // if camera not inverse transformed:
+            //return new Phong ( _isMeshOn, _isLightOn, new Vector3(_cPosX, _cPosY, _cPosZ), _lightPos, _modelColor, _kA, _kD, _kS, _n);
         }
         private void RefreshModel()
         {

@@ -327,24 +327,23 @@ public class Triangle
         var u = v1.Projected.Z - v2.Projected.Z < 0.01 // compare floats
             ? t
             : ((1d/interpolatedProjected.Z) - (1d/v1.Projected.Z))/((1d/v2.Projected.Z) - (1d/v1.Projected.Z));
-
-        Point4 interpolatedGlobal, interpolatedNormal;
+        
         Point interpolatedTextureCoordinates;
 
         if (sceneIsIlluminated)
         {
-            interpolatedGlobal = new Point4(
+            var interpolatedGlobal = new Point4(
                 u*(v2.Global.X - v1.Global.X) + v1.Global.X,
                 u*(v2.Global.Y - v1.Global.Y) + v1.Global.Y,
                 u*(v2.Global.Z - v1.Global.Z) + v1.Global.Z,
-                1); // u * (v2.Global.W - v1.Global.W) + v1.Global.W);
+                1);
 
 
-            interpolatedNormal = new Point4(
+            var interpolatedNormal = new Point4(
                 u*(v2.Normal.X - v1.Normal.X) + v1.Normal.X,
                 u*(v2.Normal.Y - v1.Normal.Y) + v1.Normal.Y,
                 u*(v2.Normal.Z - v1.Normal.Z) + v1.Normal.Z,
-                0); // u * (v2.Normal.W - v1.Normal.W) + v1.Normal.W);
+                0);
 
             var length = Math.Sqrt((interpolatedNormal.X * interpolatedNormal.X) + (interpolatedNormal.Y * interpolatedNormal.Y) + (interpolatedNormal.Z * interpolatedNormal.Z));
             interpolatedNormal.X /= length;
