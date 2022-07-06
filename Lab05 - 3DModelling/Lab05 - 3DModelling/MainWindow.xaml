@@ -166,27 +166,27 @@
                         </Grid.RowDefinitions>
                         <Label Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" >M</Label>
                         <Slider Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" Name="Mslider" Minimum="3" Maximum="80" Value="15"
-                                ValueChanged="Mslider_ValueChanged"></Slider>
+                                ValueChanged="Mslider_ValueChanged" IsSnapToTickEnabled="True" TickFrequency="1"/>
                         <TextBlock Name="MText" Grid.Row="0" Grid.Column="2" VerticalAlignment="Center" Margin="5, 0, 0, 0" Text="15"/>
                         <Label Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" >N</Label>
                         <Slider Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" Name="Nslider" Minimum="3" Maximum="80" Value="15"
-                                ValueChanged="Nslider_ValueChanged"></Slider>
+                                ValueChanged="Nslider_ValueChanged" IsSnapToTickEnabled="True" TickFrequency="1"/>
                         <TextBlock Name="NText" Grid.Row="1" Grid.Column="2" VerticalAlignment="Center" Margin="5, 0, 0, 0" Text="15"/>
                         <Label Grid.Row="2" Grid.Column="0" VerticalAlignment="Center">Width</Label>
                         <Slider Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" Name="WidthSlider" Minimum="10" Maximum="150" Value="50"
-                                ValueChanged="WidthSlider_ValueChanged"></Slider>
+                                ValueChanged="WidthSlider_ValueChanged" IsSnapToTickEnabled="True" TickFrequency="1"/>
                         <TextBlock Name="WidthText" Grid.Row="2" Grid.Column="2" VerticalAlignment="Center" Margin="5, 0, 0, 0" Text="50"/>
                         <Label Grid.Row="3" Grid.Column="0" VerticalAlignment="Center">Height</Label>
                         <Slider Grid.Row="3" Grid.Column="1" VerticalAlignment="Center" Name="HeightSlider" Minimum="10" Maximum="150" Value="50"
-                                ValueChanged="HeightSlider_ValueChanged"></Slider>
+                                ValueChanged="HeightSlider_ValueChanged" IsSnapToTickEnabled="True" TickFrequency="1"/>
                         <TextBlock Name="HeightText" Grid.Row="3" Grid.Column="2" VerticalAlignment="Center" Margin="5, 0, 0, 0" Text="50"/>
                         <Label Grid.Row="4" Grid.Column="0" VerticalAlignment="Center">Depth</Label>
                         <Slider Grid.Row="4" Grid.Column="1" VerticalAlignment="Center" Name="DepthSlider" Minimum="10" Maximum="150" Value="50"
-                                ValueChanged="DepthSlider_ValueChanged"></Slider>
+                                ValueChanged="DepthSlider_ValueChanged" IsSnapToTickEnabled="True" TickFrequency="1"/>
                         <TextBlock Name="DepthText" Grid.Row="4" Grid.Column="2" VerticalAlignment="Center" Margin="5, 0, 0, 0" Text="50"/>
                         <Label Grid.Row="5" Grid.Column="0" VerticalAlignment="Center">Radius</Label>
                         <Slider Grid.Row="5" Grid.Column="1" VerticalAlignment="Center" Name="RadiusSlider" Minimum="10" Maximum="60" Value="30"
-                                ValueChanged="RadiusSlider_ValueChanged"></Slider>
+                                ValueChanged="RadiusSlider_ValueChanged" IsSnapToTickEnabled="True" TickFrequency="1"/>
                         <TextBlock Name="RadiusText" Grid.Row="5" Grid.Column="2" VerticalAlignment="Center" Margin="5, 0, 0, 0" Text="30"/>
                     </Grid>
                 </GroupBox>
@@ -207,16 +207,16 @@
                             <RowDefinition Height="26"/>
                         </Grid.RowDefinitions>
                         <Label Grid.Row="0" Grid.Column="0" VerticalAlignment="Center">Angle X</Label>
-                        <Slider Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" Name="AngleXSlider" Minimum="-360" Maximum="360" Value="0" 
-                                ValueChanged="AngleXSlider_ValueChanged"/>
+                        <Slider Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" Name="AngleXSlider" Minimum="-180" Maximum="180" Value="0" 
+                                ValueChanged="AngleXSlider_ValueChanged" IsSnapToTickEnabled="True" TickFrequency="1"/>
                         <TextBlock Name="AngleXText" Grid.Row="0" Grid.Column="2" VerticalAlignment="Center" Margin="5, 0, 0, 0" Text="0"/>
                         <Label Grid.Row="1" Grid.Column="0" VerticalAlignment="Center">Angle Y</Label>
-                        <Slider Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" Name="AngleYSlider" Minimum="-360" Maximum="360" Value="0"
-                                ValueChanged="AngleYSlider_ValueChanged"/>
+                        <Slider Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" Name="AngleYSlider" Minimum="-180" Maximum="180" Value="0"
+                                ValueChanged="AngleYSlider_ValueChanged" IsSnapToTickEnabled="True" TickFrequency="1"/>
                         <TextBlock Name="AngleYText" Grid.Row="1" Grid.Column="2" VerticalAlignment="Center" Margin="5, 0, 0, 0" Text="0"/>
                         <Label Grid.Row="2" Grid.Column="0" VerticalAlignment="Center">Angle Z</Label>
-                        <Slider Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" Name="AngleZSlider" Minimum="-360" Maximum="360" Value="0"
-                                ValueChanged="AngleZSlider_ValueChanged"/>
+                        <Slider Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" Name="AngleZSlider" Minimum="-180" Maximum="180" Value="0"
+                                ValueChanged="AngleZSlider_ValueChanged" IsSnapToTickEnabled="True" TickFrequency="1"/>
                         <TextBlock Name="AngleZText" Grid.Row="2" Grid.Column="2" VerticalAlignment="Center" Margin="5, 0, 0, 0" Text="0"/>
                     </Grid>
                 </GroupBox>
@@ -238,15 +238,15 @@
                         </Grid.RowDefinitions>
                         <Label Grid.Row="0" Grid.Column="0" VerticalAlignment="Center">Camera X</Label>
                         <Slider Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" Name="CamXslider" Minimum="-500" Maximum="500" Value="0"
-                                ValueChanged="CamXslider_ValueChanged"/>
+                                ValueChanged="CamXslider_ValueChanged" IsSnapToTickEnabled="True" TickFrequency="1"/>
                         <TextBlock Name="CamXText" Grid.Row="0" Grid.Column="2" VerticalAlignment="Center" Margin="5, 0, 0, 0" Text="0"/>
                         <Label Grid.Row="1" Grid.Column="0" VerticalAlignment="Center">Camera Y</Label>
                         <Slider Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" Name="CamYslider" Minimum="-600" Maximum="600" Value="0"
-                                ValueChanged="CamYslider_ValueChanged"/>
+                                ValueChanged="CamYslider_ValueChanged" IsSnapToTickEnabled="True" TickFrequency="1"/>
                         <TextBlock Name="CamYText" Grid.Row="1" Grid.Column="2" VerticalAlignment="Center" Margin="5, 0, 0, 0" Text="0"/>
                         <Label Grid.Row="2" Grid.Column="0" VerticalAlignment="Center">Camera Z</Label>
                         <Slider Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" Name="CamZslider" Minimum="100" Maximum="800" Value="400" 
-                                ValueChanged="CamZslider_ValueChanged"/>
+                                ValueChanged="CamZslider_ValueChanged" IsSnapToTickEnabled="True" TickFrequency="1"/>
                         <TextBlock Name="CamZText" Grid.Row="2" Grid.Column="2" VerticalAlignment="Center" Margin="5, 0, 0, 0" Text="400"/>
                     </Grid>
                 </GroupBox>

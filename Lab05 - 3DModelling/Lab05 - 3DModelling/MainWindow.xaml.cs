@@ -42,7 +42,7 @@ namespace Lab05___3DModelling
         public MainWindow()
         {
             InitializeComponent();
-            RefreshCanvas();
+            DrawModel(_model);
         }
 
         //----------------- PROJECTION -------------------
@@ -122,7 +122,12 @@ namespace Lab05___3DModelling
         {
             TransformAndProject(model);
             var lightAttributes = CalculateLightAttributes();
-            model.Draw(_wbm, _texture, lightAttributes);
+
+            var newCanvas = new WriteableBitmap((int)CanvasImage.Width, (int)CanvasImage.Height, 96, 96, PixelFormats.Bgra32,
+                BitmapPalettes.Halftone256);
+            model.Draw(newCanvas, _texture, lightAttributes);
+            _wbm = newCanvas;
+            CanvasImage.Source = _wbm;
         }
 
         // ---------------- HELPER FUNCTIONS --------------------
@@ -135,21 +140,10 @@ namespace Lab05___3DModelling
 
             return new Phong ( _isMeshOn, _isLightOn, new Vector3(_cPosX, _cPosY, _cPosZ), _lightPos, _modelColor, _kA, _kD, _kS, _n);
         }
-        private void RefreshCanvas()
-        {
-            ClearCanvas();
-            DrawModel(_model);
-        }
         private void RefreshModel()
         {
             _model.ClearVertices();
             _model.CalculateVertices();
-        }
-        private void ClearCanvas()
-        {
-            _wbm = new WriteableBitmap((int)CanvasImage.Width, (int)CanvasImage.Height, 96, 96, PixelFormats.Bgra32,
-                BitmapPalettes.Halftone256);
-            CanvasImage.Source = _wbm;
         }
         private void ResetTransformations()
         {
@@ -188,7 +182,7 @@ namespace Lab05___3DModelling
             CuboidButton.Visibility = Visibility.Visible;
             RefreshModel();
             ResetTransformations();
-            RefreshCanvas();
+            DrawModel(_model);
         }
         private void SphereButton_OnClick(object sender, RoutedEventArgs e)
         {
@@ -209,7 +203,7 @@ namespace Lab05___3DModelling
             CuboidButton.Visibility = Visibility.Visible;
             RefreshModel();
             ResetTransformations();
-            RefreshCanvas();
+            DrawModel(_model);
         }
         private void CuboidButton_OnClick(object sender, RoutedEventArgs e)
         {
@@ -230,7 +224,7 @@ namespace Lab05___3DModelling
             CuboidButton.Visibility = Visibility.Hidden;
             RefreshModel();
             ResetTransformations();
-            RefreshCanvas();
+            DrawModel(_model);
         }
         private void SelectModelColorButton_OnClick(object sender, MouseButtonEventArgs e)
         {
@@ -248,7 +242,7 @@ namespace Lab05___3DModelling
                 _modelColor = modelColor;
             }
             
-            RefreshCanvas();
+            DrawModel(_model);
         }
         private void SelectTextureButton_OnClick(object sender, RoutedEventArgs e)
         {
@@ -270,12 +264,12 @@ namespace Lab05___3DModelling
                 Console.WriteLine(exception.Message);
             }
 
-            RefreshCanvas();
+            DrawModel(_model);
         }
         private void ClearTextureButton_OnClick(object sender, RoutedEventArgs e)
         {
             _texture = null;
-            RefreshCanvas();
+            DrawModel(_model);
         }
         private void LightOnButton_OnClick(object sender, RoutedEventArgs e)
         {
@@ -300,7 +294,7 @@ namespace Lab05___3DModelling
             _isMeshOn = false;
             HideMeshButton.Visibility = Visibility.Hidden;
             ShowMeshButton.Visibility = Visibility.Visible;
-            RefreshCanvas();
+            DrawModel(_model);
         }
         private void ShowMeshButton_OnClick(object sender, RoutedEventArgs e)
         {
@@ -311,7 +305,7 @@ namespace Lab05___3DModelling
             _isMeshOn = true;
             ShowMeshButton.Visibility = Visibility.Hidden;
             HideMeshButton.Visibility = Visibility.Visible;
-            RefreshCanvas();
+            DrawModel(_model);
         }
         private void OnClick_Exit(object sender, RoutedEventArgs e)
         {
@@ -328,42 +322,42 @@ namespace Lab05___3DModelling
             _model.M = (int)Mslider.Value;
             if (MText is not null) MText.Text = ((int)Mslider.Value).ToString();
             RefreshModel();
-            RefreshCanvas();
+            DrawModel(_model);
         }
         private void Nslider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             _model.N = (int)Nslider.Value;
             if (NText is not null) NText.Text = ((int)Nslider.Value).ToString();
             RefreshModel();
-            RefreshCanvas();
+            DrawModel(_model);
         }
         private void WidthSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             _model.Width = (int)WidthSlider.Value;
             if (WidthText is not null) WidthText.Text = ((int)WidthSlider.Value).ToString();
             RefreshModel();
-            RefreshCanvas();
+            DrawModel(_model);
         }
         private void HeightSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             _model.Height = (int)HeightSlider.Value;
             if (HeightText is not null) HeightText.Text = ((int)HeightSlider.Value).ToString();
             RefreshModel();
-            RefreshCanvas();
+            DrawModel(_model);
         }
         private void DepthSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             _model.Depth = (int)DepthSlider.Value;
             if (DepthText is not null) DepthText.Text = ((int)DepthSlider.Value).ToString();
             RefreshModel();
-            RefreshCanvas();
+            DrawModel(_model);
         }
         private void RadiusSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             _model.Radius = (int)RadiusSlider.Value;
             if (RadiusText is not null) RadiusText.Text = ((int)RadiusSlider.Value).ToString();
             RefreshModel();
-            RefreshCanvas();
+            DrawModel(_model);
         }
 
         //Rotation
@@ -371,19 +365,19 @@ namespace Lab05___3DModelling
         {
             _angleX = AngleXSlider.Value;
             if (AngleXText is not null) AngleXText.Text = ((int)AngleXSlider.Value).ToString();
-            RefreshCanvas();
+            DrawModel(_model);
         }
         private void AngleYSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             _angleY = AngleYSlider.Value;
             if (AngleYText is not null) AngleYText.Text = ((int)AngleYSlider.Value).ToString();
-            RefreshCanvas();
+            DrawModel(_model);
         }
         private void AngleZSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             _angleZ = AngleZSlider.Value;
             if (AngleZText is not null) AngleZText.Text = ((int)AngleZSlider.Value).ToString();
-            RefreshCanvas();
+            DrawModel(_model);
         }
 
         // Camera
@@ -391,20 +385,20 @@ namespace Lab05___3DModelling
         {
             _cPosX = (int)CamXslider.Value;
             if (CamXText is not null) CamXText.Text = ((int)CamXslider.Value).ToString();
-            RefreshCanvas();
+            DrawModel(_model);
         }
         private void CamYslider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             _cPosY = (int)CamYslider.Value;
             if (CamYText is not null) CamYText.Text = ((int)CamYslider.Value).ToString();
             //RefreshModel();
-            RefreshCanvas();
+            DrawModel(_model);
         }
         private void CamZslider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             _cPosZ = (int)CamZslider.Value;
             if (CamZText is not null) CamZText.Text = ((int)CamZslider.Value).ToString();
-            RefreshCanvas();
+            DrawModel(_model);
         }
 
         // Light
@@ -413,7 +407,7 @@ namespace Lab05___3DModelling
             _lightX = LightXslider.Value;
             _lightPos = new Vector3((float)_lightX, (float)_lightY, (float)_lightZ);
             if (LightXText is not null) LightXText.Text = ((int)LightXslider.Value).ToString();
-            RefreshCanvas();
+            DrawModel(_model);
         }
 
         private void LightYslider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
@@ -421,7 +415,7 @@ namespace Lab05___3DModelling
             _lightY = LightYslider.Value;
             _lightPos = new Vector3((float)_lightX, (float)_lightY, (float)_lightZ);
             if (LightYText is not null) LightYText.Text = ((int)LightYslider.Value).ToString();
-            RefreshCanvas();
+            DrawModel(_model);
         }
 
         private void LightZslider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
@@ -429,7 +423,7 @@ namespace Lab05___3DModelling
             _lightZ = LightZslider.Value;
             _lightPos = new Vector3((float)_lightX, (float)_lightY, (float)_lightZ);
             if (LightZText is not null) LightZText.Text = ((int)LightZslider.Value).ToString();
-            RefreshCanvas();
+            DrawModel(_model);
         }
 
         private void kDslider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
@@ -437,28 +431,28 @@ namespace Lab05___3DModelling
             
             _kD = (float)kDslider.Value;
             if (kDText is not null) kDText.Text = ((float)kDslider.Value).ToString();
-            RefreshCanvas();
+            DrawModel(_model);
         }
 
         private void kSslider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             _kS = (float)kSslider.Value;
             if (kSText is not null) kSText.Text = ((float)kSslider.Value).ToString();
-            RefreshCanvas();
+            DrawModel(_model);
         }
 
         private void kAslider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             _kA = (float)kAslider.Value;
             if (kAText is not null) kAText.Text = ((float)kAslider.Value).ToString();
-            RefreshCanvas();
+            DrawModel(_model);
         }
 
         private void n_slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             _n = (int)nslider.Value;
             if (nText is not null) nText.Text = ((int)nslider.Value).ToString();
-            RefreshCanvas();
+            DrawModel(_model);
         }
     }
 }
