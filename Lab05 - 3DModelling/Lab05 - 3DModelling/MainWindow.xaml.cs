@@ -23,7 +23,7 @@ namespace Lab05___3DModelling
         private int _sy = 450;
         private int _cPosX = 0;
         private int _cPosY = 0;
-        private int _cPosZ = 400;
+        private int _cPosZ = -400;
         private double _lightX = 33;
         private double _lightY = 33;
         private double _lightZ = -80;
@@ -151,7 +151,7 @@ namespace Lab05___3DModelling
             AngleZSlider.Value = 0;
             CamXslider.Value = 0;
             CamYslider.Value = 0;
-            CamZslider.Value = 400;
+            CamZslider.Value = -400;
             kDslider.Value = 0.65f;
             kSslider.Value = 0.85f;
             LightXslider.Value = 33;
@@ -380,20 +380,20 @@ namespace Lab05___3DModelling
         // Camera
         private void CamXslider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            _cPosX = (int)CamXslider.Value;
+            _cPosX = -(int)CamXslider.Value;
             if (CamXText is not null) CamXText.Text = ((int)CamXslider.Value).ToString();
             DrawModel(_model);
         }
         private void CamYslider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            _cPosY = (int)CamYslider.Value;
+            _cPosY = -(int)CamYslider.Value;
             if (CamYText is not null) CamYText.Text = ((int)CamYslider.Value).ToString();
             //RefreshModel();
             DrawModel(_model);
         }
         private void CamZslider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            _cPosZ = (int)CamZslider.Value;
+            _cPosZ = -(int)CamZslider.Value;
             if (CamZText is not null) CamZText.Text = ((int)CamZslider.Value).ToString();
             DrawModel(_model);
         }

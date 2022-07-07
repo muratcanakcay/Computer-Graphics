@@ -193,7 +193,7 @@
 
                 <GroupBox Grid.Row="2" Margin="0,0,20,0" Padding="0,5,0,0">
                     <GroupBox.Header>
-                        <TextBlock Text="Rotation" FontWeight="Bold"/>
+                        <TextBlock Text="Model Rotation" FontWeight="Bold"/>
                     </GroupBox.Header>
                     <Grid>
                         <Grid.ColumnDefinitions>
@@ -223,7 +223,7 @@
                 
                 <GroupBox Grid.Row="3" Margin="0,0,20,0" Padding="0,5,0,0">
                     <GroupBox.Header>
-                        <TextBlock Text="Camera" FontWeight="Bold"/>
+                        <TextBlock Text="Camera Position" FontWeight="Bold"/>
                     </GroupBox.Header>
                     <Grid>
                         <Grid.ColumnDefinitions>
@@ -237,7 +237,7 @@
                             <RowDefinition Height="26"/>
                         </Grid.RowDefinitions>
                         <Label Grid.Row="0" Grid.Column="0" VerticalAlignment="Center">Camera X</Label>
-                        <Slider Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" Name="CamXslider" Minimum="-500" Maximum="500" Value="0"
+                        <Slider Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" Name="CamXslider" Minimum="-600" Maximum="600" Value="0"
                                 ValueChanged="CamXslider_ValueChanged" IsSnapToTickEnabled="True" TickFrequency="1"/>
                         <TextBlock Name="CamXText" Grid.Row="0" Grid.Column="2" VerticalAlignment="Center" Margin="5, 0, 0, 0" Text="0"/>
                         <Label Grid.Row="1" Grid.Column="0" VerticalAlignment="Center">Camera Y</Label>
@@ -245,9 +245,9 @@
                                 ValueChanged="CamYslider_ValueChanged" IsSnapToTickEnabled="True" TickFrequency="1"/>
                         <TextBlock Name="CamYText" Grid.Row="1" Grid.Column="2" VerticalAlignment="Center" Margin="5, 0, 0, 0" Text="0"/>
                         <Label Grid.Row="2" Grid.Column="0" VerticalAlignment="Center">Camera Z</Label>
-                        <Slider Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" Name="CamZslider" Minimum="100" Maximum="800" Value="400" 
+                        <Slider Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" Name="CamZslider" Minimum="-800" Maximum="100" Value="-400" 
                                 ValueChanged="CamZslider_ValueChanged" IsSnapToTickEnabled="True" TickFrequency="1"/>
-                        <TextBlock Name="CamZText" Grid.Row="2" Grid.Column="2" VerticalAlignment="Center" Margin="5, 0, 0, 0" Text="400"/>
+                        <TextBlock Name="CamZText" Grid.Row="2" Grid.Column="2" VerticalAlignment="Center" Margin="5, 0, 0, 0" Text="-400"/>
                     </Grid>
                 </GroupBox>
 
@@ -414,19 +414,19 @@
                             <Slider Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" Name="LightZslider" Minimum="-200" Maximum="200" Value="-80" 
                                     ValueChanged="LightZslider_ValueChanged" IsSnapToTickEnabled="True" TickFrequency="1"/>
                             <TextBlock Name="LightZText" Grid.Row="2" Grid.Column="2" VerticalAlignment="Center" Margin="5, 0, 0, 0" Text="-80"/>
-                            <Label Grid.Row="3" Grid.Column="0" VerticalAlignment="Center">kA</Label>
+                            <Label Grid.Row="3" Grid.Column="0" VerticalAlignment="Center" ToolTip="Ambient Reflection Coefficient">kA</Label>
                             <Slider Grid.Row="3" Grid.Column="1" VerticalAlignment="Center" Name="kAslider" Minimum="0.05" Maximum="1" Value="0.2" 
                                     ValueChanged="kAslider_ValueChanged" IsSnapToTickEnabled="True" TickFrequency="0.05"/>
                             <TextBlock Name="kAText" Grid.Row="3" Grid.Column="2" VerticalAlignment="Center" Margin="5, 0, 0, 0" Text="0.2"/>
-                            <Label Grid.Row="4" Grid.Column="0" VerticalAlignment="Center">kD</Label>
+                            <Label Grid.Row="4" Grid.Column="0" VerticalAlignment="Center" ToolTip="Diffuse Reflection Coefficient">kD</Label>
                             <Slider Grid.Row="4" Grid.Column="1" VerticalAlignment="Center" Name="kDslider" Minimum="0.05" Maximum="1" Value="0.65" 
                                     ValueChanged="kDslider_ValueChanged" IsSnapToTickEnabled="True" TickFrequency="0.05"/>
                             <TextBlock Name="kDText" Grid.Row="4" Grid.Column="2" VerticalAlignment="Center" Margin="5, 0, 0, 0" Text="0.65"/>
-                            <Label Grid.Row="5" Grid.Column="0" VerticalAlignment="Center">kS</Label>
+                            <Label Grid.Row="5" Grid.Column="0" VerticalAlignment="Center" ToolTip="Specular Reflection Coefficient">kS</Label>
                             <Slider Grid.Row="5" Grid.Column="1" VerticalAlignment="Center" Name="kSslider" Minimum="0.05" Maximum="1" Value="0.85" 
                                     ValueChanged="kSslider_ValueChanged" IsSnapToTickEnabled="True" TickFrequency="0.05"/>
                             <TextBlock Name="kSText" Grid.Row="5" Grid.Column="2" VerticalAlignment="Center" Margin="5, 0, 0, 0" Text="0.85"/>
-                            <Label Grid.Row="6" Grid.Column="0" VerticalAlignment="Center">n</Label>
+                            <Label Grid.Row="6" Grid.Column="0" VerticalAlignment="Center" ToolTip="Specular Highlight Exponent">n</Label>
                             <Slider Grid.Row="6" Grid.Column="1" VerticalAlignment="Center" Name="nslider" Minimum="1" Maximum="100" Value="20" 
                                     ValueChanged="n_slider_ValueChanged" IsSnapToTickEnabled="True" TickFrequency="1"/>
                             <TextBlock Name="nText" Grid.Row="6" Grid.Column="2" VerticalAlignment="Center" Margin="5, 0, 0, 0" Text="20"/>
