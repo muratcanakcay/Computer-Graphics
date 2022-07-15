@@ -148,7 +148,7 @@
 
                 <GroupBox Grid.Row="1" Margin="0,0,20,0" Padding="0,5,0,0">
                     <GroupBox.Header >
-                        <TextBlock Name="ModelName" Text="Cylinder" FontWeight="Bold"/>
+                        <TextBlock Name="ModelName" Text="Sphere" FontWeight="Bold"/>
                     </GroupBox.Header>
                     <Grid Name="ModelProperties">
                         <Grid.ColumnDefinitions>
